@@ -72,12 +72,12 @@ public final class ProgramConf {
 	public static enum Int implements Loadable {
 		SearchHistorySize (20, 1),
 		MaxLinesInProgressPanel (1000, 2),
-		SearchBoxMaxWidth (300, 0),
+		SearchBoxMaxWidth (500, 0),
 		MaxResultsTotal (10000, 1),
 		WebInterfacePageSize (50, 1),
 		PatternTableHeight (4, 1),
 		UnpackCacheCapacity (20, 1),
-		Analyzer (0, 0),
+		Analyzer (1, 0),
 		;
 
 		private int value;
@@ -102,7 +102,7 @@ public final class ProgramConf {
 	}
 
 	public static enum Str implements Loadable {
-		AppName ("DocFetcher"),
+		AppName ("CodeFetcher"),
 		;
 
 		private String value;
