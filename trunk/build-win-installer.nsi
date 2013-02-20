@@ -28,10 +28,10 @@ SetCompressor /FINAL zlib
 !define JRE_URL "http://javadl.sun.com/webapps/download/AutoDL?BundleId=52252"
 !include "JREDyna_Inetc.nsh"
 
-Name "DocFetcher ${VERSION}"
+Name "CodeFetcher ${VERSION}"
 XPStyle on
-OutFile build\docfetcher_${VERSION}_win32_setup.exe
-InstallDir $PROGRAMFILES\DocFetcher
+OutFile build\CodeFetcher_${VERSION}_win32_setup.exe
+InstallDir $PROGRAMFILES\CodeFetcher
 Page directory
 Page instfiles
 Page custom finalPage
@@ -64,10 +64,10 @@ LoadLanguageFile "${NSISDIR}\Contrib\Language files\Spanish.nlf"
 
 Function .onInit
 	startinst:
-	Processes::FindProcess "DocFetcher.exe"
+	Processes::FindProcess "CodeFetcher.exe"
 	StrCmp $R0 0 done
 	MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION \
-		"     DocFetcher is running! $\n$\nPlease close all open instances before upgrading." \
+		"     CodeFetcher is running! $\n$\nPlease close all open instances before upgrading." \
 	IDRETRY startinst
 	Abort
 	done:
@@ -87,9 +87,9 @@ Function finalPage
 	noreboot:
 	nsDialogs::Create 1018
 	Pop $0
-	${NSD_CreateLabel} 75u 30u 80% 8u "DocFetcher was succesfully installed on your computer."
+	${NSD_CreateLabel} 75u 30u 80% 8u "CodeFetcher was succesfully installed on your computer."
 	Pop $0
-	${NSD_CreateCheckbox} 80u 50u 50% 8u "Run DocFetcher v${VERSION}"
+	${NSD_CreateCheckbox} 80u 50u 50% 8u "Run CodeFetcher v${VERSION}"
 	Pop $CHECKBOX
 	SendMessage $CHECKBOX ${BM_SETCHECK} ${BST_CHECKED} 0
 	GetFunctionAddress $1 OnCheckbox
@@ -114,18 +114,18 @@ FunctionEnd
 Function .onInstSuccess
 	IfRebootFlag endpage 0
 	${If} $boolCHECKBOX != "False"
-		Exec "$INSTDIR\DocFetcher.exe"
+		Exec "$INSTDIR\CodeFetcher.exe"
 	${EndIf}
 	endpage:
 FunctionEnd
 Function .onInstFailed
     DetailPrint " --- "
-    DetailPrint " Make sure DocFetcher is not running and try installation again "
+    DetailPrint " Make sure CodeFetcher is not running and try installation again "
     MessageBox MB_OK|MB_ICONEXCLAMATION "Please restart your computer and try the installation again."
 FunctionEnd
 
 
-Section "DocFetcher"
+Section "CodeFetcher"
 	SetShellVarContext all
 	Call DownloadAndInstallJREIfNecessary
     killdaemon:
@@ -137,7 +137,7 @@ Section "DocFetcher"
     Goto killdaemon
     nodaemon:
 	
-	; Remove existing DocFetcher folder. This is necessary because:
+	; Remove existing folder. This is necessary because:
 	; - Otherwise the uninstaller might not work cleanly.
 	; - Loading different versions of the same library might crash the program. See bug #3558268.
 	RMDir /r $INSTDIR
@@ -151,7 +151,7 @@ Section "DocFetcher"
 	File ${PORTABLE_PATH}\misc\*.bat
 	File ${PORTABLE_PATH}\misc\*.exe
 	File ${PORTABLE_PATH}\misc\licenses.zip
-	File ${PORTABLE_PATH}\misc\paths.txt
+	;File ${PORTABLE_PATH}\misc\paths.txt
 
 	SetOutPath $INSTDIR\help
 	File /r ${PORTABLE_PATH}\help\*.*
@@ -176,12 +176,12 @@ Section "DocFetcher"
 	; Write to registry
 	Var /GLOBAL regkey
 	Var /GLOBAL homepage
-	StrCpy $regkey "Software\Microsoft\Windows\CurrentVersion\Uninstall\DocFetcher"
+	StrCpy $regkey "Software\Microsoft\Windows\CurrentVersion\Uninstall\CodeFetcher"
 	StrCpy $homepage "http://docfetcher.sourceforge.net"
-	WriteRegStr HKLM $regkey "DisplayName" "DocFetcher"
+	WriteRegStr HKLM $regkey "DisplayName" "CodeFetcher"
 	WriteRegStr HKLM $regkey "UninstallString" "$INSTDIR\uninstaller.exe"
 	WriteRegStr HKLM $regkey "InstallLocation" $INSTDIR
-	WriteRegStr HKLM $regkey "DisplayIcon" "$INSTDIR\DocFetcher.exe,0"
+	WriteRegStr HKLM $regkey "DisplayIcon" "$INSTDIR\CodeFetcher.exe,0"
 	WriteRegStr HKLM $regkey "HelpLink" $homepage
 	WriteRegStr HKLM $regkey "URLUpdateInfo" $homepage
 	WriteRegStr HKLM $regkey "URLInfoAbout" $homepage
@@ -193,10 +193,10 @@ Section "DocFetcher"
 	SetShellVarContext current
 
 	; Start menu entries
-	CreateDirectory $SMPROGRAMS\DocFetcher
-	CreateShortCut $SMPROGRAMS\DocFetcher\DocFetcher.lnk $INSTDIR\DocFetcher.exe
-	CreateShortCut "$SMPROGRAMS\DocFetcher\Uninstall DocFetcher.lnk" $INSTDIR\uninstaller.exe
-	CreateShortCut $SMPROGRAMS\DocFetcher\Readme.lnk $INSTDIR\Readme.txt
+	CreateDirectory $SMPROGRAMS\CodeFetcher
+	CreateShortCut $SMPROGRAMS\CodeFetcher\CodeFetcher.lnk $INSTDIR\CodeFetcher.exe
+	CreateShortCut "$SMPROGRAMS\CodeFetcher\Uninstall CodeFetcher.lnk" $INSTDIR\uninstaller.exe
+	CreateShortCut $SMPROGRAMS\CodeFetcher\Readme.lnk $INSTDIR\Readme.txt
 
 	; Launch daemon
 	Exec '"$INSTDIR\docfetcher-daemon-windows.exe"'
@@ -213,7 +213,7 @@ Section "un.Uninstall"
 	RMDir /r /REBOOTOK $INSTDIR
 
 	; Remove registry key
-	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\DocFetcher"
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CodeFetcher"
 	DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "DocFetcher-Daemon"
 
 	SetShellVarContext current
@@ -222,8 +222,8 @@ Section "un.Uninstall"
 	RMDir /r /REBOOTOK $APPDATA\DocFetcher
 
 	; Remove start menu entries
-	Delete /REBOOTOK $SMPROGRAMS\DocFetcher\DocFetcher.lnk
-	Delete /REBOOTOK "$SMPROGRAMS\DocFetcher\Uninstall DocFetcher.lnk"
-	Delete $SMPROGRAMS\DocFetcher\Readme.lnk
-	RMDir $SMPROGRAMS\DocFetcher
+	Delete /REBOOTOK $SMPROGRAMS\CodeFetcher\CodeFetcher.lnk
+	Delete /REBOOTOK "$SMPROGRAMS\CodeFetcher\Uninstall DocFetcher.lnk"
+	Delete $SMPROGRAMS\CodeFetcher\Readme.lnk
+	RMDir $SMPROGRAMS\CodeFetcher
 SectionEnd
