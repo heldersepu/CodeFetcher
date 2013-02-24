@@ -310,6 +310,10 @@ public final class Application {
 		});
 
 		shell.open();
+        if (indexRegistry.getIndexes().isEmpty()) {
+            indexPanel.openIndexingDialog();
+            indexPanel.createFileTaskFromDialog(shell, indexRegistry, null, true);
+        }
 		while (!shell.isDisposed()) {
 			try {
 				if (!display.readAndDispatch())
@@ -729,7 +733,8 @@ public final class Application {
 				List<Parser> parsers = ParseService.getParsers();
 				ListMap<Parser, Boolean> map = ListMap.create(parsers.size());
 				for (Parser parser : parsers)
-					map.add(parser, true);
+					if (!((SettingsConf.Bool.HideMSparsers.get()) && parser.getTypeLabel().startsWith("MS"))) 
+                        map.add(parser, true);
 				fileTypePanel = new FileTypePanel(parent, map);
 				return fileTypePanel.getControl();
 			}

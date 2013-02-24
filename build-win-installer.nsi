@@ -223,7 +223,7 @@ Section "un.Uninstall"
 
 	; Remove start menu entries
 	Delete /REBOOTOK $SMPROGRAMS\CodeFetcher\CodeFetcher.lnk
-	Delete /REBOOTOK "$SMPROGRAMS\CodeFetcher\Uninstall DocFetcher.lnk"
+	Delete /REBOOTOK "$SMPROGRAMS\CodeFetcher\Uninstall CodeFetcher.lnk"
 	Delete $SMPROGRAMS\CodeFetcher\Readme.lnk
 	RMDir $SMPROGRAMS\CodeFetcher
 SectionEnd

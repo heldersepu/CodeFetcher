@@ -80,7 +80,7 @@ public final class ParseService {
 		textParser = new TextParser(),
 		htmlParser = new HtmlParser(),
 		
-		new ExifParser(),
+		//new ExifParser(),
 		new AbiWordParser(),
 		new PdfParser(),
 		new RtfParser(),
