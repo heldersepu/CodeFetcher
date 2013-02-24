@@ -1,0 +1,26 @@
+<launch4jConfig>
+  <dontWrapJar>false</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>C:\codefetcher\build\tmp\net.sourceforge.docfetcher_1.1.1_20120815-1516.jar</jar>
+  <outfile>C:\codefetcher\build\DocFetcher-1.1.1\CodeFetcher.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir></chdir>
+  <priority>normal</priority>
+  <downloadUrl>http://java.com/download</downloadUrl>
+  <supportUrl></supportUrl>
+  <customProcName>false</customProcName>
+  <stayAlive>true</stayAlive>
+  <manifest></manifest>
+  <icon>C:\codefetcher\dev\CodeFetcher.ico</icon>
+  <classPath>
+    <mainClass>net.sourceforge.docfetcher.Main</mainClass>
+    <cp>lib\*.jar</cp>
+  </classPath>
+  <jre>
+    <path></path>
+    <minVersion>1.6.0</minVersion>
+    <maxVersion></maxVersion>
+    <jdkPreference>preferJre</jdkPreference>
+  </jre>
+</launch4jConfig>
