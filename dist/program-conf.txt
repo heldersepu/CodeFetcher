@@ -9,7 +9,7 @@
 # The text to display in the title bar of the main window and in the task bar.
 # This setting might be useful for rebranding and for using multiple instances
 # of DocFetcher.
-AppName = DocFetcher
+AppName = CodeFetcher
 
 # Whether to show a link to this file on the preferences dialog. Disable this
 # setting to prevent users from mucking around in this file.
