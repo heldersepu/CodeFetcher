@@ -45,7 +45,7 @@ final class DelayedOverlay {
 		Display display = new Display();
 		Shell shell = new Shell(display);
 		shell.setLayout(new FillLayout());
-		Util.setCenteredBounds(shell, 640, 480);
+		Util.setCenteredBounds(shell, 800, 600);
 
 		SashForm sash = new SashForm(shell, SWT.HORIZONTAL);
 		final StyledText st1 = new StyledText(sash, SWT.BORDER);
