@@ -1,18 +1,18 @@
 <launch4jConfig>
-  <dontWrapJar>false</dontWrapJar>
+  <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>C:\codefetcher\build\tmp\net.sourceforge.docfetcher_1.1.1_20120815-1516.jar</jar>
-  <outfile>C:\codefetcher\build\DocFetcher-1.1.1\CodeFetcher.exe</outfile>
+  <jar>lib</jar>
+  <outfile>F:\codefetcher\dist\launchers\CodeFetcher.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
-  <chdir></chdir>
+  <chdir>.</chdir>
   <priority>normal</priority>
   <downloadUrl>http://java.com/download</downloadUrl>
   <supportUrl></supportUrl>
   <customProcName>false</customProcName>
   <stayAlive>true</stayAlive>
   <manifest></manifest>
-  <icon>C:\codefetcher\dev\CodeFetcher.ico</icon>
+  <icon>F:\codefetcher\dev\CodeFetcher.ico</icon>
   <classPath>
     <mainClass>net.sourceforge.docfetcher.Main</mainClass>
     <cp>lib\*.jar</cp>
@@ -22,5 +22,8 @@
     <minVersion>1.6.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
+    <initialHeapPercent>25</initialHeapPercent>
+    <maxHeapPercent>75</maxHeapPercent>
+    <opt>-Djava.library.path=&quot;lib&quot; -enableassertions -Xss2m</opt>
   </jre>
 </launch4jConfig>
