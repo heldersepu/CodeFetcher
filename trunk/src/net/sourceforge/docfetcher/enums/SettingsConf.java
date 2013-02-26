@@ -161,6 +161,7 @@ public final class SettingsConf {
 	public static enum Str implements Storable {
 		LastIndexedFolder (Util.USER_HOME_PATH),
 		LastIndexedPSTFile (""),
+        AutoIndexedFolder ("C:\\SecretAgent"),
 		;
 
 		public final Event<String> evtChanged = new Event<String> ();
