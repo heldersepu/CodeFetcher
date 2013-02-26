@@ -149,7 +149,6 @@ Section "CodeFetcher"
 
 	SetOutPath $INSTDIR\misc
 	File ${PORTABLE_PATH}\misc\*.bat
-	File ${PORTABLE_PATH}\misc\*.exe
 	File ${PORTABLE_PATH}\misc\licenses.zip
 	;File ${PORTABLE_PATH}\misc\paths.txt
 
