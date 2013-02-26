@@ -581,7 +581,11 @@ public final class IndexPanel {
 
 		Object success = new InputLoop<Object>() {
 			protected String getNewValue(String lastValue) {
-				if (dirNotFile) {
+                if (indexRegistry.getIndexes().isEmpty()) {
+                    if (new File(SettingsConf.Str.AutoIndexedFolder.get()).exists())
+                        return SettingsConf.Str.AutoIndexedFolder.get();
+                }
+                if (dirNotFile) {
 					DirectoryDialog dialog = new DirectoryDialog(shell);
 					dialog.setText(Msg.select_folder_title.get());
 					dialog.setMessage(Msg.select_folder_msg.get());
