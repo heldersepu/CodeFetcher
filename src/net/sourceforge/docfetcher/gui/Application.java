@@ -310,10 +310,6 @@ public final class Application {
 		});
 
 		shell.open();
-        if (indexRegistry.getIndexes().isEmpty()) {
-            indexPanel.openIndexingDialog();
-            indexPanel.createFileTaskFromDialog(shell, indexRegistry, null, true);
-        }
 		while (!shell.isDisposed()) {
 			try {
 				if (!display.readAndDispatch())
@@ -548,7 +544,16 @@ public final class Application {
 							msg.append(Msg.error.format(errorMsg));
 						}
 						AppUtil.showError(msg.toString(), true, false);
-					}
+					} else {
+                        if (indexRegistry.getIndexes().isEmpty()) {
+                            Util.runAsyncExec(mainShell, new Runnable() {
+								public void run() {
+                                    indexPanel.openIndexingDialog();
+                                    indexPanel.createFileTaskFromDialog(shell, indexRegistry, null, true);
+								}
+							});
+                        }                    
+                    }
 				}
 				catch (IOException e) {
 					if (display.isDisposed())
