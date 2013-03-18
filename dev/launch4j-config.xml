@@ -22,7 +22,6 @@
     <minVersion>1.6.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <initialHeapPercent>25</initialHeapPercent>
     <maxHeapPercent>75</maxHeapPercent>
     <opt>-Djava.library.path=&quot;lib&quot; -enableassertions -Xss2m</opt>
   </jre>
