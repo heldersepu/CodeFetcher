@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar>lib</jar>
-  <outfile>F:\codefetcher\dist\launchers\CodeFetcher.exe</outfile>
+  <outfile>C:\codefetcher\dist\launchers\CodeFetcher.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -12,7 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>true</stayAlive>
   <manifest></manifest>
-  <icon>F:\codefetcher\dev\CodeFetcher.ico</icon>
+  <icon>C:\codefetcher\dev\CodeFetcher.ico</icon>
   <classPath>
     <mainClass>net.sourceforge.docfetcher.Main</mainClass>
     <cp>lib\*.jar</cp>
@@ -22,7 +22,8 @@
     <minVersion>1.6.0</minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
-    <maxHeapPercent>75</maxHeapPercent>
+    <initialHeapSize>32</initialHeapSize>
+    <maxHeapSize>512</maxHeapSize>
     <opt>-Djava.library.path=&quot;lib&quot; -enableassertions -Xss2m</opt>
   </jre>
 </launch4jConfig>
