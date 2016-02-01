@@ -20,7 +20,7 @@ import net.sourceforge.docfetcher.util.Util;
 import net.sourceforge.docfetcher.util.annotations.NotNull;
 
 public enum Msg {
-	
+
 	// General
 	system_error (
 		"System Error",
@@ -127,7 +127,7 @@ public enum Msg {
 		"An error message that is shown during startup if it seems as if the " +
 		"user has installed or unpacked multiple DocFetcher instances on top " +
 		"of one another."),
-	
+
 	// Filter panel
 	min_max_filesize (
 		"Minimum / Maximum Filesize",
@@ -147,7 +147,7 @@ public enum Msg {
 	invert_check_states (
 		"Invert Check States",
 		"Context menu entry for inverting the check states of a list of checkboxes."),
-	
+
 	// File types
 	filetype_abi ("AbiWord (abw, abw.gz, zabw)", Comments.filetype),
 	filetype_chm ("MS Compiled HTML Help (chm)", Comments.filetype),
@@ -167,7 +167,7 @@ public enum Msg {
 	filetype_rtf ("Rich Text Format (rtf)", Comments.filetype),
 	filetype_svg ("Scalable Vector Graphics (svg)", Comments.filetype),
 	filetype_txt ("Plain Text", Comments.filetype),
-	
+
 	// Search scope context menu entries
 	create_index_from (
 		"Create Index From",
@@ -237,7 +237,7 @@ public enum Msg {
 		"No files in clipboard found.",
 		"Error message shown when the user tries to paste files from the " +
 		"clipboard, and the clipboard is empty."),
-	
+
 	// Various GUI controls
 	search ("Search",
 		"Label of the 'Search' button right next to the search field."),
@@ -264,12 +264,12 @@ public enum Msg {
 		"This message is shown after the user has entered an invalid query " +
 		"into the search field. More detailed information is shown below " +
 		"this message."),
-		
+
 	// Web interface
 	enable_web_interface (
 		"&Enable Web Interface",
 		"Label for a checkbox button to enable or disable the web interface."),
-	
+
 	// System tray
 	systray_not_available (
 		"The system tray is not available.",
@@ -281,7 +281,7 @@ public enum Msg {
 	exit ("Exit",
 		"Entry in the system tray context menu for terminating the program after it " +
 		"has been hidden in the system tray."),
-	
+
 	// Indexing dialog
 	select_folder_title (
 		"Select Folder",
@@ -333,7 +333,7 @@ public enum Msg {
 		"Cannot index the index folder itself, or any files or folders beneath it.",
 		"This error message is shown when the user attempts to index the index " +
 		"folder itself, or any files or folders beneath it."),
-	
+
 	// Indexing dialog: Queue
 	indexing_queue (
 		"Indexing Queue",
@@ -397,7 +397,7 @@ public enum Msg {
 		"If the user clicks on this button, the dialog is closed without " +
 		"cancellation of the indexing process and without termination of " +
 		"the program."),
-	
+
 	// Indexing dialog: Options
 	file_extensions (
 		"File extensions",
@@ -496,7 +496,7 @@ public enum Msg {
 		"extensions that would override the built-in support for certain " +
 		"document formats such as *.doc or *.odt. The user's zip extensions " +
 		"will be inserted into the {0} slot."),
-	
+
 	// Indexing dialog: Pattern table
 	pattern_regex ("Pattern (regex)"),
 	match_against ("Match Against"),
@@ -514,7 +514,7 @@ public enum Msg {
 	sel_regex_matches_file_no ("Selected regex matches following file: No."),
 	sel_regex_malformed ("Selected regex is malformed."),
 	choose_regex_testfile_title ("Select File"),
-	
+
 	// Indexing dialog: Progress
 	progress ("Progress"),
 	errors ("Errors"),
@@ -540,7 +540,7 @@ public enum Msg {
 		"Failed to install a watch on folder {0}.\n\n" +
 		"Please see the <a href=\"{1}\">manual</a> for a possible workaround.\n\n" +
 		"Internal error message:\n{2}"),
-	
+
 	// Preview panel
 	loading ("Loading...",
 		"A generic loading message that is used at various places, e.g. when " +
@@ -585,7 +585,7 @@ public enum Msg {
 	to_field ("To:"),
 	subject_field ("Subject:"),
 	date_field ("Date:"),
-	
+
 	// Preferences
 	pref_manual_on_startup (
 		"Show manual on startup",
@@ -636,7 +636,7 @@ public enum Msg {
 	advanced_settings_link (
 		"Advanced Settings",
 		"Hyperlink on preferences dialog to configuration file containing advanced settings."),
-	
+
 	// Hotkeys
 	f1 ("F1"),
 	f2 ("F2"),
@@ -668,7 +668,7 @@ public enum Msg {
 	shift_key ("Shift"),
 	ctrl_key ("Ctrl"),
 	command_key ("Command"),
-		
+
 	// Result panel and status bar
 	num_results ("Results: {0}"),
 	num_sel_results ("Selected: {0}"),
@@ -687,32 +687,32 @@ public enum Msg {
 	open_parent ("Open Parent Folder"),
 	open_limit ("The number of entries that can be opened simultaneously is limited to {0}."),
 	;
-	
+
 	private static boolean checkEnabled = true;
 	private String value;
 	private final String comment;
-	
+
 	Msg(@NotNull String defaultValue) {
 		this(defaultValue, "");
 	}
-	
+
 	Msg(@NotNull String defaultValue, @NotNull String comment) {
 		Util.checkNotNull(defaultValue, comment);
 		this.value = defaultValue;
 		this.comment = comment;
 	}
-	
+
 	@NotNull
 	public String get() {
 		assert !checkEnabled || !value.contains("{0}");
 		return value;
 	}
-	
+
 	@NotNull
 	public String getComment() {
 		return comment;
 	}
-	
+
 	/**
 	 * Returns a string created from a <tt>java.text.MessageFormat</tt>
 	 * with the given argument(s).
@@ -721,11 +721,11 @@ public enum Msg {
 		String val = value.replace("'", "''"); // See bug #4293229 in Java bug database
 		return MessageFormat.format(val, args);
 	}
-	
+
 	public static void setCheckEnabled(boolean checkEnabled) {
 		Msg.checkEnabled = checkEnabled;
 	}
-	
+
 	public static void loadFromDisk() {
 		try {
 			final File langDir;
@@ -734,7 +734,7 @@ public enum Msg {
 			else
 				langDir = new File("lang");
 			ClassPathHack.addFile(langDir);
-			
+
 			/*
 			 * Notes: (1) The translated strings must be trimmed, because
 			 * translators sometimes accidentally add newlines. (2) Replacing
@@ -753,7 +753,7 @@ public enum Msg {
 			 */
 		}
 	}
-	
+
 	private static final class Comments {
 		private static final String filetype
 			= "An entry in the 'document types' filter control.";

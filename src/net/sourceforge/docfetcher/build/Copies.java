@@ -24,23 +24,23 @@ import org.apache.tools.ant.types.FileSet;
  * @author Tran Nam Quang
  */
 final class Copies {
-	
+
 	private Copy copy = new Copy();
-	
+
 	public Copies() {
 		copy.setProject(new Project()); // copy will fail without this
 	}
-	
+
 	public Copies addDir(String dir) {
 		copy.addFileset(new FileSets().setDir(dir).get());
 		return this;
 	}
-	
+
 	public Copies addFile(String file) {
 		copy.addFileset(new FileSets().setFile(file).get());
 		return this;
 	}
-	
+
 	public Copies addDir(	@NotNull String dir,
 							@Nullable String include,
 							@Nullable String exclude) {
@@ -51,22 +51,22 @@ final class Copies {
 		copy.addFileset(fileSet);
 		return this;
 	}
-	
+
 	public Copies setTodir(String dstDir) {
 		copy.setTodir(new File(dstDir));
 		return this;
 	}
-	
+
 	public Copies setTofile(String dstFile) {
 		copy.setTofile(new File(dstFile));
 		return this;
 	}
-	
+
 	public Copies flatten() {
 		copy.setFlatten(true);
 		return this;
 	}
-	
+
 	public void execute() {
 		copy.execute();
 	}

@@ -21,21 +21,21 @@ import org.apache.tools.ant.types.Path;
  * @author Tran Nam Quang
  */
 final class Paths {
-	
+
 	private final Path path = new Path(new Project());
-	
+
 	public Paths addFileSet(String dir, String includes) {
 		path.addFileset(new FileSets().setDir(dir).include(includes).get());
 		return this;
 	}
-	
+
 	public Paths addDirSet(String dirSet) {
 		DirSet _dirSet = new DirSet();
 		_dirSet.setFile(new File(dirSet));
 		path.addDirset(_dirSet);
 		return this;
 	}
-	
+
 	public Path get() {
 		return path;
 	}

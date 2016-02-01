@@ -20,7 +20,7 @@ import net.sourceforge.docfetcher.util.annotations.NotNull;
  * @author Tran Nam Quang
  */
 public enum TestFiles {
-	
+
 	archive_entry_7z_zip_rar ("zip-rar.7z/"
 		+ "test.7z/archive.zip/"
 		+ "test.zip/archive.rar/"
@@ -48,10 +48,10 @@ public enum TestFiles {
 	umlauts ("umlauts.7z/umlauts-%s/archive-%s.rar/archive-%s.7z/archive-%s.zip/file-%s.txt"
 			.replaceAll("%s", "\u00E4\u00F6\u00FC\u00DF")),
 	fake_zip_file_inside_solid ("fake-zip-file-inside-solid.7z"),
-			
+
 	encrypted_7z ("7z-encrypted-(password='docfetcher').7z"),
 	encrypted_7z_filenames ("7z-encrypted-including-filenames-(password='docfetcher').7z"),
-	
+
 	lorem_ipsum_abw ("lorem-ipsum/lorem-ipsum.abw"),
 	lorem_ipsum_abw_gz ("lorem-ipsum/lorem-ipsum.abw.gz"),
 	lorem_ipsum_docx ("lorem-ipsum/lorem-ipsum.docx"),
@@ -61,30 +61,30 @@ public enum TestFiles {
 	lorem_ipsum_rtf ("lorem-ipsum/lorem-ipsum.rtf"),
 	lorem_ipsum_svg ("lorem-ipsum/lorem-ipsum.svg"),
 	lorem_ipsum_txt ("lorem-ipsum/lorem-ipsum.txt"),
-	
+
 	lorem_ipsum_doc_97 ("lorem-ipsum/lorem-ipsum(word-97).doc"),
 	lorem_ipsum_xls_5_0 ("lorem-ipsum/lorem-ipsum(excel-5.0).xls"),
 	lorem_ipsum_xls_95 ("lorem-ipsum/lorem-ipsum(excel-95).xls"),
 	lorem_ipsum_xls_97 ("lorem-ipsum/lorem-ipsum(excel-97).xls"),
 	lorem_ipsum_ppt_97 ("lorem-ipsum/lorem-ipsum(powerpoint-97).ppt"),
 	;
-	
+
 	private final String path;
-	
+
 	private TestFiles(@NotNull String path) {
 		this.path = Util.checkNotNull(path);
 	}
-	
+
 	@NotNull
 	public File get() {
 		return new File(getPath());
 	}
-	
+
 	@NotNull
 	public String getPath() {
 		return Util.joinPath("dev/test-files", path);
 	}
-	
+
 	@NotNull
 	public File getChild(@NotNull String filename) {
 		Util.checkNotNull(filename);

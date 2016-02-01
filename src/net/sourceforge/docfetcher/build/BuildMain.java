@@ -53,7 +53,7 @@ public final class BuildMain {
 
 	private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmm");
 	private static final String buildDate = dateFormat.format(new Date());
-	
+
 	// Reads version number from file 'current-version.txt'
 	@NotNull
 	public static String readVersionNumber() {
@@ -222,7 +222,7 @@ public final class BuildMain {
 			"dist/program-conf.txt", releaseDir + "/conf/program-conf.txt", LineSep.WINDOWS);
 
 		U.copyTextFile("dist/paths.txt", releaseDir + "/misc/paths.txt", LineSep.WINDOWS);
-		
+
 		U.copyBinaryFile("build/tmp/licenses.zip", releaseDir
 				+ "/misc/licenses.zip");
 
@@ -306,7 +306,7 @@ public final class BuildMain {
 			launcher);
 
 		U.copyTextFile("dist/paths.txt", resourcesDir + "/misc/paths.txt", LineSep.WINDOWS);
-		
+
 		U.copyBinaryFile("build/tmp/licenses.zip", resourcesDir
 				+ "/misc/licenses.zip");
 

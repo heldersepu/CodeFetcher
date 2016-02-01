@@ -28,11 +28,11 @@ import com.google.common.io.Files;
 
 /**
  * Collection of build-related utility methods.
- * 
+ *
  * @author Tran Nam Quang
  */
 final class U {
-	
+
 	private U() {}
 
 	static String readPatterns(String filepath) throws Exception {
@@ -50,7 +50,7 @@ final class U {
 	static String format(String format, Object... args) {
 		return String.format(format, args);
 	}
-	
+
 	static String removePrefix(String input, String prefix) {
 		Util.checkThat(input.startsWith(prefix));
 		return input.substring(prefix.length());
@@ -60,7 +60,7 @@ final class U {
 		String cmd = format(format, args);
 		Runtime.getRuntime().exec(cmd).waitFor();
 	}
-	
+
 	static void execInDir(File dir, String format, Object... args) throws Exception {
 		String cmd = format(format, args);
 		Runtime.getRuntime().exec(cmd, null, dir).waitFor();
@@ -115,7 +115,7 @@ final class U {
 					+ "suspicious substitution pattern: ${", srcPath));
 		U.write(contents, dstPath);
 	}
-	
+
 	static String read(String path) throws Exception {
 		return Files.toString(new File(path), Charsets.UTF_8);
 	}
@@ -136,24 +136,24 @@ final class U {
 		zip.setDestFile(new File(dstPath));
 		zip.execute();
 	}
-	
+
 	// does not preserve executable flag
 	static void zipDir(String srcPath, String dstPath) throws Exception {
 		// Tried this with TrueZIP 7.0 and got corrupted zip files
 		Zip zip = new Zip();
 		zip.setProject(new Project());
 		zip.setLevel(9);
-		
+
 		File srcFile = new File(srcPath);
 		String srcParent = Util.getParentFile(srcFile).getPath();
 		String include = srcFile.getName() + "/**";
 		FileSet fileset = new FileSets().setDir(srcParent).include(include).get();
-		
+
 		zip.addFileset(fileset);
 		zip.setDestFile(new File(dstPath));
 		zip.execute();
 	}
-		
+
 	public enum LineSep {
 		UNIX,
 		WINDOWS,

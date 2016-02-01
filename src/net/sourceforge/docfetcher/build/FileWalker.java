@@ -20,7 +20,7 @@ import net.sourceforge.docfetcher.util.annotations.NotNull;
  * @author Tran Nam Quang
  */
 abstract class FileWalker {
-	
+
 	public final void run(@NotNull File root) {
 		for (File file : Util.listFiles(root)) {
 			if (file.isFile()) {
@@ -32,9 +32,9 @@ abstract class FileWalker {
 			}
 		}
 	}
-	
+
 	protected void handleFile(@NotNull File file) {}
-	
+
 	protected void handleDir(@NotNull File dir) {}
 
 }

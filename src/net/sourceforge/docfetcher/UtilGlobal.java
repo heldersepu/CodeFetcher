@@ -21,7 +21,7 @@ import net.sourceforge.docfetcher.util.annotations.Nullable;
  * @author Tran Nam Quang
  */
 public final class UtilGlobal {
-	
+
 	private UtilGlobal() {
 	}
 
@@ -51,7 +51,7 @@ public final class UtilGlobal {
 			}
 		};
 	}
-	
+
 	@NotNull
 	public static String replace(	@NotNull String srcPath,
 	                             	@NotNull String input,
@@ -68,7 +68,7 @@ public final class UtilGlobal {
 		}
 		return input;
 	}
-	
+
 	@NotNull
 	public static String replaceSilently(	@NotNull String input,
 											@NotNull String... replacements) {
@@ -80,5 +80,5 @@ public final class UtilGlobal {
 		}
 		return input;
 	}
-	
+
 }

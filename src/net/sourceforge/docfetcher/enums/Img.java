@@ -30,18 +30,18 @@ import org.eclipse.swt.graphics.Image;
  * <li>Then, images can be retrieved through the enumeration constants and the
  * {@link #get()} method, e.g. <tt>Img.NAME_OF_IMAGE.get()</tt>.
  * </ul>
- * 
+ *
  * @author Tran Nam Quang
  */
 public enum Img implements FilenameProvider {
-	
+
 	DOCFETCHER_16 ("docfetcher16.png"),
 	DOCFETCHER_24 ("docfetcher24.png"),
 	DOCFETCHER_32 ("docfetcher32.png"),
 	DOCFETCHER_48 ("docfetcher48.png"),
 	DOCFETCHER_64 ("docfetcher64.png"),
 	DOCFETCHER_128 ("docfetcher128.png"),
-	
+
 	HELP ("help.gif"),
 	INFO ("info.gif"),
 	PREFERENCES ("preferences.gif"),
@@ -76,19 +76,19 @@ public enum Img implements FilenameProvider {
 	BUILDING_BLOCKS ("building_blocks.gif"),
 	HIGHLIGHT ("highlight.gif"),
 	;
-	
+
 	private static LazyImageCache lazyImageCache;
 
 	public static void initialize(@NotNull LazyImageCache lazyImageCache) {
 		Img.lazyImageCache = lazyImageCache;
 	}
-	
+
 	@NotNull private final String filename;
-	
+
 	private Img(@NotNull String filename) {
 		this.filename = filename;
 	}
-	
+
 	/**
 	 * Returns the <tt>Image</tt> object corresponding to this enumeration
 	 * constant. It is disposed of automatically after program termination. If
