@@ -1,0 +1,11 @@
+﻿v0.91 - 28/09/2011
+Thanks to gdomenici (http://www.codeplex.com/site/users/view/gdomenici) for this code
+  - Added support for searching multiple directories
+  - Added support for excluding directories
+  - Added sorting of results list
+  - Added the Windows Explorer context menu as an option (see README)
+- Added support for search patterns
+- Added larger icons to App.ico for Desktop and Taskbar
+
+v0.90 - 24/09/2011
+- Initial release
