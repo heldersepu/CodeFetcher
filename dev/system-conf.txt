@@ -1,6 +1,0 @@
-# Set a different program name to make it easier to distinguish between
-# development instances and normal program instances.
-ProgramName = DEV DocFetcher
-
-# Turn development mode on
-IsDevelopmentVersion = true

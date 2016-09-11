@@ -1,6 +1,0 @@
-/bin/
-/build/
-!src/net/sourceforge/docfetcher/build/
-.settings/
-/dist/help/
-/dist/website/

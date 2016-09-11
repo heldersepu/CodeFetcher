@@ -1,6 +1,0 @@
-# System constants
-
-ProgramName = ${app_name}
-ProgramVersion = ${app_version}
-BuildDate = ${build_date}
-IsPortable = ${is_portable}
