@@ -39,18 +39,6 @@ Apache v2.0: http://www.apache.org/licenses/LICENSE-2.0.html
 
 CREDITS
 
-Application based on Dan Letecky's Desktop Search
-  http://www.codeproject.com/KB/office/desktopsearch1.aspx
+Application based on DropOut
+  https://dropout.codeplex.com/
   License: Apache v2.0: http://www.apache.org/licenses/LICENSE-2.0.html
-
-IFilter implementation from alex_zero\
-  http://www.codeproject.com/KB/cs/IFilterReader.aspx
-  License: Eclipse v1.0: http://www.opensource.org/licenses/eclipse-1.0.php
-
-iTextSharp (4.1.6) by Bruno Lowagie
-  http://sourceforge.net/projects/itextsharp/
-  License: GPL or LGPL (Version 5+ is AGPL)
-
-Explorer ShellContextMenu by "Jon Likes to Code"
-  http://www.codeproject.com/KB/cs/shellContextMenu.aspx
-  License: The Code Project Open License (CPOL): http://www.codeproject.com/info/cpol10.aspx
