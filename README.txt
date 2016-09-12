@@ -39,6 +39,6 @@ Apache v2.0: http://www.apache.org/licenses/LICENSE-2.0.html
 
 CREDITS
 
-Application based on DropOut
+Application based on:  Dropout - Portable USB and Dropbox Search
   https://dropout.codeplex.com/
-  License: Apache v2.0: http://www.apache.org/licenses/LICENSE-2.0.html
+
