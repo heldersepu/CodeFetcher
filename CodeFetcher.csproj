@@ -117,6 +117,7 @@
     <Compile Include="Icons\SystemImageList.cs" />
     <Compile Include="Utils\IniFile.cs" />
     <Compile Include="Utils\ListViewItemComparer.cs" />
+    <Compile Include="Utils\Open.cs" />
     <Compile Include="Utils\Parser.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -124,7 +125,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Content Include="Icons\App.ico" />
-    <Content Include="Icons\credits.png" />
     <Content Include="Icons\help-about.ico" />
     <Content Include="Icons\Logo.png" />
     <EmbeddedResource Include="frmMain.resx">

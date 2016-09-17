@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections.Generic;
@@ -12,13 +11,9 @@ using Lucene.Net.Search;
 using Lucene.Net.Store;
 using CodeFetcher.Icons;
 
-
 namespace CodeFetcher
 {
-	/// <summary>
-	/// Summary description for Form1.
-	/// </summary>
-	public class frmMain : System.Windows.Forms.Form
+	public class frmMain : Form
 	{
 		private string pathIndex;
 		private IndexWriter indexWriter;
@@ -53,14 +48,13 @@ namespace CodeFetcher
         int countNew = 0;
         int countChanged = 0;
 
-
-        private System.Windows.Forms.Label labelStatus;
-		private System.Windows.Forms.ListView listViewResults;
-		private System.Windows.Forms.ColumnHeader columnHeaderIcon;
-		private System.Windows.Forms.ColumnHeader columnHeaderName;
-		private System.Windows.Forms.ColumnHeader columnHeaderFolder;
-        private System.Windows.Forms.ColumnHeader columnHeaderScore;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
+        private Label labelStatus;
+		private ListView listViewResults;
+		private ColumnHeader columnHeaderIcon;
+		private ColumnHeader columnHeaderName;
+		private ColumnHeader columnHeaderFolder;
+        private ColumnHeader columnHeaderScore;
+        private FolderBrowserDialog folderBrowserDialog1;
         private ColumnHeader colHeaderModified;
         private TabControl tabControl1;
         private TabPage tabPage1;
@@ -82,18 +76,14 @@ namespace CodeFetcher
         private Label labelSearch;
         private Button buttonRefreshIndex;
         private TextBox textBoxType;
-        private PictureBox pictureBoxCredits;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem openFileToolStripMenuItem;
         private ToolStripMenuItem openContainingFolderToolStripMenuItem;
         private Button buttonToday;
-        private System.ComponentModel.IContainer components;
+        private IContainer components;
 
 		public frmMain()
 		{
-			//
-			// Required for Windows Form Designer support
-			//
 			InitializeComponent();
 
 			imageListDocuments = new SystemImageList(SystemImageListSize.SmallIcons);
@@ -157,13 +147,11 @@ namespace CodeFetcher
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.labelSearch = new System.Windows.Forms.Label();
             this.buttonRefreshIndex = new System.Windows.Forms.Button();
-            this.pictureBoxCredits = new System.Windows.Forms.PictureBox();
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCredits)).BeginInit();
             this.SuspendLayout();
             //
             // labelStatus
@@ -324,10 +312,10 @@ namespace CodeFetcher
             this.tabPage2.Controls.Add(this.textBoxName);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.label5);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(752, 169);
+            this.tabPage2.Size = new System.Drawing.Size(752, 172);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Advanced";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -478,23 +466,10 @@ namespace CodeFetcher
             this.buttonRefreshIndex.UseVisualStyleBackColor = true;
             this.buttonRefreshIndex.Click += new System.EventHandler(this.buttonRefreshIndex_Click);
             //
-            // pictureBoxCredits
-            //
-            this.pictureBoxCredits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxCredits.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBoxCredits.Image = ((System.Drawing.Image)(resources.GetObject("pictureBoxCredits.Image")));
-            this.pictureBoxCredits.Location = new System.Drawing.Point(745, 5);
-            this.pictureBoxCredits.Name = "pictureBoxCredits";
-            this.pictureBoxCredits.Size = new System.Drawing.Size(25, 25);
-            this.pictureBoxCredits.TabIndex = 5;
-            this.pictureBoxCredits.TabStop = false;
-            this.pictureBoxCredits.Click += new System.EventHandler(this.pictureBoxCredits_Click);
-            //
             // frmMain
             //
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
             this.ClientSize = new System.Drawing.Size(784, 590);
-            this.Controls.Add(this.pictureBoxCredits);
             this.Controls.Add(this.buttonRefreshIndex);
             this.Controls.Add(this.labelSearch);
             this.Controls.Add(this.tabControl1);
@@ -506,7 +481,6 @@ namespace CodeFetcher
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "CodeFetcher";
-            this.Activated += new System.EventHandler(this.Form1_Activated);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.contextMenuStrip1.ResumeLayout(false);
@@ -516,7 +490,6 @@ namespace CodeFetcher
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCredits)).EndInit();
             this.ResumeLayout(false);
 
 		}
@@ -530,13 +503,11 @@ namespace CodeFetcher
 		{
 			Application.EnableVisualStyles();
 			Application.DoEvents();
-
 			Application.Run(new frmMain());
 		}
 
 		private void Form1_Load(object sender, System.EventArgs e)
 		{
-
             appPath = typeof(frmMain).Assembly.Location;
             appDir = Path.GetDirectoryName( appPath );
             appName = Path.GetFileNameWithoutExtension(appPath);
@@ -605,8 +576,6 @@ namespace CodeFetcher
                 {
                     MessageBox.Show("The Portable Paths setting has an invalid value, should be true or false", "Portable Paths", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
-
-
             }
 
             // Set defaults
@@ -626,12 +595,10 @@ namespace CodeFetcher
             dateTimePickerTo.Format = DateTimePickerFormat.Short;
             dateTimePickerTo.Value = DateTime.Today.AddDays(1);
 
-
             Timer t = new Timer();
             t.Interval = 1000;
             t.Tick += delegate(object sender1, EventArgs e1)
             {
-
                 if (indexCounter > 10)
                     indexCounter = 0;
 
@@ -639,31 +606,23 @@ namespace CodeFetcher
                     labelStatus.Text = status + "".PadRight(indexCounter++, '.');
             };
             t.Start();
-
             Index();
 
             searchTerms = LoadSearchTerms();
             textBoxQuery.AutoCompleteCustomSource = searchTerms;
-
 		}
-
 
         void Index()
         {
-
             fileCount = 0;
-
             indexWorker = new BackgroundWorker();
             indexWorker.WorkerReportsProgress = true;
             indexWorker.WorkerSupportsCancellation = true;
-
-            //watcher.EnableRaisingEvents = false;
 
             indexWorker.DoWork += delegate(object sender, DoWorkEventArgs e)
             {
                 dateStamps = new Dictionary<string, long>();
                 newDateStamps = new Dictionary<string, long>();
-
 
                 // First load all of the datestamps to check if the file is modified
                 if (checkIndex())
@@ -672,8 +631,6 @@ namespace CodeFetcher
                     IndexReader indexReader = IndexReader.Open(directory, true);
 
                     // Check to see if we are in relative or absolute path mode
-
-
                     for (int i = 0; i < indexReader.NumDocs(); i++)
                     {
                         if (indexReader.IsDeleted(i) == false)
@@ -706,7 +663,7 @@ namespace CodeFetcher
                             indexWriter = new IndexWriter(directory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
                             attempts = 5;
                         }
-                        catch (Lucene.Net.Store.LockObtainFailedException ex)
+                        catch (LockObtainFailedException)
                         {
                             attempts++;
                             if (System.IO.Directory.Exists(pathIndex))
@@ -736,16 +693,11 @@ namespace CodeFetcher
                     if (System.IO.Directory.Exists(searchDir))
                     {
                         DirectoryInfo di = new DirectoryInfo(searchDir);
-
-                        // Add folder
                         cancel = addFolder(searchDir, di);
-
-                        // Exit if cancel has been pressed
                         if (cancel)
                             break;
                     }
                 }
-
 
                 if (cancel)
                 {
@@ -798,7 +750,6 @@ namespace CodeFetcher
 		/// <param name="directory"></param>
 		private bool addFolder(string searchDir, DirectoryInfo directory)
 		{
-
             // Don't index the indexes.....
             if (directory.FullName == pathIndex)
                 return false;
@@ -815,7 +766,6 @@ namespace CodeFetcher
 			// find all matching files
 			foreach (string pattern in patterns)
 			{
-
                 FileInfo[] fis = null;
                 try
                 {
@@ -856,13 +806,13 @@ namespace CodeFetcher
                         // Check to see of doc has changed
                         if (dateStamps.ContainsKey(relPath) == false)
                         {
-                            addOfficeDocument(path, relPath, false);
+                            addDocument(path, relPath, false);
                             filesIndexed++;
                         }
                         else if (dateStamps[relPath] < fi.LastWriteTime.Ticks)
                         {
                             // Delete the existing document
-                            addOfficeDocument(path, relPath, true);
+                            addDocument(path, relPath, true);
                             filesIndexed++;
                         }
 
@@ -901,9 +851,8 @@ namespace CodeFetcher
 		/// Parses and indexes an IFilter parseable file.
 		/// </summary>
 		/// <param name="path"></param>
-		private void addOfficeDocument(string path, string relPath, bool exists)
+		private void addDocument(string path, string relPath, bool exists)
 		{
-
             string filename = Path.GetFileNameWithoutExtension(path);
             string extension = Path.GetExtension(path);
             FileInfo fi = new FileInfo(path);
@@ -972,7 +921,6 @@ namespace CodeFetcher
             searchWorker.WorkerReportsProgress = true;
             searchWorker.WorkerSupportsCancellation = true;
 
-
             string queryText = "";
             string queryHistory = "";
             if (tabControl1.SelectedIndex == 0)
@@ -1015,7 +963,6 @@ namespace CodeFetcher
                 }
 
                 queryText += " modified:[" + dateTimePickerFrom.Value.ToString("yyyyMMdd") + " TO " + dateTimePickerTo.Value.ToString("yyyyMMdd") + "]";
-
             }
 
             queryText = queryText.Trim();
@@ -1048,9 +995,6 @@ namespace CodeFetcher
                 // Search
                 var results = searcher.Search(query, null, 200);
                 hitCount = results.ScoreDocs.Length;
-
-                //			Optionally limit the result count
-                //			int resultsCount = smallerOf(20, hits.Length());
 
                 foreach (ScoreDoc scoreDoc in results.ScoreDocs)
                 {
@@ -1114,7 +1058,7 @@ namespace CodeFetcher
 				return;
 
 			string path = (string) this.listViewResults.SelectedItems[0].Tag;
-            OpenFile(path);
+            Open.File(searchDirs, path);
 		}
 
         private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1124,7 +1068,7 @@ namespace CodeFetcher
                 foreach (ListViewItem item in listViewResults.SelectedItems)
                 {
                     string path = (string)item.Tag;
-                    OpenFile(path);
+                    Open.File(searchDirs, path);
                 }
             }
         }
@@ -1137,58 +1081,15 @@ namespace CodeFetcher
                 {
                     string path = (string)item.Tag;
                     path = Path.GetDirectoryName(path);
-                    OpenDirectory(path);
+                    Open.Directory(searchDirs, path);
                 }
             }
-        }
-
-        void OpenFile(string path)
-        {
-            // Loop through each search directory and see if the file exists
-            foreach (string searchDir in searchDirs)
-            {
-                // Remove starting slash in old index files
-                if (path.StartsWith(@"\"))
-                    path = path.Substring(1);
-
-                string fullPath = Path.Combine(searchDir, path);
-                if (File.Exists(fullPath))
-                {
-                    Process.Start(fullPath);
-                    return;
-                }
-            }
-
-            // Didn't find it so return a message
-            MessageBox.Show("The file no longer exists, rebuild the index", "Deleted or Moved", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
-        void OpenDirectory(string path)
-        {
-            // Loop through each search directory and see if the file exists
-            foreach (string searchDir in searchDirs)
-            {
-                // Remove starting slash in old index files
-                if (path.StartsWith(@"\"))
-                    path = path.Substring(1);
-
-                string fullPath = Path.Combine(searchDir, path);
-                if (System.IO.Directory.Exists(fullPath))
-                {
-                    Process.Start(fullPath);
-                    return;
-                }
-            }
-
-            // Didn't find it so return a message
-            MessageBox.Show("The directory no longer exists, rebuild the index", "Deleted or Moved", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
 		private void textBoxQuery_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.Enter)
 				Search();
-
 		}
 
 		private void buttonClean_Click(object sender, System.EventArgs e)
@@ -1204,7 +1105,6 @@ namespace CodeFetcher
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             SaveSearchTerms(searchTerms);
 
             if (indexWorker != null && indexWorker.IsBusy)
@@ -1233,32 +1133,9 @@ namespace CodeFetcher
             Index();
         }
 
-
-        bool start = true;
-        private void Form1_Activated(object sender, EventArgs e)
-        {
-            if (start)
-            {
-                textBoxQuery.Focus();
-                start = false;
-            }
-        }
-
-        private void pictureBoxCredits_Click(object sender, EventArgs e)
-        {
-            string message = "Application based on Dan Letecky's Desktop Search\n";
-            message += "  http://www.codeproject.com/KB/office/desktopsearch1.aspx\n";
-            message += "\n";
-            message += "IFilter implementation from alex_zero\n";
-            message += "  http://www.codeproject.com/KB/cs/IFilterReader.aspx";
-
-            MessageBox.Show(message, "Credits", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         private AutoCompleteStringCollection LoadSearchTerms()
         {
-            AutoCompleteStringCollection result = new AutoCompleteStringCollection();
-
+            var result = new AutoCompleteStringCollection();
             if (File.Exists(searchTermsPath))
             {
                 try
@@ -1277,9 +1154,7 @@ namespace CodeFetcher
                     MessageBox.Show("Unable to load search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 }
             }
-
             return result;
-
         }
 
         private void SaveSearchTerms(AutoCompleteStringCollection items)
@@ -1298,7 +1173,6 @@ namespace CodeFetcher
             {
                 MessageBox.Show("Unable to save search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-
         }
 
         private void listViewResults_ColumnClick(object sender, ColumnClickEventArgs e)
