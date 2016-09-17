@@ -13,16 +13,16 @@ using CodeFetcher.Icons;
 
 namespace CodeFetcher
 {
-	public partial class frmMain : Form
-	{
+    public partial class frmMain : Form
+    {
         #region Private declarations
         string pathIndex;
-		IndexWriter indexWriter;
+        IndexWriter indexWriter;
         string[] patterns;
-		SystemImageList imageListDocuments;
+        SystemImageList imageListDocuments;
         bool portablePaths = true;
 
-		IndexSearcher searcher = null;
+        IndexSearcher searcher = null;
         string[] searchDirs;
         string[] searchExclude;
         string appPath;
@@ -42,68 +42,35 @@ namespace CodeFetcher
         int fileCount;
         string status = "";
 
-		// statistics
-		long bytesTotal = 0;
-		int countTotal = 0;
+        // statistics
+        long bytesTotal = 0;
+        int countTotal = 0;
         int countSkipped = 0;
         int countNew = 0;
         int countChanged = 0;
-
-        Label labelStatus;
-		ListView listViewResults;
-		ColumnHeader columnHeaderIcon;
-		ColumnHeader columnHeaderName;
-		ColumnHeader columnHeaderFolder;
-        ColumnHeader columnHeaderScore;
-        FolderBrowserDialog folderBrowserDialog1;
-        ColumnHeader colHeaderModified;
-        TabControl tabControl1;
-        TabPage tabPage1;
-        TextBox textBoxQuery;
-        Button buttonSearch;
-        TabPage tabPage2;
-        Label label4;
-        Button buttonSearch1;
-        Label label3;
-        TextBox textBoxContent;
-        Label label2;
-        TextBox textBoxName;
-        Label label1;
-        Label label5;
-        DateTimePicker dateTimePickerTo;
-        DateTimePicker dateTimePickerFrom;
-        ToolTip toolTip1;
-        PictureBox pictureBox2;
-        Label labelSearch;
-        Button buttonRefreshIndex;
-        TextBox textBoxType;
-        ContextMenuStrip contextMenuStrip1;
-        ToolStripMenuItem openFileToolStripMenuItem;
-        ToolStripMenuItem openContainingFolderToolStripMenuItem;
-        Button buttonToday;
         #endregion Private declarations
 
         public frmMain()
-		{
-			InitializeComponent();
+        {
+            InitializeComponent();
 
-			imageListDocuments = new SystemImageList(SystemImageListSize.SmallIcons);
-			SystemImageListHelper.SetListViewImageList(listViewResults, imageListDocuments, false);
-		}
+            imageListDocuments = new SystemImageList(SystemImageListSize.SmallIcons);
+            SystemImageListHelper.SetListViewImageList(listViewResults, imageListDocuments, false);
+        }
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		static void Main()
-		{
-			Application.EnableVisualStyles();
-			Application.DoEvents();
-			Application.Run(new frmMain());
-		}
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.DoEvents();
+            Application.Run(new frmMain());
+        }
 
-		private void Form1_Load(object sender, System.EventArgs e)
-		{
+        private void Form1_Load(object sender, System.EventArgs e)
+        {
             appPath = typeof(frmMain).Assembly.Location;
             appDir = Path.GetDirectoryName( appPath );
             appName = Path.GetFileNameWithoutExtension(appPath);
@@ -206,7 +173,7 @@ namespace CodeFetcher
 
             searchTerms = LoadSearchTerms();
             textBoxQuery.AutoCompleteCustomSource = searchTerms;
-		}
+        }
 
         void Index()
         {
@@ -340,12 +307,12 @@ namespace CodeFetcher
             indexWorker.RunWorkerAsync();
         }
 
-		/// <summary>
-		/// Indexes a folder.
-		/// </summary>
-		/// <param name="directory"></param>
-		private bool addFolder(string searchDir, DirectoryInfo directory)
-		{
+        /// <summary>
+        /// Indexes a folder.
+        /// </summary>
+        /// <param name="directory"></param>
+        private bool addFolder(string searchDir, DirectoryInfo directory)
+        {
             // Don't index the indexes.....
             if (directory.FullName == pathIndex)
                 return false;
@@ -359,9 +326,9 @@ namespace CodeFetcher
 
             int filesIndexed = 0;
 
-			// find all matching files
-			foreach (string pattern in patterns)
-			{
+            // find all matching files
+            foreach (string pattern in patterns)
+            {
                 FileInfo[] fis = null;
                 try
                 {
@@ -372,19 +339,19 @@ namespace CodeFetcher
                     return false;
                 }
 
-				foreach (FileInfo fi in fis)
-				{
-					// skip temporary office files
+                foreach (FileInfo fi in fis)
+                {
+                    // skip temporary office files
                     if (fi.Name.StartsWith("~") || fi.Name.StartsWith("."))
-						continue;
+                        continue;
 
                     if (indexWorker.CancellationPending)
                         return true;
 
                     fileCount++;
 
-					try
-					{
+                    try
+                    {
                         string path = fi.FullName;
 
                         string relPath = path;
@@ -412,43 +379,43 @@ namespace CodeFetcher
                             filesIndexed++;
                         }
 
-						// update statistics
-						this.countTotal++;
-						this.bytesTotal += fi.Length;
+                        // update statistics
+                        this.countTotal++;
+                        this.bytesTotal += fi.Length;
 
-						// show added file
+                        // show added file
                         indexWorker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
-					}
-					catch (Exception)
-					{
-						// parsing and indexing wasn't successful, skipping that file
-						this.countSkipped++;
+                    }
+                    catch (Exception)
+                    {
+                        // parsing and indexing wasn't successful, skipping that file
+                        this.countSkipped++;
                         indexWorker.ReportProgress(fileCount, "Skipped:" + Path.GetFileName(fi.FullName));
-					}
-				}
-			}
+                    }
+                }
+            }
 
             // Only commit if things have been indexed
             if(filesIndexed > 0)
                 indexWriter.Commit();
 
-			// add subfolders
-			foreach (DirectoryInfo di in directory.GetDirectories())
-			{
+            // add subfolders
+            foreach (DirectoryInfo di in directory.GetDirectories())
+            {
                 bool cancel = addFolder(searchDir, di);
                 if (cancel)
                     return true;
-			}
+            }
 
             return false;
-		}
+        }
 
-		/// <summary>
-		/// Parses and indexes an IFilter parseable file.
-		/// </summary>
-		/// <param name="path"></param>
-		private void addDocument(string path, string relPath, bool exists)
-		{
+        /// <summary>
+        /// Parses and indexes an IFilter parseable file.
+        /// </summary>
+        /// <param name="path"></param>
+        private void addDocument(string path, string relPath, bool exists)
+        {
             string filename = Path.GetFileNameWithoutExtension(path);
             string extension = Path.GetExtension(path);
             FileInfo fi = new FileInfo(path);
@@ -485,30 +452,30 @@ namespace CodeFetcher
                 indexWriter.AddDocument(doc);
                 countNew++;
             }
-		}
+        }
 
-		private void buttonSearch_Click(object sender, System.EventArgs e)
-		{
-			Search();
-		}
+        private void buttonSearch_Click(object sender, System.EventArgs e)
+        {
+            Search();
+        }
 
-		private bool checkIndex()
-		{
-			try
-			{
+        private bool checkIndex()
+        {
+            try
+            {
                 var directory = new MMapDirectory(new DirectoryInfo(pathIndex));
                 searcher = new IndexSearcher(directory, true);
-				searcher.Dispose();
+                searcher.Dispose();
                 return true;
-			}
-			catch (IOException)
-			{
-				return false;
-			}
-		}
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+        }
 
-		private void Search()
-		{
+        private void Search()
+        {
             buttonSearch.Enabled = false;
             DateTime start = DateTime.Now;
             int hitCount = 0;
@@ -646,16 +613,16 @@ namespace CodeFetcher
             };
 
             searchWorker.RunWorkerAsync();
-		}
+        }
 
-		private void listViewResults_DoubleClick(object sender, System.EventArgs e)
-		{
+        private void listViewResults_DoubleClick(object sender, System.EventArgs e)
+        {
             if (this.listViewResults.SelectedItems.Count != 1)
-				return;
+                return;
 
-			string path = (string) this.listViewResults.SelectedItems[0].Tag;
+            string path = (string) this.listViewResults.SelectedItems[0].Tag;
             Open.File(searchDirs, path);
-		}
+        }
 
         private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -682,17 +649,17 @@ namespace CodeFetcher
             }
         }
 
-		private void textBoxQuery_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Enter)
-				Search();
-		}
+        private void textBoxQuery_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                Search();
+        }
 
-		private void buttonClean_Click(object sender, System.EventArgs e)
-		{
-			System.IO.Directory.Delete(this.pathIndex, true);
-			checkIndex();
-		}
+        private void buttonClean_Click(object sender, System.EventArgs e)
+        {
+            System.IO.Directory.Delete(this.pathIndex, true);
+            checkIndex();
+        }
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
@@ -804,5 +771,5 @@ namespace CodeFetcher
         {
             dateTimePickerFrom.Value = DateTime.Today;
         }
-	}
+    }
 }
