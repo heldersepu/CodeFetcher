@@ -114,6 +114,9 @@
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmMain.Designer.cs">
+      <DependentUpon>frmMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Icons\SystemImageList.cs" />
     <Compile Include="Utils\IniFile.cs" />
     <Compile Include="Utils\ListViewItemComparer.cs" />
