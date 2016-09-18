@@ -1,5 +1,3 @@
-// Source: http://www.vbaccelerator.com/home/NET/Code/Libraries/Shell_Projects/SysImageList/article.asp
-
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -30,10 +28,10 @@ namespace CodeFetcher.Icons
 	}
 
 	/// <summary>
-	/// Flags controlling how the Image List item is 
+	/// Flags controlling how the Image List item is
 	/// drawn
 	/// </summary>
-	[Flags]	
+	[Flags]
 	public enum ImageListDrawItemConstants : int
 	{
 		/// <summary>
@@ -79,42 +77,42 @@ namespace CodeFetcher.Icons
 		/// </summary>
 		ILD_DPISCALE = 0x4000
 	}
-	
+
 	/// <summary>
 	/// Enumeration containing XP ImageList Draw State options
 	/// </summary>
-	[Flags]	
+	[Flags]
 	public enum ImageListDrawStateConstants : int
 	{
 		/// <summary>
-		/// The image state is not modified. 
+		/// The image state is not modified.
 		/// </summary>
 		ILS_NORMAL = (0x00000000),
 		/// <summary>
-		/// Adds a glow effect to the icon, which causes the icon to appear to glow 
+		/// Adds a glow effect to the icon, which causes the icon to appear to glow
 		/// with a given color around the edges. (Note: does not appear to be
 		/// implemented)
 		/// </summary>
-		ILS_GLOW = (0x00000001), //The color for the glow effect is passed to the IImageList::Draw method in the crEffect member of IMAGELISTDRAWPARAMS. 
+		ILS_GLOW = (0x00000001), //The color for the glow effect is passed to the IImageList::Draw method in the crEffect member of IMAGELISTDRAWPARAMS.
 		/// <summary>
 		/// Adds a drop shadow effect to the icon. (Note: does not appear to be
 		/// implemented)
 		/// </summary>
-		ILS_SHADOW = (0x00000002), //The color for the drop shadow effect is passed to the IImageList::Draw method in the crEffect member of IMAGELISTDRAWPARAMS. 
+		ILS_SHADOW = (0x00000002), //The color for the drop shadow effect is passed to the IImageList::Draw method in the crEffect member of IMAGELISTDRAWPARAMS.
 		/// <summary>
-		/// Saturates the icon by increasing each color component 
+		/// Saturates the icon by increasing each color component
 		/// of the RGB triplet for each pixel in the icon. (Note: only ever appears
 		/// to result in a completely unsaturated icon)
 		/// </summary>
-		ILS_SATURATE = (0x00000004), // The amount to increase is indicated by the frame member in the IMAGELISTDRAWPARAMS method. 
+		ILS_SATURATE = (0x00000004), // The amount to increase is indicated by the frame member in the IMAGELISTDRAWPARAMS method.
 		/// <summary>
-		/// Alpha blends the icon. Alpha blending controls the transparency 
-		/// level of an icon, according to the value of its alpha channel. 
+		/// Alpha blends the icon. Alpha blending controls the transparency
+		/// level of an icon, according to the value of its alpha channel.
 		/// (Note: does not appear to be implemented).
 		/// </summary>
-		ILS_ALPHA = (0x00000008) //The value of the alpha channel is indicated by the frame member in the IMAGELISTDRAWPARAMS method. The alpha channel can be from 0 to 255, with 0 being completely transparent, and 255 being completely opaque. 
+		ILS_ALPHA = (0x00000008) //The value of the alpha channel is indicated by the frame member in the IMAGELISTDRAWPARAMS method. The alpha channel can be from 0 to 255, with 0 being completely transparent, and 255 being completely opaque.
 	}
-	
+
 	/// <summary>
 	/// Flags specifying the state of the icon to draw from the Shell
 	/// </summary>
@@ -126,17 +124,17 @@ namespace CodeFetcher.Icons
 		/// </summary>
 		ShellIconStateNormal = 0,
 		/// <summary>
-		/// Put a link overlay on icon 
+		/// Put a link overlay on icon
 		/// </summary>
-		ShellIconStateLinkOverlay = 0x8000,        
+		ShellIconStateLinkOverlay = 0x8000,
 		/// <summary>
-		/// show icon in selected state 
+		/// show icon in selected state
 		/// </summary>
 		ShellIconStateSelected = 0x10000,
 		/// <summary>
-		/// get open icon 
+		/// get open icon
 		/// </summary>
-		ShellIconStateOpen = 0x2,              
+		ShellIconStateOpen = 0x2,
 		/// <summary>
 		/// apply the appropriate overlays
 		/// </summary>
@@ -156,7 +154,7 @@ namespace CodeFetcher.Icons
 		private const int FILE_ATTRIBUTE_NORMAL = 0x80;
 		private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
 
-		private const int FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x100; 
+		private const int FORMAT_MESSAGE_ALLOCATE_BUFFER = 0x100;
 		private const int FORMAT_MESSAGE_ARGUMENT_ARRAY = 0x2000;
 		private const int FORMAT_MESSAGE_FROM_HMODULE = 0x800;
 		private const int FORMAT_MESSAGE_FROM_STRING = 0x400;
@@ -164,7 +162,7 @@ namespace CodeFetcher.Icons
 		private const int FORMAT_MESSAGE_IGNORE_INSERTS = 0x200;
 		private const int FORMAT_MESSAGE_MAX_WIDTH_MASK = 0xFF;
 		#endregion
-		
+
 		#region Fields
 		private IntPtr hIml = IntPtr.Zero;
 		private IImageList iImageList = null;
@@ -173,25 +171,25 @@ namespace CodeFetcher.Icons
 		#endregion
 
 		#region Private Enumerations
-		[Flags]		
+		[Flags]
 			private enum SHGetFileInfoConstants : int
 		{
-			SHGFI_ICON = 0x100,                // get icon 
-			SHGFI_DISPLAYNAME = 0x200,         // get display name 
-			SHGFI_TYPENAME = 0x400,            // get type name 
-			SHGFI_ATTRIBUTES = 0x800,          // get attributes 
-			SHGFI_ICONLOCATION = 0x1000,       // get icon location 
-			SHGFI_EXETYPE = 0x2000,            // return exe type 
-			SHGFI_SYSICONINDEX = 0x4000,       // get system icon index 
-			SHGFI_LINKOVERLAY = 0x8000,        // put a link overlay on icon 
-			SHGFI_SELECTED = 0x10000,          // show icon in selected state 
-			SHGFI_ATTR_SPECIFIED = 0x20000,    // get only specified attributes 
-			SHGFI_LARGEICON = 0x0,             // get large icon 
-			SHGFI_SMALLICON = 0x1,             // get small icon 
-			SHGFI_OPENICON = 0x2,              // get open icon 
-			SHGFI_SHELLICONSIZE = 0x4,         // get shell size icon 
-			//SHGFI_PIDL = 0x8,                  // pszPath is a pidl 
-			SHGFI_USEFILEATTRIBUTES = 0x10,    // use passed dwFileAttribute 
+			SHGFI_ICON = 0x100,                // get icon
+			SHGFI_DISPLAYNAME = 0x200,         // get display name
+			SHGFI_TYPENAME = 0x400,            // get type name
+			SHGFI_ATTRIBUTES = 0x800,          // get attributes
+			SHGFI_ICONLOCATION = 0x1000,       // get icon location
+			SHGFI_EXETYPE = 0x2000,            // return exe type
+			SHGFI_SYSICONINDEX = 0x4000,       // get system icon index
+			SHGFI_LINKOVERLAY = 0x8000,        // put a link overlay on icon
+			SHGFI_SELECTED = 0x10000,          // show icon in selected state
+			SHGFI_ATTR_SPECIFIED = 0x20000,    // get only specified attributes
+			SHGFI_LARGEICON = 0x0,             // get large icon
+			SHGFI_SMALLICON = 0x1,             // get small icon
+			SHGFI_OPENICON = 0x2,              // get open icon
+			SHGFI_SHELLICONSIZE = 0x4,         // get shell size icon
+			//SHGFI_PIDL = 0x8,                  // pszPath is a pidl
+			SHGFI_USEFILEATTRIBUTES = 0x10,    // use passed dwFileAttribute
 			SHGFI_ADDOVERLAYS = 0x000000020,   // apply the appropriate overlays
 			SHGFI_OVERLAYINDEX = 0x000000040   // Get the index of the overlay
 		}
@@ -215,7 +213,7 @@ namespace CodeFetcher.Icons
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-			private struct IMAGELISTDRAWPARAMS				
+			private struct IMAGELISTDRAWPARAMS
 		{
 			public int cbSize;
 			public IntPtr himl;
@@ -260,7 +258,7 @@ namespace CodeFetcher.Icons
 
 		#region Constructors, Dispose, Destructor
 		/// <summary>
-		/// Creates a Small Icons SystemImageList 
+		/// Creates a Small Icons SystemImageList
 		/// </summary>
 		public SystemImageList()
 		{
@@ -293,7 +291,7 @@ namespace CodeFetcher.Icons
 		{
 			if (!disposed)
 			{
-				if (disposing) 
+				if (disposing)
 				{
 					if (iImageList != null)
 					{
@@ -310,30 +308,30 @@ namespace CodeFetcher.Icons
 		~SystemImageList()
 		{
 			Dispose(false);
-		}	
+		}
 		#endregion
 
 		#region Implementation
-		
+
 		[DllImport("shell32")]
 		private static extern IntPtr SHGetFileInfo (
-			string pszPath, 
+			string pszPath,
 			int dwFileAttributes,
-			ref SHFILEINFO psfi, 
-			uint cbFileInfo, 
+			ref SHFILEINFO psfi,
+			uint cbFileInfo,
 			uint uFlags);
 
 		[DllImport("user32.dll")]
 		private static extern int DestroyIcon(IntPtr hIcon);
-		
+
 		[DllImport("kernel32")]
 		private extern static int FormatMessage (
-			int dwFlags, 
-			IntPtr lpSource, 
-			int dwMessageId, 
-			int dwLanguageId, 
+			int dwFlags,
+			IntPtr lpSource,
+			int dwMessageId,
+			int dwLanguageId,
 			string lpBuffer,
-			uint nSize, 
+			uint nSize,
 			int argumentsLong);
 
 		[DllImport("kernel32")]
@@ -354,14 +352,14 @@ namespace CodeFetcher.Icons
 
 		[DllImport("comctl32")]
 		private extern static int ImageList_GetIconSize(
-			IntPtr himl, 
-			ref int cx, 
+			IntPtr himl,
+			ref int cx,
 			ref int cy);
 
 		[DllImport("comctl32")]
 		private extern static IntPtr ImageList_GetIcon(
-			IntPtr himl, 
-			int i, 
+			IntPtr himl,
+			int i,
 			int flags);
 
 		/// <summary>
@@ -421,7 +419,7 @@ namespace CodeFetcher.Icons
 					ref iidImageList,
 					ref iImageList
 					);
-				// the image list handle is the IUnknown pointer, but 
+				// the image list handle is the IUnknown pointer, but
 				// using Marshal.GetIUnknownForObject doesn't return
 				// the right value.  It really doesn't hurt to make
 				// a second call to get the handle:
@@ -442,10 +440,10 @@ namespace CodeFetcher.Icons
 				// Call SHGetFileInfo to get the image list handle
 				// using an arbitrary file:
 				hIml = SHGetFileInfo(
-					".txt", 
-					FILE_ATTRIBUTE_NORMAL, 
-					ref shfi, 
-					shfiSize, 
+					".txt",
+					FILE_ATTRIBUTE_NORMAL,
+					ref shfi,
+					shfiSize,
 					(uint)dwFlags);
 				System.Diagnostics.Debug.Assert ((hIml != IntPtr.Zero),"Failed to create Image List");
 			}
@@ -460,31 +458,31 @@ namespace CodeFetcher.Icons
 		{
 			[PreserveSig]
 			int Add(
-				IntPtr hbmImage, 
-				IntPtr hbmMask, 
+				IntPtr hbmImage,
+				IntPtr hbmMask,
 				ref int pi);
 
 			[PreserveSig]
 			int ReplaceIcon(
-				int i, 
-				IntPtr hicon, 
+				int i,
+				IntPtr hicon,
 				ref int pi);
 
 			[PreserveSig]
 			int SetOverlayImage(
-				int iImage, 
+				int iImage,
 				int iOverlay);
 
 			[PreserveSig]
 			int Replace(
 				int i,
-				IntPtr hbmImage, 
+				IntPtr hbmImage,
 				IntPtr hbmMask);
 
 			[PreserveSig]
 			int AddMasked(
-				IntPtr hbmImage, 
-				int crMask, 
+				IntPtr hbmImage,
+				int crMask,
 				ref int pi);
 
 			[PreserveSig]
@@ -497,50 +495,50 @@ namespace CodeFetcher.Icons
 
 			[PreserveSig]
 			int GetIcon(
-				int i, 
-				int flags, 
+				int i,
+				int flags,
 				ref IntPtr picon);
 
 			[PreserveSig]
 			int GetImageInfo(
-				int i, 
+				int i,
 				ref IMAGEINFO pImageInfo);
 
 			[PreserveSig]
 			int Copy(
-				int iDst, 
-				IImageList punkSrc, 
-				int iSrc, 
+				int iDst,
+				IImageList punkSrc,
+				int iSrc,
 				int uFlags);
 
 			[PreserveSig]
 			int Merge(
-				int i1, 
-				IImageList punk2, 
-				int i2, 
-				int dx, 
-				int dy, 
-				ref Guid riid, 
+				int i1,
+				IImageList punk2,
+				int i2,
+				int dx,
+				int dy,
+				ref Guid riid,
 				ref IntPtr ppv);
 
 			[PreserveSig]
 			int Clone(
-				ref Guid riid, 
+				ref Guid riid,
 				ref IntPtr ppv);
 
 			[PreserveSig]
 			int GetImageRect(
-				int i, 
+				int i,
 				ref RECT prc);
 
 			[PreserveSig]
 			int GetIconSize(
-				ref int cx, 
+				ref int cx,
 				ref int cy);
 
 			[PreserveSig]
 			int SetIconSize(
-				int cx, 
+				int cx,
 				int cy);
 
 			[PreserveSig]
@@ -553,7 +551,7 @@ namespace CodeFetcher.Icons
 
 			[PreserveSig]
 			int SetBkColor(
-				int clrBk, 
+				int clrBk,
 				ref int pclr);
 
 			[PreserveSig]
@@ -562,8 +560,8 @@ namespace CodeFetcher.Icons
 
 			[PreserveSig]
 			int BeginDrag(
-				int iTrack, 
-				int dxHotspot, 
+				int iTrack,
+				int dxHotspot,
 				int dyHotspot);
 
 			[PreserveSig]
@@ -571,8 +569,8 @@ namespace CodeFetcher.Icons
 
 			[PreserveSig]
 			int DragEnter(
-				IntPtr hwndLock, 
-				int x, 
+				IntPtr hwndLock,
+				int x,
 				int y);
 
 			[PreserveSig]
@@ -581,14 +579,14 @@ namespace CodeFetcher.Icons
 
 			[PreserveSig]
 			int DragMove(
-				int x, 
+				int x,
 				int y);
 
 			[PreserveSig]
 			int SetDragCursorImage(
-				ref IImageList punk, 
-				int iDrag, 
-				int dxHotspot, 
+				ref IImageList punk,
+				int iDrag,
+				int dxHotspot,
 				int dyHotspot);
 
 			[PreserveSig]
@@ -597,24 +595,24 @@ namespace CodeFetcher.Icons
 
 			[PreserveSig]
 			int GetDragImage(
-				ref POINT ppt, 
-				ref POINT pptHotspot, 
-				ref Guid riid, 
+				ref POINT ppt,
+				ref POINT pptHotspot,
+				ref Guid riid,
 				ref IntPtr ppv);
-			
+
 			[PreserveSig]
 			int GetItemFlags(
-				int i, 
+				int i,
 				ref int dwFlags);
 
 			[PreserveSig]
 			int GetOverlayImage(
-				int iOverlay, 
+				int iOverlay,
 				ref int piIndex);
 		};
 		#endregion
 		#endregion
-						
+
 		#region Properties
 		/// <summary>
 		/// Gets the hImageList handle
@@ -623,7 +621,7 @@ namespace CodeFetcher.Icons
 		{
 			get
 			{
-				return this.hIml;				
+				return this.hIml;
 			}
 		}
 		/// <summary>
@@ -649,9 +647,9 @@ namespace CodeFetcher.Icons
 		{
 			get
 			{
-				int cx = 0; 
+				int cx = 0;
 				int cy = 0;
-				
+
 				if (iImageList == null)
 					ImageList_GetIconSize(hIml, ref cx, ref cy);
 				else
@@ -660,7 +658,7 @@ namespace CodeFetcher.Icons
 				System.Drawing.Size sz = new System.Drawing.Size(cx, cy);
 
 				return sz;
-			}		
+			}
 		}
 		#endregion
 
@@ -695,12 +693,12 @@ namespace CodeFetcher.Icons
 			if (hIcon != IntPtr.Zero)
 			{
 				icon = System.Drawing.Icon.FromHandle(hIcon);
-			}				
+			}
 			return icon;
 		}
 
 		/// <summary>
-		/// Return the index of the icon for the specified file, always using 
+		/// Return the index of the icon for the specified file, always using
 		/// the cached version where possible.
 		/// </summary>
 		/// <param name="fileName">Filename to get icon for</param>
@@ -718,15 +716,15 @@ namespace CodeFetcher.Icons
 		/// otherwise only hit the disk if no cached icon is available.</param>
 		/// <returns>Index of the icon</returns>
 		public int IconIndex(
-			string fileName, 
+			string fileName,
 			bool forceLoadFromDisk)
 		{
 			return IconIndex(
-				fileName, 
+				fileName,
 				forceLoadFromDisk,
 				ShellIconStateConstants.ShellIconStateNormal);
 		}
-		
+
 		/// <summary>
 		/// Returns the index of the icon for the specified file
 		/// </summary>
@@ -758,7 +756,7 @@ namespace CodeFetcher.Icons
 				dwAttr = FILE_ATTRIBUTE_NORMAL;
 			}
 			else
-			{				
+			{
 				dwAttr = 0;
 			}
 
@@ -767,8 +765,8 @@ namespace CodeFetcher.Icons
 			// icon, for example sFileSpec = "C:\PANTS.DOC"
 			SHFILEINFO shfi = new SHFILEINFO();
 			uint shfiSize = (uint)Marshal.SizeOf(shfi.GetType());
-			IntPtr retVal = SHGetFileInfo( 
-				fileName, dwAttr, ref shfi, shfiSize, 
+			IntPtr retVal = SHGetFileInfo(
+				fileName, dwAttr, ref shfi, shfiSize,
 				((uint)(dwFlags) | (uint)iconState));
 
 			if (retVal.Equals(IntPtr.Zero))
@@ -789,9 +787,9 @@ namespace CodeFetcher.Icons
 		/// <param name="index">Index of image to draw</param>
 		/// <param name="x">X Position to draw at</param>
 		/// <param name="y">Y Position to draw at</param>
-		public void DrawImage( 
+		public void DrawImage(
 			IntPtr hdc,
-			int index, 
+			int index,
 			int x,
 			int y
 			)
@@ -818,11 +816,11 @@ namespace CodeFetcher.Icons
 			if (iImageList == null)
 			{
 				int ret = ImageList_Draw(
-					hIml, 
-					index, 
-					hdc, 
-					x, 
-					y, 
+					hIml,
+					index,
+					hdc,
+					x,
+					y,
 					(int)flags);
 			}
 			else
@@ -837,7 +835,7 @@ namespace CodeFetcher.Icons
 				pimldp.fStyle = (int)flags;
 				iImageList.Draw(ref pimldp);
 			}
-			
+
 		}
 
 		/// <summary>
@@ -893,14 +891,14 @@ namespace CodeFetcher.Icons
 		/// <param name="flags">Drawing flags</param>
 		/// <param name="cx">Width to draw</param>
 		/// <param name="cy">Height to draw</param>
-		/// <param name="foreColor">Fore colour to blend with when using the 
+		/// <param name="foreColor">Fore colour to blend with when using the
 		/// ILD_SELECTED or ILD_BLEND25 flags</param>
 		/// <param name="stateFlags">State flags</param>
 		/// <param name="glowOrShadowColor">If stateFlags include ILS_GLOW, then
-		/// the colour to use for the glow effect.  Otherwise if stateFlags includes 
+		/// the colour to use for the glow effect.  Otherwise if stateFlags includes
 		/// ILS_SHADOW, then the colour to use for the shadow.</param>
 		/// <param name="saturateColorOrAlpha">If stateFlags includes ILS_ALPHA,
-		/// then the alpha component is applied to the icon. Otherwise if 
+		/// then the alpha component is applied to the icon. Otherwise if
 		/// ILS_SATURATE is included, then the (R,G,B) components are used
 		/// to saturate the image.</param>
 		public void DrawImage(
@@ -925,7 +923,7 @@ namespace CodeFetcher.Icons
 			pimldp.y = y;
 			pimldp.cx = cx;
 			pimldp.cy = cy;
-			pimldp.rgbFg = Color.FromArgb(0, 
+			pimldp.rgbFg = Color.FromArgb(0,
 				foreColor.R, foreColor.G, foreColor.B).ToArgb();
 			//			Console.WriteLine("{0}", pimldp.rgbFg);
 			pimldp.fStyle = (int)flags;
@@ -940,16 +938,16 @@ namespace CodeFetcher.Icons
 				ImageListDrawStateConstants.ILS_SATURATE)
 			{
 				// discard alpha channel:
-				saturateColorOrAlpha = Color.FromArgb(0, 
-					saturateColorOrAlpha.R, 
-					saturateColorOrAlpha.G, 
+				saturateColorOrAlpha = Color.FromArgb(0,
+					saturateColorOrAlpha.R,
+					saturateColorOrAlpha.G,
 					saturateColorOrAlpha.B);
 				// set the saturate color
 				pimldp.Frame = saturateColorOrAlpha.ToArgb();
 			}
-			glowOrShadowColor = Color.FromArgb(0, 
-				glowOrShadowColor.R, 
-				glowOrShadowColor.G, 
+			glowOrShadowColor = Color.FromArgb(0,
+				glowOrShadowColor.R,
+				glowOrShadowColor.G,
 				glowOrShadowColor.B);
 			pimldp.crEffect = glowOrShadowColor.ToArgb();
 			if (iImageList == null)
@@ -962,8 +960,8 @@ namespace CodeFetcher.Icons
 
 				iImageList.Draw(ref pimldp);
 			}
-		}		
-		#endregion				
+		}
+		#endregion
 	}
 
 	#endregion
@@ -984,7 +982,7 @@ namespace CodeFetcher.Icons
 
 		private const int TV_FIRST = 0x1100;
 		private const int TVM_SETIMAGELIST = (TV_FIRST + 9);
-		
+
 		private const int TVSIL_NORMAL = 0;
 		private const int TVSIL_STATE = 2;
 		#endregion
@@ -992,12 +990,12 @@ namespace CodeFetcher.Icons
 		#region Implementation
 		[DllImport("user32", CharSet = CharSet.Auto)]
 		private static extern IntPtr SendMessage(
-			IntPtr hWnd, 
-			int wMsg, 
-			IntPtr wParam, 
+			IntPtr hWnd,
+			int wMsg,
+			IntPtr wParam,
 			IntPtr lParam);
 		#endregion
-		
+
 		#region Methods
 		/// <summary>
 		/// Associates a SysImageList with a ListView control
@@ -1024,7 +1022,7 @@ namespace CodeFetcher.Icons
 				listView.Handle,
 				LVM_SETIMAGELIST,
 				wParam,
-				sysImageList.Handle);	
+				sysImageList.Handle);
 		}
 
 		/// <summary>
@@ -1049,8 +1047,8 @@ namespace CodeFetcher.Icons
 				TVM_SETIMAGELIST,
 				wParam,
 				sysImageList.Handle);
-		}	
-	
+		}
+
 		#endregion
 	}
 	#endregion

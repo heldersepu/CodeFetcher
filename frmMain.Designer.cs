@@ -9,7 +9,6 @@ namespace CodeFetcher
         Label label3;
         Label label4;
         Label label5;
-        Label labelSearch;
         Label labelStatus;
         ListView listViewResults;
         ColumnHeader columnHeaderIcon;
@@ -95,7 +94,6 @@ namespace CodeFetcher
             this.label1 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.labelSearch = new System.Windows.Forms.Label();
             this.buttonRefreshIndex = new System.Windows.Forms.Button();
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -109,9 +107,9 @@ namespace CodeFetcher
             this.labelStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelStatus.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelStatus.Location = new System.Drawing.Point(128, 566);
+            this.labelStatus.Location = new System.Drawing.Point(128, 537);
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(644, 19);
+            this.labelStatus.Size = new System.Drawing.Size(868, 19);
             this.labelStatus.TabIndex = 0;
             // 
             // listViewResults
@@ -129,7 +127,7 @@ namespace CodeFetcher
             this.listViewResults.FullRowSelect = true;
             this.listViewResults.Location = new System.Drawing.Point(12, 212);
             this.listViewResults.Name = "listViewResults";
-            this.listViewResults.Size = new System.Drawing.Size(758, 343);
+            this.listViewResults.Size = new System.Drawing.Size(982, 314);
             this.listViewResults.TabIndex = 2;
             this.listViewResults.UseCompatibleStateImageBehavior = false;
             this.listViewResults.View = System.Windows.Forms.View.Details;
@@ -196,7 +194,7 @@ namespace CodeFetcher
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(760, 198);
+            this.tabControl1.Size = new System.Drawing.Size(984, 198);
             this.tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -265,7 +263,7 @@ namespace CodeFetcher
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(752, 169);
+            this.tabPage2.Size = new System.Drawing.Size(976, 169);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Advanced";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -286,7 +284,7 @@ namespace CodeFetcher
             this.textBoxType.Name = "textBoxType";
             this.textBoxType.Size = new System.Drawing.Size(194, 22);
             this.textBoxType.TabIndex = 5;
-            this.toolTip1.SetToolTip(this.textBoxType, "pdf, doc, docx\r\nxls, xlsx");
+            this.toolTip1.SetToolTip(this.textBoxType, "html, cs, vb, js, css");
             this.textBoxType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
             // 
             // dateTimePickerTo
@@ -322,7 +320,7 @@ namespace CodeFetcher
             // 
             this.buttonSearch1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSearch1.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonSearch1.Location = new System.Drawing.Point(566, 44);
+            this.buttonSearch1.Location = new System.Drawing.Point(790, 44);
             this.buttonSearch1.Name = "buttonSearch1";
             this.buttonSearch1.Size = new System.Drawing.Size(160, 54);
             this.buttonSearch1.TabIndex = 10;
@@ -344,7 +342,7 @@ namespace CodeFetcher
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxContent.Location = new System.Drawing.Point(77, 46);
             this.textBoxContent.Name = "textBoxContent";
-            this.textBoxContent.Size = new System.Drawing.Size(483, 22);
+            this.textBoxContent.Size = new System.Drawing.Size(707, 22);
             this.textBoxContent.TabIndex = 1;
             this.textBoxContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
             // 
@@ -363,7 +361,7 @@ namespace CodeFetcher
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxName.Location = new System.Drawing.Point(77, 74);
             this.textBoxName.Name = "textBoxName";
-            this.textBoxName.Size = new System.Drawing.Size(483, 22);
+            this.textBoxName.Size = new System.Drawing.Size(707, 22);
             this.textBoxName.TabIndex = 3;
             this.textBoxName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
             // 
@@ -395,20 +393,10 @@ namespace CodeFetcher
             this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.toolTip1.ToolTipTitle = "Examples";
             // 
-            // labelSearch
-            // 
-            this.labelSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelSearch.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSearch.Location = new System.Drawing.Point(128, 561);
-            this.labelSearch.Name = "labelSearch";
-            this.labelSearch.Size = new System.Drawing.Size(633, 20);
-            this.labelSearch.TabIndex = 3;
-            // 
             // buttonRefreshIndex
             // 
             this.buttonRefreshIndex.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonRefreshIndex.Location = new System.Drawing.Point(12, 561);
+            this.buttonRefreshIndex.Location = new System.Drawing.Point(12, 532);
             this.buttonRefreshIndex.Name = "buttonRefreshIndex";
             this.buttonRefreshIndex.Size = new System.Drawing.Size(110, 25);
             this.buttonRefreshIndex.TabIndex = 4;
@@ -419,9 +407,8 @@ namespace CodeFetcher
             // frmMain
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
-            this.ClientSize = new System.Drawing.Size(784, 590);
+            this.ClientSize = new System.Drawing.Size(1008, 561);
             this.Controls.Add(this.buttonRefreshIndex);
-            this.Controls.Add(this.labelSearch);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.listViewResults);
             this.Controls.Add(this.labelStatus);
