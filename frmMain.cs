@@ -384,5 +384,21 @@ namespace CodeFetcher
         {
             dateTimePickerFrom.Value = DateTime.Today;
         }
+
+        private void tabControl1_Selected(object sender, TabControlEventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 0)
+            {
+                tabControl1.Height -= 30;
+                listViewResults.Height += 30;
+                listViewResults.Location = new System.Drawing.Point(12, 95);
+            }
+            else
+            {
+                tabControl1.Height += 30;
+                listViewResults.Height -= 30;
+                listViewResults.Location = new System.Drawing.Point(12, 125);
+            }
+        }
     }
 }
