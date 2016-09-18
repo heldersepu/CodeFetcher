@@ -16,8 +16,8 @@ namespace CodeFetcher
         private string appPath { get { return typeof(frmMain).Assembly.Location; } }
         private string appDir { get { return Path.GetDirectoryName(appPath); } }
         private string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
-        private string pathIndex { get { return Path.Combine(appDir, "SearchIndex"); } }
-        private string searchTermsPath { get { return Path.Combine(pathIndex, "searchhistory"); } }
+        private string pathIndex { get { return Path.Combine(appDir, ".SearchIndex"); } }
+        private string searchTermsPath { get { return Path.Combine(pathIndex, "searchHistory.log"); } }
         #endregion Private declarations
 
         public frmMain()
@@ -61,8 +61,7 @@ namespace CodeFetcher
         {
             string[] patterns = new string[] { "*.*" };
             string[] searchDirs = new string[] { appDir }; ;
-            string[] searchExclude = new string[] { "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", ".SVN", ".GIT" };
-            string pathIndex = Path.Combine(appDir, "SearchIndex");
+            string[] searchExclude = new string[] { "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", "\\.SVN", "\\.GIT" };
 
             string iniPath = Path.Combine(appDir, appName + ".ini");
             if (File.Exists(iniPath))
@@ -96,10 +95,6 @@ namespace CodeFetcher
                     }
                     searchExclude = excludes.ToArray();
                 }
-
-                pathIndex = ini.IniReadValue("Location", "Search Index");
-                if (string.IsNullOrEmpty(pathIndex) == false)
-                    pathIndex = Path.Combine(appDir, pathIndex);
             }
 
             index = new Index(searchExclude, patterns, searchDirs, pathIndex);
@@ -307,7 +302,7 @@ namespace CodeFetcher
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 MessageBox.Show("Unable to save search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }

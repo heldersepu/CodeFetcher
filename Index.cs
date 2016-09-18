@@ -28,6 +28,10 @@ namespace CodeFetcher
             ".PDB", ".DLL", ".EXE",
             ".GIF", ".JPG", ".PNG",
         };
+        string[] splitters = new string[] {
+            ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
+            "/", "\\", "{", "}", "-", "+", "*", "%",
+        };
         string[] patterns;
         string path;
         int fileCount;
@@ -104,7 +108,6 @@ namespace CodeFetcher
                     var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
                     if (checkIndex())
                     {
-
                         try
                         {
                             indexWriter = new IndexWriter(directory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
@@ -385,10 +388,13 @@ namespace CodeFetcher
                     text = Parser.Parse(path);
                 else if (fi.Length < indexMaxFileSize * 1000000)
                     text = Parser.Parse(path);
+                if (!string.IsNullOrEmpty(text))
+                    foreach (var item in splitters)
+                        text = text.Replace(item, " ");
             }
             catch (Exception)
             {
-                // Ignore error, add with not content
+                // Ignore error, add with no content
             }
             Document doc = new Document();
             doc.Add(new Field("modified", fi.LastWriteTime.ToString("yyyyMMddHHmmss"), Field.Store.YES, Field.Index.ANALYZED));
