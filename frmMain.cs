@@ -12,12 +12,12 @@ namespace CodeFetcher
         #region Private declarations
         Index index;
         SystemImageList imageListDocuments;
-        bool portablePaths = true;
-        string appPath;
-        string appDir;
-        string appName;
-        string searchTermsPath;
         AutoCompleteStringCollection searchTerms = new AutoCompleteStringCollection();
+        private string appPath { get { return typeof(frmMain).Assembly.Location; } }
+        private string appDir { get { return Path.GetDirectoryName(appPath); } }
+        private string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
+        private string pathIndex { get { return Path.Combine(appDir, "SearchIndex"); } }
+        private string searchTermsPath { get { return Path.Combine(pathIndex, "searchhistory"); } }
         #endregion Private declarations
 
         public frmMain()
@@ -41,14 +41,28 @@ namespace CodeFetcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            appPath = typeof(frmMain).Assembly.Location;
-            appDir = Path.GetDirectoryName( appPath );
-            appName = Path.GetFileNameWithoutExtension(appPath);
-            string[] patterns = null;
-            string[] searchDirs = null;
-            string[] searchExclude = null;
-            string pathIndex = null;
-            int resultsMax = 200;
+            InitializeIndex();
+            searchTerms = LoadSearchTerms();
+            textBoxQuery.AutoCompleteCustomSource = searchTerms;
+
+            dateTimePickerFrom.MaxDate = DateTime.Today;
+            dateTimePickerFrom.Format = DateTimePickerFormat.Short;
+            dateTimePickerFrom.Value = dateTimePickerFrom.MinDate;
+            dateTimePickerTo.Format = DateTimePickerFormat.Short;
+            dateTimePickerTo.Value = DateTime.Today.AddDays(1);
+        }
+
+        private void buttonRefreshIndex_Click(object sender, EventArgs e)
+        {
+            InitializeIndex();
+        }
+
+        private void InitializeIndex()
+        {
+            string[] patterns = new string[] { "*.*" };
+            string[] searchDirs = new string[] { appDir }; ;
+            string[] searchExclude = new string[] { "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", ".SVN", ".GIT" };
+            string pathIndex = Path.Combine(appDir, "SearchIndex");
 
             string iniPath = Path.Combine(appDir, appName + ".ini");
             if (File.Exists(iniPath))
@@ -65,7 +79,7 @@ namespace CodeFetcher
                 if (string.IsNullOrEmpty(tempSearchDir) == false)
                 {
                     List<string> dirs = new List<string>();
-                    foreach(string dir in tempSearchDir.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+                    foreach (string dir in tempSearchDir.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         dirs.Add(Path.Combine(appDir, dir));
                     }
@@ -86,61 +100,9 @@ namespace CodeFetcher
                 pathIndex = ini.IniReadValue("Location", "Search Index");
                 if (string.IsNullOrEmpty(pathIndex) == false)
                     pathIndex = Path.Combine(appDir, pathIndex);
-
-                try
-                {
-                    string max = ini.IniReadValue("Results", "Max Result");
-                    if (!string.IsNullOrEmpty(max))
-                        resultsMax = int.Parse(max);
-                }
-                catch
-                {
-                    MessageBox.Show("The Max Result setting has an invalid value", "Max Result", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
-
-                try
-                {
-                    string portable = ini.IniReadValue("Options", "Portable Paths");
-                    if (!string.IsNullOrEmpty(portable))
-                        portablePaths = bool.Parse(portable);
-                }
-                catch
-                {
-                    MessageBox.Show("The Portable Paths setting has an invalid value, should be true or false", "Portable Paths", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
             }
 
-            // Set defaults
-            if (patterns == null)
-                patterns = new string[] { "*.*" };
-            if( searchDirs == null )
-                searchDirs =  new string[] { appDir };
-            if (searchExclude == null)
-                searchExclude = new string[] { "c:\\$Recycle.Bin" };
-            if (string.IsNullOrEmpty(pathIndex))
-                pathIndex = Path.Combine(appDir, "SearchIndex");
-            searchTermsPath = Path.Combine(pathIndex, "searchhistory");
-
-            dateTimePickerFrom.MaxDate = DateTime.Today;
-            dateTimePickerFrom.Format = DateTimePickerFormat.Short;
-            dateTimePickerFrom.Value = dateTimePickerFrom.MinDate;
-            dateTimePickerTo.Format = DateTimePickerFormat.Short;
-            dateTimePickerTo.Value = DateTime.Today.AddDays(1);
-
             index = new Index(searchExclude, patterns, searchDirs, pathIndex);
-            InitializeIndex();
-
-            searchTerms = LoadSearchTerms();
-            textBoxQuery.AutoCompleteCustomSource = searchTerms;
-        }
-
-        private void buttonRefreshIndex_Click(object sender, EventArgs e)
-        {
-            InitializeIndex();
-        }
-
-        private void InitializeIndex()
-        {
             var worker = index.Initialize();
             worker.ProgressChanged += delegate (object s, ProgressChangedEventArgs pe)
             {

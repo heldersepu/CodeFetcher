@@ -24,9 +24,12 @@ namespace CodeFetcher
         IndexWriter indexWriter;
         IndexSearcher searcher = null;
         string[] searchExclude;
+        string[] extensionExclude = new string[] {
+            ".PDB", ".DLL", ".EXE",
+            ".GIF", ".JPG", ".PNG",
+        };
         string[] patterns;
         string path;
-        string status = "";
         int fileCount;
         bool portablePaths = true;
         // statistics
@@ -35,7 +38,6 @@ namespace CodeFetcher
         int countSkipped = 0;
         int countNew = 0;
         int countChanged = 0;
-        int indexCounter = 0;
         int zipMaxSize = 1;
         int indexMaxFileSize = 20;
 
@@ -274,7 +276,7 @@ namespace CodeFetcher
             // Don't index excluded files
             foreach (string exclude in searchExclude)
             {
-                if (directory.FullName.ToLower().Contains(exclude))
+                if (directory.FullName.ToUpper().EndsWith(exclude))
                     return false;
             }
 
@@ -302,49 +304,53 @@ namespace CodeFetcher
                     if (worker.CancellationPending)
                         return true;
 
-                    fileCount++;
-
-                    try
+                    string path = fi.FullName;
+                    string extension = Path.GetExtension(path);
+                    if (extensionExclude.Contains(extension.ToUpper()))
                     {
-                        string path = fi.FullName;
-
-                        string relPath = path;
-                        // Remove the full path
-                        if (portablePaths)
-                        {
-                            relPath = path.Replace(searchDir, "");
-                            // Remove the starting slash
-                            if (relPath.StartsWith(@"\"))
-                                relPath = relPath.Substring(1);
-                        }
-
-                        newDateStamps.Add(relPath, fi.LastWriteTime.Ticks);
-
-                        // Check to see of doc has changed
-                        if (dateStamps.ContainsKey(relPath) == false)
-                        {
-                            addDocument(path, relPath, false);
-                            filesIndexed++;
-                        }
-                        else if (dateStamps[relPath] < fi.LastWriteTime.Ticks)
-                        {
-                            // Delete the existing document
-                            addDocument(path, relPath, true);
-                            filesIndexed++;
-                        }
-
-                        // update statistics
-                        this.countTotal++;
-                        this.bytesTotal += fi.Length;
-
-                        // show added file
-                        worker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
-                    }
-                    catch (Exception)
-                    {
-                        // parsing and indexing wasn't successful, skipping that file
                         this.countSkipped++;
-                        worker.ReportProgress(fileCount, "Skipped:" + Path.GetFileName(fi.FullName));
+                    }
+                    else
+                    {
+                        fileCount++;
+                        try
+                        {
+                            string relPath = path;
+                            // Remove the full path
+                            if (portablePaths)
+                            {
+                                relPath = path.Replace(searchDir, "");
+                                // Remove the starting slash
+                                if (relPath.StartsWith(@"\"))
+                                    relPath = relPath.Substring(1);
+                            }
+
+                            newDateStamps.Add(relPath, fi.LastWriteTime.Ticks);
+
+                            // Check to see of doc has changed
+                            if (dateStamps.ContainsKey(relPath) == false)
+                            {
+                                addDocument(extension, path, relPath, false);
+                            }
+                            else if (dateStamps[relPath] < fi.LastWriteTime.Ticks)
+                            {
+                                // Delete the existing document
+                                addDocument(extension, path, relPath, true);
+                            }
+
+                            // update statistics
+                            this.countTotal++;
+                            this.bytesTotal += fi.Length;
+
+                            // show added file
+                            worker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
+                        }
+                        catch (Exception)
+                        {
+                            // parsing and indexing wasn't successful, skipping that file
+                            this.countSkipped++;
+                            worker.ReportProgress(fileCount, "Skipped:" + Path.GetFileName(fi.FullName));
+                        }
                     }
                 }
             }
@@ -368,15 +374,11 @@ namespace CodeFetcher
         /// Parses and indexes an IFilter parseable file.
         /// </summary>
         /// <param name="path"></param>
-        public void addDocument(string path, string relPath, bool exists)
+        public void addDocument(string extension, string path, string relPath, bool exists)
         {
             string filename = Path.GetFileNameWithoutExtension(path);
-            string extension = Path.GetExtension(path);
             FileInfo fi = new FileInfo(path);
-
-            Document doc = new Document();
             string text = "";
-
             try
             {
                 if (extension.ToLower() == ".zip" && fi.Length < zipMaxSize * 1000000)
@@ -388,7 +390,7 @@ namespace CodeFetcher
             {
                 // Ignore error, add with not content
             }
-
+            Document doc = new Document();
             doc.Add(new Field("modified", fi.LastWriteTime.ToString("yyyyMMddHHmmss"), Field.Store.YES, Field.Index.ANALYZED));
             doc.Add(new Field("ticks", fi.LastWriteTime.Ticks.ToString(), Field.Store.YES, Field.Index.NO));
             doc.Add(new Field("type", extension.Substring(1), Field.Store.YES, Field.Index.NOT_ANALYZED));
