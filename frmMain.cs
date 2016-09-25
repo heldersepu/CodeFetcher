@@ -239,7 +239,7 @@ namespace CodeFetcher
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://lucene.apache.org/java/2_4_0/queryparsersyntax.html");
+            System.Diagnostics.Process.Start("https://lucene.apache.org/core/2_9_4/queryparsersyntax.html");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -347,14 +347,28 @@ namespace CodeFetcher
             if (tabControl1.SelectedIndex == 0)
             {
                 tabControl1.Height -= 30;
-                listViewResults.Height += 30;
-                listViewResults.Location = new System.Drawing.Point(12, 95);
+                splitContainer.Height += 30;
+                splitContainer.Location = new System.Drawing.Point(12, 95);
             }
             else
             {
                 tabControl1.Height += 30;
-                listViewResults.Height -= 30;
-                listViewResults.Location = new System.Drawing.Point(12, 125);
+                splitContainer.Height -= 30;
+                splitContainer.Location = new System.Drawing.Point(12, 125);
+            }
+        }
+
+        private void splitContainer_DoubleClick(object sender, EventArgs e)
+        {
+            if (splitContainer.Orientation == Orientation.Horizontal)
+            {
+                splitContainer.Orientation = Orientation.Vertical;
+                splitContainer.SplitterDistance = splitContainer.Width / 2;
+            }
+            else
+            {
+                splitContainer.Orientation = Orientation.Horizontal;
+                splitContainer.SplitterDistance = splitContainer.Height / 2;
             }
         }
     }

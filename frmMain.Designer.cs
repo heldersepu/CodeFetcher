@@ -4,39 +4,6 @@ namespace CodeFetcher
 {
     partial class frmMain : Form
     {
-        Label label1;
-        Label label2;
-        Label label3;
-        Label label4;
-        Label label5;
-        Label labelStatus;
-        ListView listViewResults;
-        ColumnHeader columnHeaderIcon;
-        ColumnHeader columnHeaderName;
-        ColumnHeader columnHeaderFolder;
-        ColumnHeader columnHeaderScore;
-        ColumnHeader colHeaderModified;
-        FolderBrowserDialog folderBrowserDialog1;
-        TabControl tabControl1;
-        TabPage tabPage1;
-        TabPage tabPage2;
-        TextBox textBoxQuery;
-        TextBox textBoxContent;
-        TextBox textBoxName;
-        TextBox textBoxType;
-        DateTimePicker dateTimePickerTo;
-        DateTimePicker dateTimePickerFrom;
-        ToolTip toolTip1;
-        PictureBox pictureBox2;
-        ContextMenuStrip contextMenuStrip1;
-        ToolStripMenuItem openFileToolStripMenuItem;
-        ToolStripMenuItem openContainingFolderToolStripMenuItem;
-        Button buttonToday;
-        Button buttonSearch;
-        Button buttonSearch1;
-        Button buttonRefreshIndex;
-
-
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -65,12 +32,6 @@ namespace CodeFetcher
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.labelStatus = new System.Windows.Forms.Label();
-            this.listViewResults = new System.Windows.Forms.ListView();
-            this.columnHeaderIcon = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colHeaderModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderFolder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openContainingFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -95,11 +56,20 @@ namespace CodeFetcher
             this.label5 = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.buttonRefreshIndex = new System.Windows.Forms.Button();
+            this.splitContainer = new System.Windows.Forms.SplitContainer();
+            this.listViewResults = new System.Windows.Forms.ListView();
+            this.columnHeaderIcon = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colHeaderModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderFolder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPage2.SuspendLayout();
+            this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // labelStatus
@@ -111,52 +81,6 @@ namespace CodeFetcher
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.Size = new System.Drawing.Size(868, 19);
             this.labelStatus.TabIndex = 0;
-            // 
-            // listViewResults
-            // 
-            this.listViewResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listViewResults.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeaderIcon,
-            this.columnHeaderName,
-            this.columnHeaderScore,
-            this.colHeaderModified,
-            this.columnHeaderFolder});
-            this.listViewResults.ContextMenuStrip = this.contextMenuStrip1;
-            this.listViewResults.FullRowSelect = true;
-            this.listViewResults.Location = new System.Drawing.Point(12, 95);
-            this.listViewResults.Name = "listViewResults";
-            this.listViewResults.Size = new System.Drawing.Size(982, 431);
-            this.listViewResults.TabIndex = 2;
-            this.listViewResults.UseCompatibleStateImageBehavior = false;
-            this.listViewResults.View = System.Windows.Forms.View.Details;
-            this.listViewResults.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewResults_ColumnClick);
-            this.listViewResults.DoubleClick += new System.EventHandler(this.listViewResults_DoubleClick);
-            // 
-            // columnHeaderIcon
-            // 
-            this.columnHeaderIcon.Text = "";
-            this.columnHeaderIcon.Width = 22;
-            // 
-            // columnHeaderName
-            // 
-            this.columnHeaderName.Text = "Name";
-            this.columnHeaderName.Width = 243;
-            // 
-            // columnHeaderScore
-            // 
-            this.columnHeaderScore.Text = "Score";
-            // 
-            // colHeaderModified
-            // 
-            this.colHeaderModified.Text = "Modified";
-            this.colHeaderModified.Width = 150;
-            // 
-            // columnHeaderFolder
-            // 
-            this.columnHeaderFolder.Text = "Folder";
-            this.columnHeaderFolder.Width = 400;
             // 
             // contextMenuStrip1
             // 
@@ -261,10 +185,10 @@ namespace CodeFetcher
             this.tabPage2.Controls.Add(this.textBoxName);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.label5);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(976, 52);
+            this.tabPage2.Size = new System.Drawing.Size(976, 55);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Advanced";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -412,13 +336,75 @@ namespace CodeFetcher
             this.buttonRefreshIndex.UseVisualStyleBackColor = true;
             this.buttonRefreshIndex.Click += new System.EventHandler(this.buttonRefreshIndex_Click);
             // 
+            // splitContainer
+            // 
+            this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.splitContainer.Location = new System.Drawing.Point(12, 95);
+            this.splitContainer.Name = "splitContainer";
+            this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer.Panel1
+            // 
+            this.splitContainer.Panel1.Controls.Add(this.listViewResults);
+            this.splitContainer.Size = new System.Drawing.Size(980, 431);
+            this.splitContainer.SplitterDistance = 224;
+            this.splitContainer.TabIndex = 5;
+            this.splitContainer.DoubleClick += new System.EventHandler(this.splitContainer_DoubleClick);
+            // 
+            // listViewResults
+            // 
+            this.listViewResults.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listViewResults.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderIcon,
+            this.columnHeaderName,
+            this.columnHeaderScore,
+            this.colHeaderModified,
+            this.columnHeaderFolder});
+            this.listViewResults.ContextMenuStrip = this.contextMenuStrip1;
+            this.listViewResults.FullRowSelect = true;
+            this.listViewResults.Location = new System.Drawing.Point(-1, -1);
+            this.listViewResults.Name = "listViewResults";
+            this.listViewResults.Size = new System.Drawing.Size(980, 224);
+            this.listViewResults.TabIndex = 3;
+            this.listViewResults.UseCompatibleStateImageBehavior = false;
+            this.listViewResults.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeaderIcon
+            // 
+            this.columnHeaderIcon.Text = "";
+            this.columnHeaderIcon.Width = 22;
+            // 
+            // columnHeaderName
+            // 
+            this.columnHeaderName.Text = "Name";
+            this.columnHeaderName.Width = 243;
+            // 
+            // columnHeaderScore
+            // 
+            this.columnHeaderScore.Text = "Score";
+            // 
+            // colHeaderModified
+            // 
+            this.colHeaderModified.Text = "Modified";
+            this.colHeaderModified.Width = 150;
+            // 
+            // columnHeaderFolder
+            // 
+            this.columnHeaderFolder.Text = "Folder";
+            this.columnHeaderFolder.Width = 400;
+            // 
             // frmMain
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
             this.ClientSize = new System.Drawing.Size(1008, 561);
+            this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.buttonRefreshIndex);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.listViewResults);
             this.Controls.Add(this.labelStatus);
             this.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -435,9 +421,44 @@ namespace CodeFetcher
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
         #endregion
+
+        private Label label1;
+        private Label label2;
+        private Label label3;
+        private Label label4;
+        private Label label5;
+        private Label labelStatus;
+        private FolderBrowserDialog folderBrowserDialog1;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private TextBox textBoxQuery;
+        private TextBox textBoxContent;
+        private TextBox textBoxName;
+        private TextBox textBoxType;
+        private DateTimePicker dateTimePickerTo;
+        private DateTimePicker dateTimePickerFrom;
+        private ToolTip toolTip1;
+        private PictureBox pictureBox2;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem openFileToolStripMenuItem;
+        private ToolStripMenuItem openContainingFolderToolStripMenuItem;
+        private Button buttonToday;
+        private Button buttonSearch;
+        private Button buttonSearch1;
+        private Button buttonRefreshIndex;
+        private SplitContainer splitContainer;
+        private ListView listViewResults;
+        private ColumnHeader columnHeaderIcon;
+        private ColumnHeader columnHeaderName;
+        private ColumnHeader columnHeaderScore;
+        private ColumnHeader colHeaderModified;
+        private ColumnHeader columnHeaderFolder;
     }
 }
