@@ -1,4 +1,6 @@
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
+using ICSharpCode.AvalonEdit;
 
 namespace CodeFetcher
 {
@@ -63,12 +65,15 @@ namespace CodeFetcher
             this.columnHeaderScore = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colHeaderModified = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderFolder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ctrlHost = new System.Windows.Forms.Integration.ElementHost();
+            this.sourceCodeEditor = new ICSharpCode.AvalonEdit.TextEditor();
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -140,7 +145,7 @@ namespace CodeFetcher
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(737, 14);
+            this.pictureBox2.Location = new System.Drawing.Point(737, 15);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(27, 28);
             this.pictureBox2.TabIndex = 14;
@@ -344,13 +349,16 @@ namespace CodeFetcher
             this.splitContainer.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.splitContainer.Location = new System.Drawing.Point(12, 95);
             this.splitContainer.Name = "splitContainer";
-            this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // splitContainer.Panel1
             // 
             this.splitContainer.Panel1.Controls.Add(this.listViewResults);
+            // 
+            // splitContainer.Panel2
+            // 
+            this.splitContainer.Panel2.Controls.Add(this.ctrlHost);
             this.splitContainer.Size = new System.Drawing.Size(980, 431);
-            this.splitContainer.SplitterDistance = 224;
+            this.splitContainer.SplitterDistance = 495;
             this.splitContainer.TabIndex = 5;
             this.splitContainer.DoubleClick += new System.EventHandler(this.splitContainer_DoubleClick);
             // 
@@ -367,12 +375,14 @@ namespace CodeFetcher
             this.columnHeaderFolder});
             this.listViewResults.ContextMenuStrip = this.contextMenuStrip1;
             this.listViewResults.FullRowSelect = true;
-            this.listViewResults.Location = new System.Drawing.Point(-1, -1);
+            this.listViewResults.Location = new System.Drawing.Point(-1, 12);
             this.listViewResults.Name = "listViewResults";
-            this.listViewResults.Size = new System.Drawing.Size(980, 224);
+            this.listViewResults.Size = new System.Drawing.Size(495, 417);
             this.listViewResults.TabIndex = 3;
             this.listViewResults.UseCompatibleStateImageBehavior = false;
             this.listViewResults.View = System.Windows.Forms.View.Details;
+            this.listViewResults.Click += new System.EventHandler(this.listViewResults_Click);
+            this.listViewResults.DoubleClick += new System.EventHandler(this.listViewResults_DoubleClick);
             // 
             // columnHeaderIcon
             // 
@@ -382,7 +392,7 @@ namespace CodeFetcher
             // columnHeaderName
             // 
             this.columnHeaderName.Text = "Name";
-            this.columnHeaderName.Width = 243;
+            this.columnHeaderName.Width = 200;
             // 
             // columnHeaderScore
             // 
@@ -397,6 +407,18 @@ namespace CodeFetcher
             // 
             this.columnHeaderFolder.Text = "Folder";
             this.columnHeaderFolder.Width = 400;
+            // 
+            // ctrlHost
+            // 
+            this.ctrlHost.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ctrlHost.Location = new System.Drawing.Point(0, 0);
+            this.ctrlHost.Name = "ctrlHost";
+            this.ctrlHost.Size = new System.Drawing.Size(479, 429);
+            this.ctrlHost.TabIndex = 0;
+            this.ctrlHost.Text = "ctrlHost";
+            this.ctrlHost.Child = this.sourceCodeEditor;
             // 
             // frmMain
             // 
@@ -422,6 +444,7 @@ namespace CodeFetcher
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.splitContainer.Panel1.ResumeLayout(false);
+            this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -460,5 +483,7 @@ namespace CodeFetcher
         private ColumnHeader columnHeaderScore;
         private ColumnHeader colHeaderModified;
         private ColumnHeader columnHeaderFolder;
+        private ElementHost ctrlHost;
+        private TextEditor sourceCodeEditor;
     }
 }

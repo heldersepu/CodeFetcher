@@ -67,6 +67,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>packages\AvalonEdit.5.0.3\lib\Net35\ICSharpCode.AvalonEdit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
@@ -75,6 +79,8 @@
       <HintPath>packages\Lucene.Net.3.0.3\lib\NET35\Lucene.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
@@ -90,6 +96,9 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Index.cs" />
@@ -110,6 +119,7 @@
     <Compile Include="COMTypeDef\IPropertyStorage.cs" />
     <Compile Include="COMTypeDef\IStorage.cs" />
     <Compile Include="COMTypeDef\Structs.cs" />
+    <Compile Include="Utils\BraceFoldingStrategy.cs" />
     <Compile Include="Utils\FilterLoader.cs" />
     <Compile Include="Utils\FilterReader.cs" />
     <Compile Include="frmMain.cs">

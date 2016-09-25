@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.ComponentModel;
 using CodeFetcher.Icons;
+using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Folding;
 
 namespace CodeFetcher
 {
@@ -12,6 +14,8 @@ namespace CodeFetcher
         #region Private declarations
         Index index;
         SystemImageList imageListDocuments;
+        FoldingManager foldingManager = null;
+        BraceFoldingStrategy foldingStrategy = new BraceFoldingStrategy();
         AutoCompleteStringCollection searchTerms = new AutoCompleteStringCollection();
         private string appPath { get { return typeof(frmMain).Assembly.Location; } }
         private string appDir { get { return Path.GetDirectoryName(appPath); } }
@@ -50,6 +54,10 @@ namespace CodeFetcher
             dateTimePickerFrom.Value = dateTimePickerFrom.MinDate;
             dateTimePickerTo.Format = DateTimePickerFormat.Short;
             dateTimePickerTo.Value = DateTime.Today.AddDays(1);
+
+            sourceCodeEditor.ShowLineNumbers = true;
+            sourceCodeEditor.Options.HighlightCurrentLine = true;
+            sourceCodeEditor.FontFamily = new System.Windows.Media.FontFamily("Consolas");
         }
 
         private void buttonRefreshIndex_Click(object sender, EventArgs e)
@@ -370,6 +378,24 @@ namespace CodeFetcher
                 splitContainer.Orientation = Orientation.Horizontal;
                 splitContainer.SplitterDistance = splitContainer.Height / 2;
             }
+        }
+
+        private void addFileToEditor(string fileName)
+        {
+            sourceCodeEditor.Load(fileName);
+            sourceCodeEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(fileName));
+            if (foldingManager == null)
+                foldingManager = FoldingManager.Install(sourceCodeEditor.TextArea);
+            foldingStrategy.UpdateFoldings(foldingManager, sourceCodeEditor.Document);
+        }
+
+        private void listViewResults_Click(object sender, EventArgs e)
+        {
+            if (this.listViewResults.SelectedItems.Count != 1)
+                return;
+
+            string path = (string)this.listViewResults.SelectedItems[0].Tag;
+            addFileToEditor(path);
         }
     }
 }
