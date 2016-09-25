@@ -30,7 +30,7 @@ namespace CodeFetcher
         };
         string[] splitters = new string[] {
             ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
-            "/", "\\", "{", "}", "-", "+", "*", "%",
+            ",", "/", "\\", "{", "}", "-", "+", "*", "%", "#",
         };
         string[] patterns;
         string path;
