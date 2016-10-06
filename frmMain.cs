@@ -182,6 +182,7 @@ namespace CodeFetcher
             search.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e)
             {
                 listViewResults.Items.Add((ListViewItem)e.UserState);
+                listViewResults.Refresh();
             };
             search.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
             {

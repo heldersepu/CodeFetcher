@@ -169,6 +169,8 @@ namespace CodeFetcher
             // 
             this.buttonSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSearch.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonSearch.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSearch.ForeColor = System.Drawing.SystemColors.ControlText;
             this.buttonSearch.Location = new System.Drawing.Point(775, 14);
             this.buttonSearch.Name = "buttonSearch";
             this.buttonSearch.Size = new System.Drawing.Size(160, 24);
