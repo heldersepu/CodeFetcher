@@ -17,7 +17,7 @@ namespace CodeFetcher
         FoldingManager foldingManager = null;
         BraceFoldingStrategy foldingStrategy = new BraceFoldingStrategy();
         AutoCompleteStringCollection searchTerms = new AutoCompleteStringCollection();
-        const int MAX_COMBO_ITEMS = 10;
+        const int MAX_COMBO_ITEMS = 20;
         private string appPath { get { return typeof(frmMain).Assembly.Location; } }
         private string appDir { get { return Path.GetDirectoryName(appPath); } }
         private string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
