@@ -41,7 +41,6 @@ namespace CodeFetcher
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.textBoxQuery = new System.Windows.Forms.TextBox();
             this.buttonSearch = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.buttonToday = new System.Windows.Forms.Button();
@@ -67,6 +66,7 @@ namespace CodeFetcher
             this.columnHeaderFolder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ctrlHost = new System.Windows.Forms.Integration.ElementHost();
             this.sourceCodeEditor = new ICSharpCode.AvalonEdit.TextEditor();
+            this.textBoxQuery = new System.Windows.Forms.ComboBox();
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -129,8 +129,8 @@ namespace CodeFetcher
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.pictureBox2);
             this.tabPage1.Controls.Add(this.textBoxQuery);
+            this.tabPage1.Controls.Add(this.pictureBox2);
             this.tabPage1.Controls.Add(this.buttonSearch);
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
@@ -153,18 +153,6 @@ namespace CodeFetcher
             this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
             this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
-            // textBoxQuery
-            // 
-            this.textBoxQuery.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxQuery.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.textBoxQuery.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.textBoxQuery.Location = new System.Drawing.Point(32, 15);
-            this.textBoxQuery.Name = "textBoxQuery";
-            this.textBoxQuery.Size = new System.Drawing.Size(694, 22);
-            this.textBoxQuery.TabIndex = 0;
-            this.textBoxQuery.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
-            // 
             // buttonSearch
             // 
             this.buttonSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -173,7 +161,7 @@ namespace CodeFetcher
             this.buttonSearch.ForeColor = System.Drawing.SystemColors.ControlText;
             this.buttonSearch.Location = new System.Drawing.Point(775, 14);
             this.buttonSearch.Name = "buttonSearch";
-            this.buttonSearch.Size = new System.Drawing.Size(160, 24);
+            this.buttonSearch.Size = new System.Drawing.Size(160, 26);
             this.buttonSearch.TabIndex = 1;
             this.buttonSearch.Text = "Search";
             this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
@@ -422,6 +410,17 @@ namespace CodeFetcher
             this.ctrlHost.Text = "ctrlHost";
             this.ctrlHost.Child = this.sourceCodeEditor;
             // 
+            // textBoxQuery
+            // 
+            this.textBoxQuery.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.textBoxQuery.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.textBoxQuery.FormattingEnabled = true;
+            this.textBoxQuery.Location = new System.Drawing.Point(32, 15);
+            this.textBoxQuery.Name = "textBoxQuery";
+            this.textBoxQuery.Size = new System.Drawing.Size(694, 24);
+            this.textBoxQuery.TabIndex = 15;
+            this.textBoxQuery.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
+            // 
             // frmMain
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
@@ -441,7 +440,6 @@ namespace CodeFetcher
             this.contextMenuStrip1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
@@ -463,7 +461,6 @@ namespace CodeFetcher
         private TabControl tabControl1;
         private TabPage tabPage1;
         private TabPage tabPage2;
-        private TextBox textBoxQuery;
         private TextBox textBoxContent;
         private TextBox textBoxName;
         private TextBox textBoxType;
@@ -487,5 +484,6 @@ namespace CodeFetcher
         private ColumnHeader columnHeaderFolder;
         private ElementHost ctrlHost;
         private TextEditor sourceCodeEditor;
+        private ComboBox textBoxQuery;
     }
 }

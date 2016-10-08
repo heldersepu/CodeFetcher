@@ -17,6 +17,7 @@ namespace CodeFetcher
         FoldingManager foldingManager = null;
         BraceFoldingStrategy foldingStrategy = new BraceFoldingStrategy();
         AutoCompleteStringCollection searchTerms = new AutoCompleteStringCollection();
+        const int MAX_COMBO_ITEMS = 10;
         private string appPath { get { return typeof(frmMain).Assembly.Location; } }
         private string appDir { get { return Path.GetDirectoryName(appPath); } }
         private string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
@@ -192,8 +193,11 @@ namespace CodeFetcher
                 }
                 else
                 {
-                    if (queryHistory != "" && searchTerms.Contains(queryHistory) == false)
+                    if (queryHistory.Trim() != "" && searchTerms.Contains(queryHistory) == false)
+                    {
                         searchTerms.Add(queryHistory);
+                        TextBoxAdd(queryHistory);
+                    }
                     labelStatus.Text = string.Format("Search took {0}. ", (DateTime.Now - start));
                 }
                 buttonSearch.Enabled = true;
@@ -275,6 +279,17 @@ namespace CodeFetcher
             }
         }
 
+        private void TextBoxAdd(string line)
+        {
+            if (textBoxQuery.Items.Count < MAX_COMBO_ITEMS)
+                textBoxQuery.Items.Add(line);
+            else
+            {
+                textBoxQuery.Items.RemoveAt(0);
+                textBoxQuery.Items.Add(line);
+            }
+        }
+
         private AutoCompleteStringCollection LoadSearchTerms()
         {
             var result = new AutoCompleteStringCollection();
@@ -287,7 +302,11 @@ namespace CodeFetcher
                         string line;
                         while ((line = fileReader.ReadLine()) != null)
                         {
-                            result.Add(line);
+                            if (line.Trim() != "" && !result.Contains(line))
+                            {
+                                result.Add(line);
+                                TextBoxAdd(line);
+                            }
                         }
                     }
                 }
