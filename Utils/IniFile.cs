@@ -51,6 +51,8 @@ namespace CodeFetcher
             public const string SEARCH_PATTERNS = "Search Patterns";
             public const string SEARCH_DIRECTORY = "Search Directory";
             public const string PATHS_TO_SKIP = "Paths To Skip";
+            public const string EXTENSIONS_EXCLUDE = "Extensions to Exclude";
+            public const string SPLITTERS = "Word Splitters";
         }
 
         public string[] Patterns = new string[] { "*.*" };
@@ -104,7 +106,34 @@ namespace CodeFetcher
                     }
                     SearchExclude = excludes.ToArray();
                 }
+
+                temp = ReadValue(LOCATION, KEYS.EXTENSIONS_EXCLUDE);
+                if (!string.IsNullOrEmpty(temp))
+                {
+                    var excludes = new List<string>();
+                    foreach (string ex in temp.SemiColonSplit())
+                    {
+                        excludes.Add(ex.ToUpper());
+                    }
+                    ExtensionExclude = excludes.ToArray();
+                }
+
+                temp = ReadValue(LOCATION, KEYS.SPLITTERS);
+                if (!string.IsNullOrEmpty(temp))
+                {
+                    var splitters = new List<string>();
+                    foreach (string sp in temp.SemiColonSplit())
+                    {
+                        splitters.Add(sp.ToLower());
+                    }
+                    Splitters = splitters.ToArray();
+                }
             }
+        }
+
+        public void Save()
+        {
+            //WriteValue(LOCATION, KEYS.SEARCH_PATTERNS, "");
         }
     }
 }
