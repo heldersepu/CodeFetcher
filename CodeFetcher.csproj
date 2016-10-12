@@ -138,6 +138,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utils\StringExtension.cs" />
     <Content Include="Icons\App.ico" />
     <Content Include="Icons\help-about.ico" />
     <Content Include="Icons\Logo.png" />

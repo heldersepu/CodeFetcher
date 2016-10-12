@@ -28,7 +28,6 @@ namespace CodeFetcher
         public frmMain()
         {
             InitializeComponent();
-
             imageListDocuments = new SystemImageList(SystemImageListSize.SmallIcons);
             SystemImageListHelper.SetListViewImageList(listViewResults, imageListDocuments, false);
         }
@@ -68,45 +67,10 @@ namespace CodeFetcher
 
         private void InitializeIndex()
         {
-            string[] patterns = new string[] { "*.*" };
-            string[] searchDirs = new string[] { appDir }; ;
-            string[] searchExclude = new string[] { "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", "\\.SVN", "\\.GIT" };
-
             string iniPath = Path.Combine(appDir, appName + ".ini");
-            if (File.Exists(iniPath))
-            {
-                IniFile ini = new IniFile(iniPath);
+            var ini = new IniFile(iniPath, appDir);
 
-                string tempPatterns = ini.IniReadValue("Location", "Search Patterns");
-                if (!string.IsNullOrEmpty(tempPatterns))
-                {
-                    patterns = tempPatterns.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-                }
-
-                string tempSearchDir = ini.IniReadValue("Location", "Search Directory");
-                if (!string.IsNullOrEmpty(tempSearchDir))
-                {
-                    List<string> dirs = new List<string>();
-                    foreach (string dir in tempSearchDir.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        dirs.Add(Path.Combine(appDir, dir));
-                    }
-                    searchDirs = dirs.ToArray();
-                }
-
-                string tempSearchExclude = ini.IniReadValue("Location", "Paths To Skip");
-                if (!string.IsNullOrEmpty(tempSearchExclude))
-                {
-                    List<string> excludes = new List<string>();
-                    foreach (string exclude in tempSearchExclude.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-                    {
-                        excludes.Add(exclude.ToLower());
-                    }
-                    searchExclude = excludes.ToArray();
-                }
-            }
-
-            index = new Index(searchExclude, patterns, searchDirs, pathIndex);
+            index = new Index(ini, pathIndex);
             var worker = index.Initialize();
             worker.ProgressChanged += delegate (object s, ProgressChangedEventArgs pe)
             {
@@ -217,7 +181,7 @@ namespace CodeFetcher
                 return;
 
             string path = (string) this.listViewResults.SelectedItems[0].Tag;
-            Open.File(index.searchDirs, path);
+            Open.File(index.iniFile.SearchDirs, path);
         }
 
         private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -227,7 +191,7 @@ namespace CodeFetcher
                 foreach (ListViewItem item in listViewResults.SelectedItems)
                 {
                     string path = (string)item.Tag;
-                    Open.File(index.searchDirs, path);
+                    Open.File(index.iniFile.SearchDirs, path);
                 }
             }
         }
@@ -240,7 +204,7 @@ namespace CodeFetcher
                 {
                     string path = (string)item.Tag;
                     path = Path.GetDirectoryName(path);
-                    Open.Directory(index.searchDirs, path);
+                    Open.Directory(index.iniFile.SearchDirs, path);
                 }
             }
         }
@@ -322,7 +286,7 @@ namespace CodeFetcher
         {
             try
             {
-                using (StreamWriter writer = new StreamWriter(searchTermsPath))
+                using (var writer = new StreamWriter(searchTermsPath))
                 {
                     foreach (string item in items)
                     {
@@ -330,7 +294,7 @@ namespace CodeFetcher
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 MessageBox.Show("Unable to save search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -338,7 +302,7 @@ namespace CodeFetcher
 
         private void listViewResults_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            ListViewItemComparer.ColumnDataType columnDataType = ListViewItemComparer.ColumnDataType.Generic;
+            var columnDataType = ListViewItemComparer.ColumnDataType.Generic;
             if (e.Column == colHeaderModified.Index)
             {
                 columnDataType = ListViewItemComparer.ColumnDataType.DateTime;

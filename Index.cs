@@ -17,13 +17,13 @@ namespace CodeFetcher
     public class Index
     {
         public BackgroundWorker worker;
-        public string[] searchDirs;
+        public IniFile iniFile;
 
         #region Private declarations
         BackgroundWorker searchWorker;
         IndexWriter indexWriter;
         IndexSearcher searcher = null;
-        string[] searchExclude;
+
         string[] extensionExclude = new string[] {
             ".PDB", ".DLL", ".EXE",
             ".GIF", ".JPG", ".PNG",
@@ -32,7 +32,7 @@ namespace CodeFetcher
             ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
             ",", "/", "\\", "{", "}", "-", "+", "*", "%", "#",
         };
-        string[] patterns;
+
         string path;
         int fileCount;
         bool portablePaths = true;
@@ -49,12 +49,10 @@ namespace CodeFetcher
         Dictionary<string, long> newDateStamps;
         #endregion Private declarations
 
-        public Index(string[] searchExclude, string[] patterns, string[] searchDirs, string path)
+        public Index(IniFile iniFile, string path)
         {
-            this.searchExclude = searchExclude;
-            this.patterns = patterns;
+            this.iniFile = iniFile;
             this.path = path;
-            this.searchDirs = searchDirs;
         }
 
         public void Clean()
@@ -138,7 +136,7 @@ namespace CodeFetcher
                 bool cancel = false;
                 DateTime start = DateTime.Now;
 
-                foreach (string searchDir in searchDirs)
+                foreach (string searchDir in iniFile.SearchDirs)
                 {
                     if (System.IO.Directory.Exists(searchDir))
                     {
@@ -277,7 +275,7 @@ namespace CodeFetcher
                 return false;
 
             // Don't index excluded files
-            foreach (string exclude in searchExclude)
+            foreach (string exclude in iniFile.SearchExclude)
             {
                 if (directory.FullName.ToUpper().EndsWith(exclude))
                     return false;
@@ -286,7 +284,7 @@ namespace CodeFetcher
             int filesIndexed = 0;
 
             // find all matching files
-            foreach (string pattern in patterns)
+            foreach (string pattern in iniFile.Patterns)
             {
                 FileInfo[] fis = null;
                 try
