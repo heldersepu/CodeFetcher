@@ -214,7 +214,8 @@ namespace CodeFetcher
 
         private void pictureBox2_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://lucene.apache.org/core/2_9_4/queryparsersyntax.html");
+            if (((MouseEventArgs)e).Button == MouseButtons.Left)
+                System.Diagnostics.Process.Start("https://lucene.apache.org/core/2_9_4/queryparsersyntax.html");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -378,6 +379,42 @@ namespace CodeFetcher
 
             string path = (string)this.listViewResults.SelectedItems[0].Tag;
             addFileToEditor(path);
+        }
+
+        int timeMouseDown;
+        string labelStatus_Text;
+        private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                labelStatus_Text = labelStatus.Text;
+                RightClickHoldTimer.Start();
+                timeMouseDown = 50;
+            }
+        }
+
+        private void pictureBox2_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                RightClickHoldTimer.Stop();
+                labelStatus.Text = labelStatus_Text;
+            }
+        }
+
+        private void RightClickHoldTimer_Tick(object sender, EventArgs e)
+        {
+            if (timeMouseDown > 0)
+            {
+                timeMouseDown--;
+                labelStatus.Text = "  \t   "  + timeMouseDown.ToString();
+            }
+            else
+            {
+                index.iniFile.Save();
+                labelStatus.Text = "IniFile Created...";
+                RightClickHoldTimer.Stop();
+            }
         }
     }
 }

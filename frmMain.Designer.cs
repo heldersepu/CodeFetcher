@@ -40,6 +40,7 @@ namespace CodeFetcher
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.textBoxQuery = new System.Windows.Forms.ComboBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.buttonSearch = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -66,7 +67,7 @@ namespace CodeFetcher
             this.columnHeaderFolder = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ctrlHost = new System.Windows.Forms.Integration.ElementHost();
             this.sourceCodeEditor = new ICSharpCode.AvalonEdit.TextEditor();
-            this.textBoxQuery = new System.Windows.Forms.ComboBox();
+            this.RightClickHoldTimer = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -93,20 +94,20 @@ namespace CodeFetcher
             this.openFileToolStripMenuItem,
             this.openContainingFolderToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(202, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(188, 48);
             // 
             // openFileToolStripMenuItem
             // 
             this.openFileToolStripMenuItem.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.openFileToolStripMenuItem.Name = "openFileToolStripMenuItem";
-            this.openFileToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.openFileToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.openFileToolStripMenuItem.Text = "Open File";
             this.openFileToolStripMenuItem.Click += new System.EventHandler(this.openFileToolStripMenuItem_Click);
             // 
             // openContainingFolderToolStripMenuItem
             // 
             this.openContainingFolderToolStripMenuItem.Name = "openContainingFolderToolStripMenuItem";
-            this.openContainingFolderToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.openContainingFolderToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.openContainingFolderToolStripMenuItem.Text = "Open Containing Folder";
             this.openContainingFolderToolStripMenuItem.Click += new System.EventHandler(this.openContainingFolderToolStripMenuItem_Click);
             // 
@@ -140,6 +141,19 @@ namespace CodeFetcher
             this.tabPage1.Text = "Search";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // textBoxQuery
+            // 
+            this.textBoxQuery.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxQuery.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.textBoxQuery.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.textBoxQuery.FormattingEnabled = true;
+            this.textBoxQuery.Location = new System.Drawing.Point(32, 15);
+            this.textBoxQuery.Name = "textBoxQuery";
+            this.textBoxQuery.Size = new System.Drawing.Size(694, 24);
+            this.textBoxQuery.TabIndex = 15;
+            this.textBoxQuery.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
+            // 
             // pictureBox2
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -152,6 +166,8 @@ namespace CodeFetcher
             this.pictureBox2.TabStop = false;
             this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
             this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
+            this.pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseUp);
             // 
             // buttonSearch
             // 
@@ -410,23 +426,14 @@ namespace CodeFetcher
             this.ctrlHost.Text = "ctrlHost";
             this.ctrlHost.Child = this.sourceCodeEditor;
             // 
-            // textBoxQuery
+            // RightClickHoldTimer
             // 
-            this.textBoxQuery.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxQuery.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
-            this.textBoxQuery.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
-            this.textBoxQuery.FormattingEnabled = true;
-            this.textBoxQuery.Location = new System.Drawing.Point(32, 15);
-            this.textBoxQuery.Name = "textBoxQuery";
-            this.textBoxQuery.Size = new System.Drawing.Size(694, 24);
-            this.textBoxQuery.TabIndex = 15;
-            this.textBoxQuery.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
+            this.RightClickHoldTimer.Tick += new System.EventHandler(this.RightClickHoldTimer_Tick);
             // 
             // frmMain
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
-            this.ClientSize = new System.Drawing.Size(1008, 561);
+            this.ClientSize = new System.Drawing.Size(1008, 573);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.buttonRefreshIndex);
             this.Controls.Add(this.tabControl1);
@@ -487,5 +494,6 @@ namespace CodeFetcher
         private ElementHost ctrlHost;
         private TextEditor sourceCodeEditor;
         private ComboBox textBoxQuery;
+        private Timer RightClickHoldTimer;
     }
 }
