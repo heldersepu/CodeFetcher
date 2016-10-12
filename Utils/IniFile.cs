@@ -44,6 +44,15 @@ namespace CodeFetcher
         }
         #endregion Private declarations
 
+        #region Private constants
+        private const string LOCATION = "Location";
+        private struct KEYS
+        {
+            public const string SEARCH_PATTERNS = "Search Patterns";
+            public const string SEARCH_DIRECTORY = "Search Directory";
+            public const string PATHS_TO_SKIP = "Paths To Skip";
+        }
+
         public string[] Patterns = new string[] { "*.*" };
         public string[] SearchDirs = null;
         public string[] SearchExclude = new string[] {
@@ -56,9 +65,10 @@ namespace CodeFetcher
             ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
             ",", "/", "\\", "{", "}", "-", "+", "*", "%", "#",
         };
+        #endregion Private Constants
 
         /// <summary>
-        /// INIFile Constructor.
+        /// IniFile Constructor.
         /// </summary>
         /// <param name="iniPath"></param>
         public IniFile(string iniPath, string appDir)
@@ -67,13 +77,13 @@ namespace CodeFetcher
             SearchDirs = new string[] { appDir };
             if (File.Exists(iniPath))
             {
-                string temp = ReadValue("Location", "Search Patterns");
+                string temp = ReadValue(LOCATION, KEYS.SEARCH_PATTERNS);
                 if (!string.IsNullOrEmpty(temp))
                 {
                     Patterns = temp.SemiColonSplit();
                 }
 
-                temp = ReadValue("Location", "Search Directory");
+                temp = ReadValue(LOCATION, KEYS.SEARCH_DIRECTORY);
                 if (!string.IsNullOrEmpty(temp))
                 {
                     var dirs = new List<string>();
@@ -84,7 +94,7 @@ namespace CodeFetcher
                     SearchDirs = dirs.ToArray();
                 }
 
-                temp = ReadValue("Location", "Paths To Skip");
+                temp = ReadValue(LOCATION, KEYS.PATHS_TO_SKIP);
                 if (!string.IsNullOrEmpty(temp))
                 {
                     var excludes = new List<string>();
@@ -96,7 +106,5 @@ namespace CodeFetcher
                 }
             }
         }
-
-
     }
 }
