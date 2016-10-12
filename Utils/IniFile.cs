@@ -29,6 +29,16 @@ namespace CodeFetcher
         {
             WritePrivateProfileString(Section, Key, Value, path);
         }
+        private void WriteValue(string Section, string Key, string[] Values)
+        {
+            if (Values.Length > 0)
+            {
+                string Value = "";
+                foreach (var val in Values)
+                    Value += val + ";";
+                WritePrivateProfileString(Section, Key, Value, path);
+            }
+        }
 
         /// <summary>
         /// Read Data Value From the Ini File
@@ -133,7 +143,11 @@ namespace CodeFetcher
 
         public void Save()
         {
-            //WriteValue(LOCATION, KEYS.SEARCH_PATTERNS, "");
+            WriteValue(LOCATION, KEYS.SEARCH_PATTERNS,      Patterns);
+            WriteValue(LOCATION, KEYS.SEARCH_DIRECTORY,     SearchDirs);
+            WriteValue(LOCATION, KEYS.PATHS_TO_SKIP,        SearchExclude);
+            WriteValue(LOCATION, KEYS.EXTENSIONS_EXCLUDE,   ExtensionExclude);
+            WriteValue(LOCATION, KEYS.SPLITTERS,            Splitters);
         }
     }
 }
