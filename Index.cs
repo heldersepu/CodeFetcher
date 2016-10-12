@@ -84,7 +84,8 @@ namespace CodeFetcher
                     // Check to see if we are in relative or absolute path mode
                     for (int i = 0; i < indexReader.NumDocs(); i++)
                     {
-                        if (indexReader.IsDeleted(i) == false)
+                        if (indexReader.IsDeleted(i)
+                        )
                         {
                             Document doc = indexReader.Document(i);
                             string path = doc.Get("path");
@@ -163,7 +164,7 @@ namespace CodeFetcher
                     // Loop through all the files and delete if it doesn't exist
                     foreach (string file in dateStamps.Keys)
                     {
-                        if (newDateStamps.ContainsKey(file) == false)
+                        if (!newDateStamps.ContainsKey(file))
                         {
                             deleted++;
                             indexWriter.DeleteDocuments(new Term("path", file));
@@ -331,7 +332,7 @@ namespace CodeFetcher
                             newDateStamps.Add(relPath, fi.LastWriteTime.Ticks);
 
                             // Check to see of doc has changed
-                            if (dateStamps.ContainsKey(relPath) == false)
+                            if (!dateStamps.ContainsKey(relPath))
                             {
                                 addDocument(extension, path, relPath, false);
                             }

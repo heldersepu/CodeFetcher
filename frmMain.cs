@@ -78,13 +78,13 @@ namespace CodeFetcher
                 IniFile ini = new IniFile(iniPath);
 
                 string tempPatterns = ini.IniReadValue("Location", "Search Patterns");
-                if (string.IsNullOrEmpty(tempPatterns) == false)
+                if (!string.IsNullOrEmpty(tempPatterns))
                 {
                     patterns = tempPatterns.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 }
 
                 string tempSearchDir = ini.IniReadValue("Location", "Search Directory");
-                if (string.IsNullOrEmpty(tempSearchDir) == false)
+                if (!string.IsNullOrEmpty(tempSearchDir))
                 {
                     List<string> dirs = new List<string>();
                     foreach (string dir in tempSearchDir.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
@@ -95,7 +95,7 @@ namespace CodeFetcher
                 }
 
                 string tempSearchExclude = ini.IniReadValue("Location", "Paths To Skip");
-                if (string.IsNullOrEmpty(tempSearchExclude) == false)
+                if (!string.IsNullOrEmpty(tempSearchExclude))
                 {
                     List<string> excludes = new List<string>();
                     foreach (string exclude in tempSearchExclude.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
@@ -147,7 +147,7 @@ namespace CodeFetcher
                 queryText = "(" + textBoxQuery.Text + ")";
 
                 // Also search the path if the query isn't qualified
-                if (queryText.Contains(":") == false)
+                if (!queryText.Contains(":"))
                     queryText += " OR name:" + queryText;
 
                 queryHistory = textBoxQuery.Text;
@@ -193,7 +193,7 @@ namespace CodeFetcher
                 }
                 else
                 {
-                    if (queryHistory.Trim() != "" && searchTerms.Contains(queryHistory) == false)
+                    if (queryHistory.Trim() != "" && !searchTerms.Contains(queryHistory))
                     {
                         searchTerms.Add(queryHistory);
                         TextBoxAdd(queryHistory);
