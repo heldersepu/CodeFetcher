@@ -24,15 +24,6 @@ namespace CodeFetcher
         IndexWriter indexWriter;
         IndexSearcher searcher = null;
 
-        string[] extensionExclude = new string[] {
-            ".PDB", ".DLL", ".EXE",
-            ".GIF", ".JPG", ".PNG",
-        };
-        string[] splitters = new string[] {
-            ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
-            ",", "/", "\\", "{", "}", "-", "+", "*", "%", "#",
-        };
-
         string path;
         int fileCount;
         bool portablePaths = true;
@@ -307,7 +298,7 @@ namespace CodeFetcher
 
                     string path = fi.FullName;
                     string extension = Path.GetExtension(path);
-                    if (extensionExclude.Contains(extension.ToUpper()))
+                    if (iniFile.ExtensionExclude.Contains(extension.ToUpper()))
                     {
                         this.countSkipped++;
                     }
@@ -387,7 +378,7 @@ namespace CodeFetcher
                 else if (fi.Length < indexMaxFileSize * 1000000)
                     text = Parser.Parse(path);
                 if (!string.IsNullOrEmpty(text))
-                    foreach (var item in splitters)
+                    foreach (var item in iniFile.Splitters)
                         text = text.Replace(item, " ");
             }
             catch (Exception)

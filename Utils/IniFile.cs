@@ -46,7 +46,16 @@ namespace CodeFetcher
 
         public string[] Patterns = new string[] { "*.*" };
         public string[] SearchDirs = null;
-        public string[] SearchExclude = new string[] { "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", "\\.SVN", "\\.GIT" };
+        public string[] SearchExclude = new string[] {
+            "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", "\\.SVN", "\\.GIT"
+        };
+        public string[] ExtensionExclude = new string[] {
+            ".PDB", ".DLL", ".EXE", ".GIF", ".JPG", ".PNG",
+        };
+        public string[] Splitters = new string[] {
+            ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
+            ",", "/", "\\", "{", "}", "-", "+", "*", "%", "#",
+        };
 
         /// <summary>
         /// INIFile Constructor.
