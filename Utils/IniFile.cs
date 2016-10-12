@@ -63,8 +63,10 @@ namespace CodeFetcher
             public const string PATHS_TO_SKIP = "Paths To Skip";
             public const string EXTENSIONS_EXCLUDE = "Extensions to Exclude";
             public const string SPLITTERS = "Word Splitters";
+            public const string INDEX_PATH = "Index Path";
         }
 
+        public string IndexPath = "";
         public string[] Patterns = new string[] { "*.*" };
         public string[] SearchDirs = null;
         public string[] SearchExclude = new string[] {
@@ -77,6 +79,8 @@ namespace CodeFetcher
             ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
             ",", "/", "\\", "{", "}", "-", "+", "*", "%", "#",
         };
+        public string SearchTermsPath { get { return Path.Combine(IndexPath, "searchHistory.log"); } }
+
         #endregion Private Constants
 
         /// <summary>
@@ -87,6 +91,7 @@ namespace CodeFetcher
         {
             path = iniPath;
             SearchDirs = new string[] { appDir };
+            IndexPath = Path.Combine(appDir, ".SearchIndex");
             if (File.Exists(iniPath))
             {
                 string temp = ReadValue(LOCATION, KEYS.SEARCH_PATTERNS);
@@ -137,6 +142,12 @@ namespace CodeFetcher
                         splitters.Add(sp.ToLower());
                     }
                     Splitters = splitters.ToArray();
+                }
+
+                temp = ReadValue(LOCATION, KEYS.INDEX_PATH);
+                if (!string.IsNullOrEmpty(temp))
+                {
+                    IndexPath = temp;
                 }
             }
         }

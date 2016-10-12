@@ -24,7 +24,6 @@ namespace CodeFetcher
         IndexWriter indexWriter;
         IndexSearcher searcher = null;
 
-        string path;
         int fileCount;
         bool portablePaths = true;
         // statistics
@@ -40,15 +39,14 @@ namespace CodeFetcher
         Dictionary<string, long> newDateStamps;
         #endregion Private declarations
 
-        public Index(IniFile iniFile, string path)
+        public Index(IniFile iniFile)
         {
             this.iniFile = iniFile;
-            this.path = path;
         }
 
         public void Clean()
         {
-            System.IO.Directory.Delete(this.path, true);
+            System.IO.Directory.Delete(iniFile.IndexPath, true);
             checkIndex();
         }
 
@@ -67,7 +65,7 @@ namespace CodeFetcher
                 // First load all of the datestamps to check if the file is modified
                 if (checkIndex())
                 {
-                    var directory = new MMapDirectory(new DirectoryInfo(path));
+                    var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                     IndexReader indexReader = IndexReader.Open(directory, true);
 
                     // Check to see if we are in relative or absolute path mode
@@ -93,7 +91,7 @@ namespace CodeFetcher
                 int attempts = 0;
                 while (attempts < 5)
                 {
-                    var directory = new MMapDirectory(new DirectoryInfo(path));
+                    var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                     var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
                     if (checkIndex())
                     {
@@ -105,8 +103,8 @@ namespace CodeFetcher
                         catch (LockObtainFailedException)
                         {
                             attempts++;
-                            if (System.IO.Directory.Exists(path))
-                                System.IO.Directory.Delete(path, true);
+                            if (System.IO.Directory.Exists(iniFile.IndexPath))
+                                System.IO.Directory.Delete(iniFile.IndexPath, true);
                         }
                     }
                     else
@@ -117,7 +115,7 @@ namespace CodeFetcher
                 }
 
                 // Hide the file
-                File.SetAttributes(path, FileAttributes.Hidden);
+                File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
 
                 bytesTotal = 0;
                 countTotal = 0;
@@ -177,7 +175,7 @@ namespace CodeFetcher
         {
             try
             {
-                var directory = new MMapDirectory(new DirectoryInfo(path));
+                var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                 searcher = new IndexSearcher(directory, true);
                 searcher.Dispose();
                 return true;
@@ -198,7 +196,7 @@ namespace CodeFetcher
             {
                 try
                 {
-                    var directory = new MMapDirectory(new DirectoryInfo(path));
+                    var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                     searcher = new IndexSearcher(directory, true);
                 }
                 catch (IOException ex)
@@ -262,7 +260,7 @@ namespace CodeFetcher
         public bool addFolder(string searchDir, DirectoryInfo directory)
         {
             // Don't index the indexes.....
-            if (directory.FullName == path)
+            if (directory.FullName == iniFile.IndexPath)
                 return false;
 
             // Don't index excluded files

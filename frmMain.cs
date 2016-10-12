@@ -21,8 +21,6 @@ namespace CodeFetcher
         private string appPath { get { return typeof(frmMain).Assembly.Location; } }
         private string appDir { get { return Path.GetDirectoryName(appPath); } }
         private string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
-        private string pathIndex { get { return Path.Combine(appDir, ".SearchIndex"); } }
-        private string searchTermsPath { get { return Path.Combine(pathIndex, "searchHistory.log"); } }
         #endregion Private declarations
 
         public frmMain()
@@ -70,7 +68,7 @@ namespace CodeFetcher
             string iniPath = Path.Combine(appDir, appName + ".ini");
             var ini = new IniFile(iniPath, appDir);
 
-            index = new Index(ini, pathIndex);
+            index = new Index(ini);
             var worker = index.Initialize();
             worker.ProgressChanged += delegate (object s, ProgressChangedEventArgs pe)
             {
@@ -257,11 +255,11 @@ namespace CodeFetcher
         private AutoCompleteStringCollection LoadSearchTerms()
         {
             var result = new AutoCompleteStringCollection();
-            if (File.Exists(searchTermsPath))
+            if (File.Exists(index.iniFile.SearchTermsPath))
             {
                 try
                 {
-                    using (var fileReader = new StreamReader(searchTermsPath))
+                    using (var fileReader = new StreamReader(index.iniFile.SearchTermsPath))
                     {
                         string line;
                         while ((line = fileReader.ReadLine()) != null)
@@ -286,7 +284,7 @@ namespace CodeFetcher
         {
             try
             {
-                using (var writer = new StreamWriter(searchTermsPath))
+                using (var writer = new StreamWriter(index.iniFile.SearchTermsPath))
                 {
                     foreach (string item in items)
                     {
