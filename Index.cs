@@ -84,8 +84,7 @@ namespace CodeFetcher
                     // Check to see if we are in relative or absolute path mode
                     for (int i = 0; i < indexReader.NumDocs(); i++)
                     {
-                        if (indexReader.IsDeleted(i)
-                        )
+                        if (!indexReader.IsDeleted(i))
                         {
                             Document doc = indexReader.Document(i);
                             string path = doc.Get("path");
