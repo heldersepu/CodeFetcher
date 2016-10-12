@@ -59,7 +59,7 @@ namespace CodeFetcher
         private struct KEYS
         {
             public const string SEARCH_PATTERNS = "Search Patterns";
-            public const string SEARCH_DIRECTORY = "Search Directory";
+            public const string SEARCH_DIRECTORIES = "Search Directories";
             public const string PATHS_TO_SKIP = "Paths To Skip";
             public const string EXTENSIONS_EXCLUDE = "Extensions to Exclude";
             public const string SPLITTERS = "Word Splitters";
@@ -100,7 +100,7 @@ namespace CodeFetcher
                     Patterns = temp.SemiColonSplit();
                 }
 
-                temp = ReadValue(LOCATION, KEYS.SEARCH_DIRECTORY);
+                temp = ReadValue(LOCATION, KEYS.SEARCH_DIRECTORIES);
                 if (!string.IsNullOrEmpty(temp))
                 {
                     var dirs = new List<string>();
@@ -155,7 +155,7 @@ namespace CodeFetcher
         public void Save()
         {
             WriteValue(LOCATION, KEYS.SEARCH_PATTERNS,      Patterns);
-            WriteValue(LOCATION, KEYS.SEARCH_DIRECTORY,     SearchDirs);
+            WriteValue(LOCATION, KEYS.SEARCH_DIRECTORIES,   SearchDirs);
             WriteValue(LOCATION, KEYS.PATHS_TO_SKIP,        SearchExclude);
             WriteValue(LOCATION, KEYS.EXTENSIONS_EXCLUDE,   ExtensionExclude);
             WriteValue(LOCATION, KEYS.SPLITTERS,            Splitters);
