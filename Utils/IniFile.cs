@@ -159,6 +159,7 @@ namespace CodeFetcher
             WriteValue(LOCATION, KEYS.PATHS_TO_SKIP,        SearchExclude);
             WriteValue(LOCATION, KEYS.EXTENSIONS_EXCLUDE,   ExtensionExclude);
             WriteValue(LOCATION, KEYS.SPLITTERS,            Splitters);
+            WriteValue(LOCATION, KEYS.INDEX_PATH,           IndexPath);
         }
     }
 }
