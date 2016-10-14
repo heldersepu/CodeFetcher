@@ -2,3 +2,7 @@
 /packages
 /bin
 .vs/CodeFetcher/v14/.suo
+install/.SearchIndex
+*.log
+*.exe
+install/CodeFetcher.pdb
