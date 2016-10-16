@@ -207,7 +207,7 @@ namespace CodeFetcher
                 Query query;
                 try
                 {
-                    QueryParser parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "content", new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30));
+                    var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "content", new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30));
                     query = parser.Parse(queryText);
                 }
                 catch (Exception ex)
@@ -216,16 +216,15 @@ namespace CodeFetcher
                 }
 
                 // Search
-                var results = searcher.Search(query, null, 200);
-                foreach (ScoreDoc scoreDoc in results.ScoreDocs)
+                var results = searcher.Search(query, null, iniFile.HitsLimit);
+                foreach (var scoreDoc in results.ScoreDocs)
                 {
                     // get the document from index
-                    Document doc = searcher.Doc(scoreDoc.Doc);
+                    var doc = searcher.Doc(scoreDoc.Doc);
 
                     // create a new row with the result data
                     string filename = doc.Get("name") + "." + doc.Get("type");
                     string path = doc.Get("path");
-                    DateTime modified = DateTime.ParseExact(doc.Get("modified"), "yyyyMMddHHmmss", null);
                     string folder = "";
                     try
                     {
@@ -236,7 +235,14 @@ namespace CodeFetcher
                         // Couldn't get directory name...
                     }
 
-                    ListViewItem item = new ListViewItem(new string[] { null, filename, (scoreDoc.Score * 100).ToString("N0"), modified.ToShortDateString() + " " + modified.ToShortTimeString(), folder });
+                    var modified = DateTime.ParseExact(doc.Get("modified"), "yyyyMMddHHmmss", null);
+                    var item = new ListViewItem( new string[] {
+                        null,
+                        filename,
+                        (scoreDoc.Score * 100).ToString("N0"),
+                        modified.ToShortDateString() + " " + modified.ToShortTimeString(),
+                        folder
+                    });
                     item.Tag = path;
                     try
                     {

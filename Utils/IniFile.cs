@@ -64,8 +64,11 @@ namespace CodeFetcher
             public const string EXTENSIONS_EXCLUDE = "Extensions to Exclude";
             public const string SPLITTERS = "Word Splitters";
             public const string INDEX_PATH = "Index Path";
+            public const string HITS_LIMIT = "Limit on search hits";
         }
+        #endregion Private Constants
 
+        public int HitsLimit = 200;
         public string IndexPath = "";
         public string[] Patterns = new string[] { "*.*" };
         public string[] SearchDirs = null;
@@ -81,7 +84,7 @@ namespace CodeFetcher
         };
         public string SearchTermsPath { get { return Path.Combine(IndexPath, "searchHistory.log"); } }
 
-        #endregion Private Constants
+
 
         /// <summary>
         /// IniFile Constructor.
@@ -149,6 +152,14 @@ namespace CodeFetcher
                 {
                     IndexPath = temp;
                 }
+
+                temp = ReadValue(LOCATION, KEYS.HITS_LIMIT);
+                if (!string.IsNullOrEmpty(temp))
+                {
+                    int x;
+                    if (int.TryParse(temp, out x))
+                        HitsLimit = x;
+                }
             }
         }
 
@@ -160,6 +171,7 @@ namespace CodeFetcher
             WriteValue(LOCATION, KEYS.EXTENSIONS_EXCLUDE,   ExtensionExclude);
             WriteValue(LOCATION, KEYS.SPLITTERS,            Splitters);
             WriteValue(LOCATION, KEYS.INDEX_PATH,           IndexPath);
+            WriteValue(LOCATION, KEYS.HITS_LIMIT,           HitsLimit.ToString());
         }
     }
 }
