@@ -57,6 +57,30 @@ namespace CodeFetcher
             sourceCodeEditor.FontFamily = new System.Windows.Media.FontFamily("Consolas");
         }
 
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveSearchTerms(searchTerms);
+
+            if (index.worker != null && index.worker.IsBusy)
+            {
+                e.Cancel = true;
+                index.worker.CancelAsync();
+                labelStatus.Text = "Waiting for index to cancel";
+
+                Timer t = new Timer();
+                t.Interval = 100;
+                t.Tick += delegate (object sender1, EventArgs e1)
+                {
+                    if (!(index.worker != null && index.worker.IsBusy))
+                    {
+                        t.Stop();
+                        this.Close();
+                    }
+                };
+                t.Start();
+            }
+        }
+
         private void buttonRefreshIndex_Click(object sender, EventArgs e)
         {
             InitializeIndex();
@@ -71,16 +95,143 @@ namespace CodeFetcher
             var worker = index.Initialize();
             worker.ProgressChanged += delegate (object s, ProgressChangedEventArgs pe)
             {
-                string status;
-                if (pe.ProgressPercentage == 0)
-                    status = pe.UserState.ToString();
-                else
-                    status = string.Format("Files indexed {0}. {1}", pe.ProgressPercentage, pe.UserState.ToString());
+                string status = pe.UserState.ToString();
+                if (pe.ProgressPercentage != 0)
+                    status = string.Format("Files indexed {0}. {1}", pe.ProgressPercentage, status);
                 labelStatus.Text = status;
             };
             worker.RunWorkerAsync();
         }
 
+        private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewResults.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem item in listViewResults.SelectedItems)
+                    Open.File(index.iniFile.SearchDirs, (string)item.Tag);
+            }
+        }
+
+        private void openContainingFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (listViewResults.SelectedItems.Count > 0)
+            {
+                foreach (ListViewItem item in listViewResults.SelectedItems)
+                {
+                    string path = (string)item.Tag;
+                    path = Path.GetDirectoryName(path);
+                    Open.Directory(index.iniFile.SearchDirs, path);
+                }
+            }
+        }
+
+        private void buttonClean_Click(object sender, EventArgs e)
+        {
+            index.Clean();
+        }
+
+        private void TextBoxAdd(string line)
+        {
+            if (textBoxQuery.Items.Count < MAX_COMBO_ITEMS)
+                textBoxQuery.Items.Add(line);
+            else
+            {
+                textBoxQuery.Items.RemoveAt(0);
+                textBoxQuery.Items.Add(line);
+            }
+        }
+
+        private AutoCompleteStringCollection LoadSearchTerms()
+        {
+            var result = new AutoCompleteStringCollection();
+            if (File.Exists(index.iniFile.SearchTermsPath))
+            {
+                try
+                {
+                    using (var fileReader = new StreamReader(index.iniFile.SearchTermsPath))
+                    {
+                        string line;
+                        while ((line = fileReader.ReadLine()) != null)
+                        {
+                            if (line.Trim() != "" && !result.Contains(line))
+                            {
+                                result.Add(line);
+                                TextBoxAdd(line);
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to load search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+            }
+            return result;
+        }
+
+        private void SaveSearchTerms(AutoCompleteStringCollection items)
+        {
+            try
+            {
+                using (var writer = new StreamWriter(index.iniFile.SearchTermsPath))
+                {
+                    foreach (string item in items)
+                    {
+                        writer.WriteLine(item);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unable to save search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        private void buttonToday_Click(object sender, EventArgs e)
+        {
+            dateTimePickerFrom.Value = DateTime.Today;
+        }
+
+        private void tabControl1_Selected(object sender, TabControlEventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 0)
+            {
+                tabControl1.Height -= 30;
+                splitContainer.Height += 30;
+                splitContainer.Location = new System.Drawing.Point(12, 95);
+            }
+            else
+            {
+                tabControl1.Height += 30;
+                splitContainer.Height -= 30;
+                splitContainer.Location = new System.Drawing.Point(12, 125);
+            }
+        }
+
+        private void splitContainer_DoubleClick(object sender, EventArgs e)
+        {
+            if (splitContainer.Orientation == Orientation.Horizontal)
+            {
+                splitContainer.Orientation = Orientation.Vertical;
+                splitContainer.SplitterDistance = splitContainer.Width / 2;
+            }
+            else
+            {
+                splitContainer.Orientation = Orientation.Horizontal;
+                splitContainer.SplitterDistance = splitContainer.Height / 2;
+            }
+        }
+
+        private void addFileToEditor(string fileName)
+        {
+            sourceCodeEditor.Load(fileName);
+            sourceCodeEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(fileName));
+            if (foldingManager == null)
+                foldingManager = FoldingManager.Install(sourceCodeEditor.TextArea);
+            foldingStrategy.UpdateFoldings(foldingManager, sourceCodeEditor.Document);
+        }
+
+        #region search Events
         private void buttonSearch_Click(object sender, EventArgs e)
         {
             Search();
@@ -187,158 +338,7 @@ namespace CodeFetcher
         {
             this.listViewResults.Items.Add((ListViewItem)e.UserState);
         }
-
-        private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (listViewResults.SelectedItems.Count > 0)
-            {
-                foreach (ListViewItem item in listViewResults.SelectedItems)
-                    Open.File(index.iniFile.SearchDirs, (string)item.Tag);
-            }
-        }
-
-        private void openContainingFolderToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (listViewResults.SelectedItems.Count > 0)
-            {
-                foreach (ListViewItem item in listViewResults.SelectedItems)
-                {
-                    string path = (string)item.Tag;
-                    path = Path.GetDirectoryName(path);
-                    Open.Directory(index.iniFile.SearchDirs, path);
-                }
-            }
-        }
-
-        private void buttonClean_Click(object sender, EventArgs e)
-        {
-            index.Clean();
-        }
-
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            SaveSearchTerms(searchTerms);
-
-            if (index.worker != null && index.worker.IsBusy)
-            {
-                e.Cancel = true;
-                index.worker.CancelAsync();
-                labelStatus.Text = "Waiting for index to cancel";
-
-                Timer t = new Timer();
-                t.Interval = 100;
-                t.Tick += delegate(object sender1, EventArgs e1)
-                {
-                    if (!(index.worker != null && index.worker.IsBusy))
-                    {
-                        t.Stop();
-                        this.Close();
-                    }
-                };
-                t.Start();
-            }
-        }
-
-        private void TextBoxAdd(string line)
-        {
-            if (textBoxQuery.Items.Count < MAX_COMBO_ITEMS)
-                textBoxQuery.Items.Add(line);
-            else
-            {
-                textBoxQuery.Items.RemoveAt(0);
-                textBoxQuery.Items.Add(line);
-            }
-        }
-
-        private AutoCompleteStringCollection LoadSearchTerms()
-        {
-            var result = new AutoCompleteStringCollection();
-            if (File.Exists(index.iniFile.SearchTermsPath))
-            {
-                try
-                {
-                    using (var fileReader = new StreamReader(index.iniFile.SearchTermsPath))
-                    {
-                        string line;
-                        while ((line = fileReader.ReadLine()) != null)
-                        {
-                            if (line.Trim() != "" && !result.Contains(line))
-                            {
-                                result.Add(line);
-                                TextBoxAdd(line);
-                            }
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show("Unable to load search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
-            }
-            return result;
-        }
-
-        private void SaveSearchTerms(AutoCompleteStringCollection items)
-        {
-            try
-            {
-                using (var writer = new StreamWriter(index.iniFile.SearchTermsPath))
-                {
-                    foreach (string item in items)
-                    {
-                        writer.WriteLine(item);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Unable to save search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-        }
-
-        private void buttonToday_Click(object sender, EventArgs e)
-        {
-            dateTimePickerFrom.Value = DateTime.Today;
-        }
-
-        private void tabControl1_Selected(object sender, TabControlEventArgs e)
-        {
-            if (tabControl1.SelectedIndex == 0)
-            {
-                tabControl1.Height -= 30;
-                splitContainer.Height += 30;
-                splitContainer.Location = new System.Drawing.Point(12, 95);
-            }
-            else
-            {
-                tabControl1.Height += 30;
-                splitContainer.Height -= 30;
-                splitContainer.Location = new System.Drawing.Point(12, 125);
-            }
-        }
-
-        private void splitContainer_DoubleClick(object sender, EventArgs e)
-        {
-            if (splitContainer.Orientation == Orientation.Horizontal)
-            {
-                splitContainer.Orientation = Orientation.Vertical;
-                splitContainer.SplitterDistance = splitContainer.Width / 2;
-            }
-            else
-            {
-                splitContainer.Orientation = Orientation.Horizontal;
-                splitContainer.SplitterDistance = splitContainer.Height / 2;
-            }
-        }
-
-        private void addFileToEditor(string fileName)
-        {
-            sourceCodeEditor.Load(fileName);
-            sourceCodeEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(fileName));
-            if (foldingManager == null)
-                foldingManager = FoldingManager.Install(sourceCodeEditor.TextArea);
-            foldingStrategy.UpdateFoldings(foldingManager, sourceCodeEditor.Document);
-        }
+        #endregion search Events
 
         #region pictureBox Events
         int timeMouseDown;
