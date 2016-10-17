@@ -381,9 +381,9 @@ namespace CodeFetcher
             this.columnHeaderFolder});
             this.listViewResults.ContextMenuStrip = this.contextMenuStrip1;
             this.listViewResults.FullRowSelect = true;
-            this.listViewResults.Location = new System.Drawing.Point(-1, 12);
+            this.listViewResults.Location = new System.Drawing.Point(-2, -2);
             this.listViewResults.Name = "listViewResults";
-            this.listViewResults.Size = new System.Drawing.Size(495, 417);
+            this.listViewResults.Size = new System.Drawing.Size(496, 434);
             this.listViewResults.TabIndex = 3;
             this.listViewResults.UseCompatibleStateImageBehavior = false;
             this.listViewResults.View = System.Windows.Forms.View.Details;

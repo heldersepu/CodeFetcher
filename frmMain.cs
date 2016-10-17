@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using System.Collections.Generic;
 using System.ComponentModel;
 using CodeFetcher.Icons;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -106,6 +105,13 @@ namespace CodeFetcher
                     searchTerms.Add(query);
                     TextBoxAdd(query);
                 }
+                if (listViewResults.Items.Count > 0)
+                {
+                    listViewResults.Select();
+                    listViewResults.Items[0].Selected = true;
+                    addFileToEditor(listViewResults.Selected());
+                }
+
                 labelStatus.Text = string.Format("Search took {0}. ", (DateTime.Now - start));
             }
             buttonSearch.Enabled = true;
@@ -123,7 +129,7 @@ namespace CodeFetcher
             if (tabControl1.SelectedIndex == 0)
             {
                 // Parse the query, "content" is the default field to search
-                if (this.textBoxQuery.Text.Trim() == String.Empty)
+                if (this.textBoxQuery.Text.Trim() != String.Empty)
                 {
                     queryText = "(" + textBoxQuery.Text + ")";
 
@@ -156,8 +162,7 @@ namespace CodeFetcher
                         queryText += " (" + types + ") AND";
                     }
                 }
-
-                queryText += " modified:[" + dateTimePickerFrom.Value.ToString("yyyyMMdd") + " TO " + dateTimePickerTo.Value.ToString("yyyyMMdd") + "]";
+                queryText += " modified:[" + dateTimePickerFrom.Selected() + " TO " + dateTimePickerTo.Selected() + "]";
             }
             return queryText;
         }
@@ -185,11 +190,8 @@ namespace CodeFetcher
 
         private void listViewResults_DoubleClick(object sender, EventArgs e)
         {
-            if (this.listViewResults.SelectedItems.Count != 1)
-                return;
-
-            string path = (string) this.listViewResults.SelectedItems[0].Tag;
-            Open.File(index.iniFile.SearchDirs, path);
+            if (listViewResults.SelectedItems.Count == 1)
+                Open.File(index.iniFile.SearchDirs, listViewResults.Selected());
         }
 
         private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -197,10 +199,7 @@ namespace CodeFetcher
             if (listViewResults.SelectedItems.Count > 0)
             {
                 foreach (ListViewItem item in listViewResults.SelectedItems)
-                {
-                    string path = (string)item.Tag;
-                    Open.File(index.iniFile.SearchDirs, path);
-                }
+                    Open.File(index.iniFile.SearchDirs, (string)item.Tag);
             }
         }
 
@@ -384,11 +383,8 @@ namespace CodeFetcher
 
         private void listViewResults_Click(object sender, EventArgs e)
         {
-            if (this.listViewResults.SelectedItems.Count != 1)
-                return;
-
-            string path = (string)this.listViewResults.SelectedItems[0].Tag;
-            addFileToEditor(path);
+            if (listViewResults.SelectedItems.Count == 1)
+                addFileToEditor(listViewResults.Selected());
         }
 
         int timeMouseDown;

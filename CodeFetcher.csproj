@@ -124,7 +124,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Utils\StringExtension.cs" />
+    <Compile Include="Utils\Extensions.cs" />
     <Content Include="FodyWeavers.xml" />
     <Content Include="Icons\App.ico" />
     <Content Include="Icons\help-about.ico" />
