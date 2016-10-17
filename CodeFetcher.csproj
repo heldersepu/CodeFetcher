@@ -107,23 +107,7 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="COMTypeDef\Constants.cs" />
-    <Compile Include="COMTypeDef\Enums.cs" />
-    <Compile Include="COMTypeDef\IClassFactory.cs" />
-    <Compile Include="COMTypeDef\IEnumSTATPROPSETSTG.cs" />
-    <Compile Include="COMTypeDef\IEnumSTATPROPSTG.cs" />
-    <Compile Include="COMTypeDef\IEnumSTATSTG.cs" />
-    <Compile Include="COMTypeDef\IFilter.cs" />
-    <Compile Include="COMTypeDef\ILockBytes.cs" />
-    <Compile Include="COMTypeDef\IPersistStorage.cs" />
-    <Compile Include="COMTypeDef\IPersistStream.cs" />
-    <Compile Include="COMTypeDef\IPropertySetStorage.cs" />
-    <Compile Include="COMTypeDef\IPropertyStorage.cs" />
-    <Compile Include="COMTypeDef\IStorage.cs" />
-    <Compile Include="COMTypeDef\Structs.cs" />
     <Compile Include="Utils\BraceFoldingStrategy.cs" />
-    <Compile Include="Utils\FilterLoader.cs" />
-    <Compile Include="Utils\FilterReader.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,7 +140,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="Icons\Logo.pdn" />
     <None Include="packages.config" />
   </ItemGroup>

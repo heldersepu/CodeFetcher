@@ -8,24 +8,13 @@ namespace CodeFetcher
     {
         public static string Parse(string fileName)
         {
-
-            string ext = Path.GetExtension(fileName);
-
-            using (var reader = new FilterReader(fileName, 0x50))
+            Encoding encoding = null;
+            if (IsText(out encoding, fileName, 100))
             {
-                if (reader.CanRead)
-                    return reader.ReadToEnd();
-                else
-                {
-                    Encoding encoding = null;
-                    if (IsText(out encoding, fileName, 100))
-                    {
-                        return File.ReadAllText(fileName);
-                    }
-                    else
-                        throw new Exception("A valid filter was not found");
-                }
+                return File.ReadAllText(fileName);
             }
+            else
+                throw new Exception("A valid filter was not found");
         }
 
         /// <summary>
