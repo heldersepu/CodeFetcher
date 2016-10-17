@@ -188,12 +188,6 @@ namespace CodeFetcher
             this.listViewResults.Items.Add((ListViewItem)e.UserState);
         }
 
-        private void listViewResults_DoubleClick(object sender, EventArgs e)
-        {
-            if (listViewResults.SelectedItems.Count == 1)
-                Open.File(index.iniFile.SearchDirs, listViewResults.Selected());
-        }
-
         private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listViewResults.SelectedItems.Count > 0)
@@ -219,12 +213,6 @@ namespace CodeFetcher
         private void buttonClean_Click(object sender, EventArgs e)
         {
             index.Clean();
-        }
-
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            if (((MouseEventArgs)e).Button == MouseButtons.Left)
-                System.Diagnostics.Process.Start("https://lucene.apache.org/core/2_9_4/queryparsersyntax.html");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -308,35 +296,6 @@ namespace CodeFetcher
             }
         }
 
-        private void listViewResults_ColumnClick(object sender, ColumnClickEventArgs e)
-        {
-            var columnDataType = ListViewItemComparer.ColumnDataType.Generic;
-            if (e.Column == colHeaderModified.Index)
-            {
-                columnDataType = ListViewItemComparer.ColumnDataType.DateTime;
-            }
-            else if (e.Column == columnHeaderScore.Index)
-            {
-                columnDataType = ListViewItemComparer.ColumnDataType.Number;
-            }
-            else
-            {
-                columnDataType = ListViewItemComparer.ColumnDataType.Generic;
-            }
-
-            if (listViewResults.ListViewItemSorter == null)
-            {
-                listViewResults.ListViewItemSorter = new ListViewItemComparer(
-                    listViewResults.Columns.Count, e.Column, ListSortDirection.Ascending, columnDataType);
-                // when you set ListViewItemSorter, sorting happens automatically
-            }
-            else
-            {
-                ((ListViewItemComparer)listViewResults.ListViewItemSorter).SetColumnAndType(e.Column, columnDataType);
-                listViewResults.Sort(); // must explicitly sort in this case
-            }
-        }
-
         private void buttonToday_Click(object sender, EventArgs e)
         {
             dateTimePickerFrom.Value = DateTime.Today;
@@ -381,12 +340,7 @@ namespace CodeFetcher
             foldingStrategy.UpdateFoldings(foldingManager, sourceCodeEditor.Document);
         }
 
-        private void listViewResults_Click(object sender, EventArgs e)
-        {
-            if (listViewResults.SelectedItems.Count == 1)
-                addFileToEditor(listViewResults.Selected());
-        }
-
+        #region pictureBox Events
         int timeMouseDown;
         string labelStatus_Text;
         private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
@@ -408,6 +362,12 @@ namespace CodeFetcher
             }
         }
 
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            if (((MouseEventArgs)e).Button == MouseButtons.Left)
+                System.Diagnostics.Process.Start("https://lucene.apache.org/core/2_9_4/queryparsersyntax.html");
+        }
+
         private void RightClickHoldTimer_Tick(object sender, EventArgs e)
         {
             if (timeMouseDown > 0)
@@ -422,5 +382,54 @@ namespace CodeFetcher
                 RightClickHoldTimer.Stop();
             }
         }
+        #endregion pictureBox Events
+
+        #region listViewResults Events
+        private void listViewResults_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            var columnDataType = ListViewItemComparer.ColumnDataType.Generic;
+            if (e.Column == colHeaderModified.Index)
+            {
+                columnDataType = ListViewItemComparer.ColumnDataType.DateTime;
+            }
+            else if (e.Column == columnHeaderScore.Index)
+            {
+                columnDataType = ListViewItemComparer.ColumnDataType.Number;
+            }
+            else
+            {
+                columnDataType = ListViewItemComparer.ColumnDataType.Generic;
+            }
+
+            if (listViewResults.ListViewItemSorter == null)
+            {
+                listViewResults.ListViewItemSorter = new ListViewItemComparer(
+                    listViewResults.Columns.Count, e.Column, ListSortDirection.Ascending, columnDataType);
+                // when you set ListViewItemSorter, sorting happens automatically
+            }
+            else
+            {
+                ((ListViewItemComparer)listViewResults.ListViewItemSorter).SetColumnAndType(e.Column, columnDataType);
+                listViewResults.Sort(); // must explicitly sort in this case
+            }
+        }
+
+        private void listViewResults_DoubleClick(object sender, EventArgs e)
+        {
+            if (listViewResults.SelectedItems.Count == 1)
+                Open.File(index.iniFile.SearchDirs, listViewResults.Selected());
+        }
+
+        private void listViewResults_Click(object sender, EventArgs e)
+        {
+            if (listViewResults.SelectedItems.Count == 1)
+                addFileToEditor(listViewResults.Selected());
+        }
+
+        private void listViewResults_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            listViewResults_Click(null, null);
+        }
+        #endregion listViewResults Events
     }
 }
