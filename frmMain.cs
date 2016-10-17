@@ -117,26 +117,20 @@ namespace CodeFetcher
             listViewResults.Refresh();
         }
 
-        private void Search()
+        private string GetQueryText()
         {
-            buttonSearch.Enabled = false;
-            listViewResults.Items.Clear();
-            DateTime start = DateTime.Now;
             string queryText = "";
-            string query = "";
             if (tabControl1.SelectedIndex == 0)
             {
                 // Parse the query, "content" is the default field to search
                 if (this.textBoxQuery.Text.Trim() == String.Empty)
-                    return;
+                {
+                    queryText = "(" + textBoxQuery.Text + ")";
 
-                queryText = "(" + textBoxQuery.Text + ")";
-
-                // Also search the path if the query isn't qualified
-                if (!queryText.Contains(":"))
-                    queryText += " OR name:" + queryText;
-
-                query = textBoxQuery.Text;
+                    // Also search the path if the query isn't qualified
+                    if (!queryText.Contains(":"))
+                        queryText += " OR name:" + queryText;
+                }
             }
             else
             {
@@ -165,10 +159,23 @@ namespace CodeFetcher
 
                 queryText += " modified:[" + dateTimePickerFrom.Value.ToString("yyyyMMdd") + " TO " + dateTimePickerTo.Value.ToString("yyyyMMdd") + "]";
             }
-            var search = index.Search(queryText, imageListDocuments);
-            search.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e) { SearchProgressChanged(e); };
-            search.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e) { SearchCompleted(query, start, e); };
-            search.RunWorkerAsync();
+            return queryText;
+        }
+
+        private void Search()
+        {
+            buttonSearch.Enabled = false;
+            listViewResults.Items.Clear();
+            DateTime start = DateTime.Now;
+            string queryText = GetQueryText();
+            if (!string.IsNullOrEmpty(queryText))
+            {
+                string query = (tabControl1.SelectedIndex == 0) ? textBoxQuery.Text : "";
+                var search = index.Search(queryText, imageListDocuments);
+                search.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e) { SearchProgressChanged(e); };
+                search.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e) { SearchCompleted(query, start, e); };
+                search.RunWorkerAsync();
+            }
         }
 
         private void SearchComplete(object sender, ProgressChangedEventArgs e)
