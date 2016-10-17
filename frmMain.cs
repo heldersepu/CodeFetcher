@@ -93,13 +93,37 @@ namespace CodeFetcher
                 Search();
         }
 
+        private void SearchCompleted(string query, DateTime start, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Error != null)
+            {
+                labelStatus.Text = e.Error.Message;
+            }
+            else
+            {
+                if (query.Trim() != "" && !searchTerms.Contains(query))
+                {
+                    searchTerms.Add(query);
+                    TextBoxAdd(query);
+                }
+                labelStatus.Text = string.Format("Search took {0}. ", (DateTime.Now - start));
+            }
+            buttonSearch.Enabled = true;
+        }
+
+        private void SearchProgressChanged(ProgressChangedEventArgs e)
+        {
+            listViewResults.Items.Add((ListViewItem)e.UserState);
+            listViewResults.Refresh();
+        }
+
         private void Search()
         {
             buttonSearch.Enabled = false;
             listViewResults.Items.Clear();
             DateTime start = DateTime.Now;
             string queryText = "";
-            string queryHistory = "";
+            string query = "";
             if (tabControl1.SelectedIndex == 0)
             {
                 // Parse the query, "content" is the default field to search
@@ -112,7 +136,7 @@ namespace CodeFetcher
                 if (!queryText.Contains(":"))
                     queryText += " OR name:" + queryText;
 
-                queryHistory = textBoxQuery.Text;
+                query = textBoxQuery.Text;
             }
             else
             {
@@ -142,30 +166,9 @@ namespace CodeFetcher
                 queryText += " modified:[" + dateTimePickerFrom.Value.ToString("yyyyMMdd") + " TO " + dateTimePickerTo.Value.ToString("yyyyMMdd") + "]";
             }
             var search = index.Search(queryText, imageListDocuments);
-            search.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e)
-            {
-                listViewResults.Items.Add((ListViewItem)e.UserState);
-                listViewResults.Refresh();
-            };
-            search.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
-            {
-                if (e.Error != null)
-                {
-                    labelStatus.Text = e.Error.Message;
-                }
-                else
-                {
-                    if (queryHistory.Trim() != "" && !searchTerms.Contains(queryHistory))
-                    {
-                        searchTerms.Add(queryHistory);
-                        TextBoxAdd(queryHistory);
-                    }
-                    labelStatus.Text = string.Format("Search took {0}. ", (DateTime.Now - start));
-                }
-                buttonSearch.Enabled = true;
-            };
+            search.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e) { SearchProgressChanged(e); };
+            search.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e) { SearchCompleted(query, start, e); };
             search.RunWorkerAsync();
-
         }
 
         private void SearchComplete(object sender, ProgressChangedEventArgs e)
