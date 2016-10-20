@@ -72,10 +72,11 @@ namespace CodeFetcher
         public string[] Patterns = new string[] { "*.*" };
         public string[] SearchDirs = null;
         public string[] SearchExclude = new string[] {
-            "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", "\\.SVN", "\\.GIT"
+            "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", "\\.SVN", "\\.GIT", "\\$TF"
         };
         public string[] ExtensionExclude = new string[] {
-            ".PDB", ".DLL", ".EXE", ".GIF", ".JPG", ".PNG",
+            ".PDB", ".DLL", ".EXE", ".GIF", ".JPG", ".PNG", ".GZ", ".ZIP",
+            ".NUPKG", ".DBSCHEMA", ".DBML", ".CAB",
         };
         public string[] Splitters = new string[] {
             ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
