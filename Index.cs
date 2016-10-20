@@ -269,6 +269,10 @@ namespace CodeFetcher
             if (directory.FullName == iniFile.IndexPath)
                 return false;
 
+            // Don't index hidden directories.....
+            if (directory.Attributes == FileAttributes.Hidden)
+                return false;
+
             // Don't index excluded files
             foreach (string exclude in iniFile.SearchExclude)
             {
