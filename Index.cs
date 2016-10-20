@@ -270,7 +270,6 @@ namespace CodeFetcher
                 return false;
 
             // Don't index hidden directories.....
-            if (directory.Attributes == FileAttributes.Hidden)
                 return false;
 
             // Don't index excluded files
