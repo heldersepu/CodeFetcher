@@ -346,6 +346,8 @@ namespace CodeFetcher
             this.buttonRefreshIndex.Text = "Refresh Index";
             this.buttonRefreshIndex.UseVisualStyleBackColor = true;
             this.buttonRefreshIndex.Click += new System.EventHandler(this.buttonRefreshIndex_Click);
+            this.buttonRefreshIndex.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonRefreshIndex_MouseDown);
+            this.buttonRefreshIndex.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonRefreshIndex_MouseUp);
             // 
             // splitContainer
             // 

@@ -18,6 +18,8 @@ namespace CodeFetcher
         FoldingManager foldingManager = null;
         BraceFoldingStrategy foldingStrategy = new BraceFoldingStrategy();
         AutoCompleteStringCollection searchTerms = new AutoCompleteStringCollection();
+        int timeMouseDown;
+        string labelStatus_Text;
         const int MAX_COMBO_ITEMS = 20;
         private string appPath { get { return typeof(frmMain).Assembly.Location; } }
         private string appDir { get { return Path.GetDirectoryName(appPath); } }
@@ -83,11 +85,6 @@ namespace CodeFetcher
             }
         }
 
-        private void buttonRefreshIndex_Click(object sender, EventArgs e)
-        {
-            InitializeIndex();
-        }
-
         private void InitializeIndex()
         {
             string iniPath = Path.Combine(appDir, appName + ".ini");
@@ -125,11 +122,6 @@ namespace CodeFetcher
                     Open.Directory(index.iniFile.SearchDirs, path);
                 }
             }
-        }
-
-        private void buttonClean_Click(object sender, EventArgs e)
-        {
-            index.Clean();
         }
 
         private void TextBoxAdd(string line)
@@ -176,11 +168,14 @@ namespace CodeFetcher
         {
             try
             {
-                using (var writer = new StreamWriter(index.iniFile.SearchTermsPath))
+                if (File.Exists(index.iniFile.SearchTermsPath))
                 {
-                    foreach (string item in items)
+                    using (var writer = new StreamWriter(index.iniFile.SearchTermsPath))
                     {
-                        writer.WriteLine(item);
+                        foreach (string item in items)
+                        {
+                            writer.WriteLine(item);
+                        }
                     }
                 }
             }
@@ -347,8 +342,6 @@ namespace CodeFetcher
         #endregion search Events
 
         #region pictureBox Events
-        int timeMouseDown;
-        string labelStatus_Text;
         private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -383,8 +376,16 @@ namespace CodeFetcher
             }
             else
             {
-                index.iniFile.Save();
-                labelStatus.Text = "IniFile Created...";
+                if (pictureBox2.PointToClient(Cursor.Position).X >= 0)
+                {
+                    index.iniFile.Save();
+                    labelStatus.Text = "IniFile Created...";
+                }
+                else
+                {
+                    labelStatus.Text = "Cleaning Index...";
+                    index.Clean();
+                }
                 RightClickHoldTimer.Stop();
             }
         }
@@ -437,5 +438,32 @@ namespace CodeFetcher
             listViewResults_Click(null, null);
         }
         #endregion listViewResults Events
+
+
+        #region buttonRefreshIndex Events
+        private void buttonRefreshIndex_Click(object sender, EventArgs e)
+        {
+            InitializeIndex();
+        }
+
+        private void buttonRefreshIndex_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                labelStatus_Text = labelStatus.Text;
+                RightClickHoldTimer.Start();
+                timeMouseDown = 50;
+            }
+        }
+
+        private void buttonRefreshIndex_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                RightClickHoldTimer.Stop();
+                labelStatus.Text = labelStatus_Text;
+            }
+        }
+        #endregion buttonRefreshIndex Events
     }
 }

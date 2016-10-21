@@ -47,8 +47,9 @@ namespace CodeFetcher
 
         public void Clean()
         {
-            System.IO.Directory.Delete(iniFile.IndexPath, true);
-            checkIndex();
+            if (System.IO.Directory.Exists(iniFile.IndexPath))
+                System.IO.Directory.Delete(iniFile.IndexPath, true);
+            Initialize();
         }
 
         public BackgroundWorker Initialize()
@@ -64,7 +65,7 @@ namespace CodeFetcher
                 newDateStamps = new Dictionary<string, long>();
 
                 // First load all of the datestamps to check if the file is modified
-                if (checkIndex())
+                if (CheckIndex())
                 {
                     var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                     IndexReader indexReader = IndexReader.Open(directory, true);
@@ -94,7 +95,7 @@ namespace CodeFetcher
                 {
                     var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                     var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-                    if (checkIndex())
+                    if (CheckIndex())
                     {
                         try
                         {
@@ -172,7 +173,7 @@ namespace CodeFetcher
             return worker;
         }
 
-        public bool checkIndex()
+        public bool CheckIndex()
         {
             try
             {
