@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
+﻿using NLog;
 using System.Text;
+using System.IO;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace CodeFetcher
 {
@@ -11,6 +12,7 @@ namespace CodeFetcher
     public class IniFile
     {
         #region Private declarations
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         private string path;
 
         [DllImport("kernel32")]
@@ -55,7 +57,7 @@ namespace CodeFetcher
 
         #region Private constants
         private const string LOCATION = "Location";
-        private const string SEARCH_INDEX = ".SearchIndex";
+        public const string SEARCH_INDEX = ".SearchIndex";
         private struct KEYS
         {
             public const string SEARCH_PATTERNS = "Search Patterns";
@@ -98,6 +100,7 @@ namespace CodeFetcher
             IndexPath = Path.Combine(appDir, SEARCH_INDEX);
             if (File.Exists(iniPath))
             {
+                logger.Trace("Start reading ini file...");
                 string temp = ReadValue(LOCATION, KEYS.SEARCH_PATTERNS);
                 if (!string.IsNullOrEmpty(temp))
                 {
@@ -161,6 +164,7 @@ namespace CodeFetcher
                     if (int.TryParse(temp, out x))
                         HitsLimit = x;
                 }
+                logger.Trace("Done reading ini file...");
             }
         }
 
@@ -173,6 +177,7 @@ namespace CodeFetcher
             WriteValue(LOCATION, KEYS.SPLITTERS,            Splitters);
             WriteValue(LOCATION, KEYS.INDEX_PATH,           IndexPath);
             WriteValue(LOCATION, KEYS.HITS_LIMIT,           HitsLimit.ToString());
+            logger.Trace("Values written to ini file...");
         }
     }
 }
