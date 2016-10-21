@@ -136,7 +136,7 @@ namespace CodeFetcher
 
                 if (cancel)
                 {
-                    string summary = String.Format("Cancelled. Indexed {0} files. Skipped {2} files.", countTotal, countSkipped);
+                    string summary = String.Format("Cancelled. Indexed {0} files. Skipped {1} files.", countTotal, countSkipped);
                     summary += String.Format(" Took {0}", (DateTime.Now - start));
                     worker.ReportProgress(countTotal, summary);
                     e.Cancel = true;
@@ -155,7 +155,7 @@ namespace CodeFetcher
                         }
                     }
 
-                    string summary = String.Format("{0} files. New {2}. Changed {3}, Skipped {4}. Removed {5}. {6}", countTotal, countNew, countChanged, countSkipped, deleted, DateTime.Now - start);
+                    string summary = String.Format("{0} files. New {1}. Changed {2}, Skipped {3}. Removed {4}. {5}", countTotal, countNew, countChanged, countSkipped, deleted, DateTime.Now - start);
                     worker.ReportProgress(countTotal, summary);
                 }
 
