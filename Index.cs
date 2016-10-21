@@ -27,7 +27,6 @@ namespace CodeFetcher
         int fileCount;
         bool portablePaths = true;
         // statistics
-        long bytesTotal = 0;
         int countTotal = 0;
         int countSkipped = 0;
         int countNew = 0;
@@ -117,7 +116,6 @@ namespace CodeFetcher
                 // Hide the file
                 File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
 
-                bytesTotal = 0;
                 countTotal = 0;
                 countSkipped = 0;
                 countNew = 0;
@@ -138,7 +136,7 @@ namespace CodeFetcher
 
                 if (cancel)
                 {
-                    string summary = String.Format("Cancelled. Indexed {0} files ({1} bytes). Skipped {2} files.", countTotal, bytesTotal, countSkipped);
+                    string summary = String.Format("Cancelled. Indexed {0} files. Skipped {2} files.", countTotal, countSkipped);
                     summary += String.Format(" Took {0}", (DateTime.Now - start));
                     worker.ReportProgress(countTotal, summary);
                     e.Cancel = true;
@@ -157,7 +155,7 @@ namespace CodeFetcher
                         }
                     }
 
-                    string summary = String.Format("{0} files ({1} mb). New {2}. Changed {3}, Skipped {4}. Removed {5}. {6}", countTotal, (bytesTotal / 1000000).ToString("N0"), countNew, countChanged, countSkipped, deleted, DateTime.Now - start);
+                    string summary = String.Format("{0} files. New {2}. Changed {3}, Skipped {4}. Removed {5}. {6}", countTotal, countNew, countChanged, countSkipped, deleted, DateTime.Now - start);
                     worker.ReportProgress(countTotal, summary);
                 }
 
@@ -263,7 +261,7 @@ namespace CodeFetcher
         /// Indexes a folder.
         /// </summary>
         /// <param name="directory"></param>
-        public bool addFolder(string searchDir, DirectoryInfo directory)
+        private bool addFolder(string searchDir, DirectoryInfo directory)
         {
             // Don't index the indexes.....
             if (directory.FullName == iniFile.IndexPath)
@@ -331,6 +329,7 @@ namespace CodeFetcher
                             if (!dateStamps.ContainsKey(relPath))
                             {
                                 addDocument(extension, path, relPath, false);
+                                worker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
                             }
                             else if (dateStamps[relPath] < fi.LastWriteTime.Ticks)
                             {
@@ -338,12 +337,7 @@ namespace CodeFetcher
                                 addDocument(extension, path, relPath, true);
                             }
 
-                            // update statistics
                             this.countTotal++;
-                            this.bytesTotal += fi.Length;
-
-                            // show added file
-                            worker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
                         }
                         catch (Exception)
                         {
@@ -374,7 +368,7 @@ namespace CodeFetcher
         /// Parses and indexes an IFilter parseable file.
         /// </summary>
         /// <param name="path"></param>
-        public void addDocument(string extension, string path, string relPath, bool exists)
+        private void addDocument(string extension, string path, string relPath, bool exists)
         {
             string filename = Path.GetFileNameWithoutExtension(path);
             FileInfo fi = new FileInfo(path);
