@@ -55,6 +55,7 @@ namespace CodeFetcher
 
         #region Private constants
         private const string LOCATION = "Location";
+        private const string SEARCH_INDEX = ".SearchIndex";
         private struct KEYS
         {
             public const string SEARCH_PATTERNS = "Search Patterns";
@@ -94,7 +95,7 @@ namespace CodeFetcher
         {
             path = iniPath;
             SearchDirs = new string[] { appDir };
-            IndexPath = Path.Combine(appDir, ".SearchIndex");
+            IndexPath = Path.Combine(appDir, SEARCH_INDEX);
             if (File.Exists(iniPath))
             {
                 string temp = ReadValue(LOCATION, KEYS.SEARCH_PATTERNS);
