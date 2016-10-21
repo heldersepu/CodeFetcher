@@ -272,7 +272,7 @@ namespace CodeFetcher
         private bool addFolder(string searchDir, DirectoryInfo directory)
         {
             // Don't index the indexes.....
-            if (directory.FullName == iniFile.IndexPath)
+            if (directory.FullName.EndsWith(IniFile.SEARCH_INDEX))
                 return false;
 
             // Don't index hidden directories.....
