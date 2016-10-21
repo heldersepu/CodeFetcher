@@ -1,3 +1,4 @@
+using NLog;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -11,6 +12,7 @@ namespace CodeFetcher
     public partial class frmMain : Form
     {
         #region Private declarations
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         Index index;
         SystemImageList imageListDocuments;
         FoldingManager foldingManager = null;
@@ -161,9 +163,10 @@ namespace CodeFetcher
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     MessageBox.Show("Unable to load search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    logger.Error(e);
                 }
             }
             return result;
@@ -181,9 +184,10 @@ namespace CodeFetcher
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 MessageBox.Show("Unable to save search history", "History", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                logger.Error(e);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLog;
+using System;
 using System.IO;
 using System.Linq;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace CodeFetcher
 {
     public class Index
     {
+        private static Logger logger = LogManager.GetCurrentClassLogger();
         public BackgroundWorker worker;
         public IniFile iniFile;
 
@@ -99,9 +101,10 @@ namespace CodeFetcher
                             indexWriter = new IndexWriter(directory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
                             attempts = 5;
                         }
-                        catch (LockObtainFailedException)
+                        catch (LockObtainFailedException le)
                         {
                             attempts++;
+                            logger.Error(le);
                             if (System.IO.Directory.Exists(iniFile.IndexPath))
                                 System.IO.Directory.Delete(iniFile.IndexPath, true);
                         }
@@ -178,8 +181,9 @@ namespace CodeFetcher
                 searcher.Dispose();
                 return true;
             }
-            catch (IOException)
+            catch (IOException e)
             {
+                logger.Error(e);
                 return false;
             }
         }
@@ -199,6 +203,7 @@ namespace CodeFetcher
                 }
                 catch (IOException ex)
                 {
+                    logger.Error(ex);
                     throw new Exception("The index doesn't exist or is damaged. Please rebuild the index.", ex);
                 }
 
@@ -210,6 +215,7 @@ namespace CodeFetcher
                 }
                 catch (Exception ex)
                 {
+                    logger.Error(ex);
                     throw new ArgumentException("Invalid query: " + ex.Message, "Query", ex);
                 }
 
@@ -228,9 +234,10 @@ namespace CodeFetcher
                     {
                         folder = Path.GetDirectoryName(path);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Couldn't get directory name...
+                        logger.Error(ex);
                     }
 
                     var modified = DateTime.ParseExact(doc.Get("modified"), "yyyyMMddHHmmss", null);
@@ -246,9 +253,10 @@ namespace CodeFetcher
                     {
                         item.ImageIndex = imageList.IconIndex(filename);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         // Couldn't get icon...
+                        logger.Error(ex);
                     }
                     searchWorker.ReportProgress(0, item);
                 }
@@ -288,8 +296,9 @@ namespace CodeFetcher
                 {
                     fis = directory.GetFiles(pattern);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    logger.Error(e);
                     return false;
                 }
 
@@ -339,9 +348,10 @@ namespace CodeFetcher
 
                             this.countTotal++;
                         }
-                        catch (Exception)
+                        catch (Exception e)
                         {
                             // parsing and indexing wasn't successful, skipping that file
+                            logger.Error(e);
                             this.countSkipped++;
                             worker.ReportProgress(fileCount, "Skipped:" + Path.GetFileName(fi.FullName));
                         }
@@ -383,9 +393,10 @@ namespace CodeFetcher
                     foreach (var item in iniFile.Splitters)
                         text = text.Replace(item, " ");
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 // Ignore error, add with no content
+                logger.Error(e);
             }
             Document doc = new Document();
             doc.Add(new Field("modified", fi.LastWriteTime.ToString("yyyyMMddHHmmss"), Field.Store.YES, Field.Index.ANALYZED));
