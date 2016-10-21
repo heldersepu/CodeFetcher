@@ -225,6 +225,7 @@ namespace CodeFetcher
         private void addFileToEditor(string fileName)
         {
             if (!File.Exists(fileName)) return;
+            sourceCodeEditor.IsReadOnly = true;
             sourceCodeEditor.Load(fileName);
             sourceCodeEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(fileName));
             if (foldingManager == null)
