@@ -45,11 +45,10 @@ namespace CodeFetcher
             this.iniFile = iniFile;
         }
 
-        public void Clean()
+        public void Delete()
         {
             if (System.IO.Directory.Exists(iniFile.IndexPath))
                 System.IO.Directory.Delete(iniFile.IndexPath, true);
-            Initialize();
         }
 
         public BackgroundWorker Initialize()

@@ -384,7 +384,8 @@ namespace CodeFetcher
                 else
                 {
                     labelStatus.Text = "Cleaning Index...";
-                    index.Clean();
+                    index.Delete();
+                    InitializeIndex();
                 }
                 RightClickHoldTimer.Stop();
             }
@@ -438,7 +439,6 @@ namespace CodeFetcher
             listViewResults_Click(null, null);
         }
         #endregion listViewResults Events
-
 
         #region buttonRefreshIndex Events
         private void buttonRefreshIndex_Click(object sender, EventArgs e)
