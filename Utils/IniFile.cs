@@ -75,7 +75,8 @@ namespace CodeFetcher
         public string[] Patterns = new string[] { "*.*" };
         public string[] SearchDirs = null;
         public string[] SearchExclude = new string[] {
-            "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", "\\.SVN", "\\.GIT", "\\$TF"
+            "C:\\$RECYCLE.BIN", "\\BIN", "\\OBJ", "\\.SVN", "\\.GIT", "\\$TF",
+            "\\NODE_MODULES", "\\PACKAGES"
         };
         public string[] ExtensionExclude = new string[] {
             ".PDB", ".DLL", ".EXE", ".GIF", ".JPG", ".PNG", ".GZ", ".ZIP",
