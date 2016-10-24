@@ -47,6 +47,7 @@ namespace CodeFetcher
 
         public void Delete()
         {
+            logger.Info("Index Deleted");
             if (System.IO.Directory.Exists(iniFile.IndexPath))
                 System.IO.Directory.Delete(iniFile.IndexPath, true);
         }
@@ -176,6 +177,7 @@ namespace CodeFetcher
         {
             try
             {
+                if (!System.IO.Directory.Exists(iniFile.IndexPath)) return false;
                 var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                 searcher = new IndexSearcher(directory, true);
                 searcher.Dispose();
@@ -287,7 +289,7 @@ namespace CodeFetcher
             }
 
             int filesIndexed = 0;
-            logger.Info(" Dir:" + directory.FullName);
+            logger.Info("   Dir = " + directory.FullName);
             // find all matching files
             foreach (string pattern in iniFile.Patterns)
             {
@@ -380,7 +382,7 @@ namespace CodeFetcher
         /// <param name="path"></param>
         private void addDocument(string extension, string path, string relPath, bool exists)
         {
-            logger.Trace(" File:" + path);
+            logger.Trace(" File = " + path);
             string filename = Path.GetFileNameWithoutExtension(path);
             FileInfo fi = new FileInfo(path);
             string text = "";

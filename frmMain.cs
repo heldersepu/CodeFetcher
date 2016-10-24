@@ -372,7 +372,9 @@ namespace CodeFetcher
             if (timeMouseDown > 0)
             {
                 timeMouseDown--;
-                labelStatus.Text = "  \t   "  + timeMouseDown.ToString();
+                labelStatus.Text = "  \t   "  + timeMouseDown.ToString() +
+                    "  \t   " + new String('=', timeMouseDown) +
+                    ((timeMouseDown % 2 == 0)? "<": ">");
             }
             else
             {
