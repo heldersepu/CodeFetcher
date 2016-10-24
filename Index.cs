@@ -315,7 +315,7 @@ namespace CodeFetcher
 
                     string path = fi.FullName;
                     string extension = Path.GetExtension(path);
-                    if (iniFile.ExtensionExclude.Contains(extension.ToUpper()))
+                    if (string.IsNullOrEmpty(extension) || iniFile.ExtensionExclude.Contains(extension.ToUpper()))
                     {
                         this.countSkipped++;
                     }

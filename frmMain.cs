@@ -87,6 +87,7 @@ namespace CodeFetcher
 
         private void InitializeIndex()
         {
+            labelStatus.Text = "Checking files for updates...";
             string iniPath = Path.Combine(appDir, appName + ".ini");
             var ini = new IniFile(iniPath, appDir);
 
