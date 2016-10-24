@@ -287,7 +287,7 @@ namespace CodeFetcher
             }
 
             int filesIndexed = 0;
-
+            logger.Info(" Dir:" + directory.FullName);
             // find all matching files
             foreach (string pattern in iniFile.Patterns)
             {
@@ -380,6 +380,7 @@ namespace CodeFetcher
         /// <param name="path"></param>
         private void addDocument(string extension, string path, string relPath, bool exists)
         {
+            logger.Trace(" File:" + path);
             string filename = Path.GetFileNameWithoutExtension(path);
             FileInfo fi = new FileInfo(path);
             string text = "";
