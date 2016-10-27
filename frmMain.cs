@@ -127,13 +127,9 @@ namespace CodeFetcher
 
         private void TextBoxAdd(string line)
         {
-            if (textBoxQuery.Items.Count < MAX_COMBO_ITEMS)
-                textBoxQuery.Items.Add(line);
-            else
-            {
+            if (textBoxQuery.Items.Count > MAX_COMBO_ITEMS)
                 textBoxQuery.Items.RemoveAt(0);
-                textBoxQuery.Items.Add(line);
-            }
+            textBoxQuery.Items.Add(line);
         }
 
         private AutoCompleteStringCollection LoadSearchTerms()
@@ -169,14 +165,11 @@ namespace CodeFetcher
         {
             try
             {
-                if (File.Exists(index.iniFile.SearchTermsPath))
+                using (var writer = new StreamWriter(index.iniFile.SearchTermsPath))
                 {
-                    using (var writer = new StreamWriter(index.iniFile.SearchTermsPath))
+                    foreach (string item in items)
                     {
-                        foreach (string item in items)
-                        {
-                            writer.WriteLine(item);
-                        }
+                        writer.WriteLine(item);
                     }
                 }
             }
