@@ -33,7 +33,6 @@ namespace CodeFetcher
         int countSkipped = 0;
         int countNew = 0;
         int countChanged = 0;
-        int zipMaxSize = 1;
         int indexMaxFileSize = 20;
 
         Dictionary<string, long> dateStamps;
@@ -384,10 +383,8 @@ namespace CodeFetcher
             string text = "";
             try
             {
-                if (extension.ToLower() == ".zip" && fi.Length < zipMaxSize * 1000000)
-                    text = Parser.Parse(path);
-                else if (fi.Length < indexMaxFileSize * 1000000)
-                    text = Parser.Parse(path);
+                if (fi.Length < indexMaxFileSize * 1000000)
+                    text = File.ReadAllText(path);
                 if (!string.IsNullOrEmpty(text))
                     foreach (var item in iniFile.Splitters)
                         text = text.Replace(item, " ");
