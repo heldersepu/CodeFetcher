@@ -242,6 +242,7 @@ namespace CodeFetcher
         {
             if (e.Error != null)
             {
+                logger.Error(e.Error);
                 labelStatus.Text = e.Error.Message;
             }
             else
