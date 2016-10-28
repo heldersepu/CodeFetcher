@@ -222,7 +222,7 @@ namespace CodeFetcher
                 }
 
                 // Search
-                var results = searcher.Search(query, null, iniFile.HitsLimit);
+                var results = searcher.Search(query, iniFile.HitsLimit);
                 foreach (var scoreDoc in results.ScoreDocs)
                 {
                     // get the document from index
