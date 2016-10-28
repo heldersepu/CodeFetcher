@@ -1,8 +1,16 @@
 /obj
 /packages
 /bin
-.vs/CodeFetcher/v14/.suo
-install/.SearchIndex
+.vs
+.SearchIndex
 *.log
 *.exe
-install/CodeFetcher.pdb
+*.pdb
+
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Microsoft Fakes
+FakesAssemblies/
