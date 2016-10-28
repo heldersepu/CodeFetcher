@@ -166,10 +166,6 @@ namespace CodeFetcher
                 indexWriter.Optimize();
                 indexWriter.Dispose();
             };
-            worker.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
-            {
-                //watcher.EnableRaisingEvents = true;
-            };
             return worker;
         }
 
