@@ -1,6 +1,6 @@
-/obj
-/packages
-/bin
+obj
+packages
+bin
 .vs
 .SearchIndex
 *.log
