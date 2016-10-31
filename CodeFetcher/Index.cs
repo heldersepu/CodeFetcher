@@ -5,13 +5,15 @@ using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
-using Lucene.Net.QueryParsers;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
+using Lucene.Net.Analysis.Standard;
 using CodeFetcher.Icons;
+using Lucene.Net.Analysis.Util;
+using Lucene.Net.Util;
+using Lucene.Net.Analysis;
 
 namespace CodeFetcher
 {
@@ -46,9 +48,26 @@ namespace CodeFetcher
 
         public void Delete()
         {
+            Close();
             logger.Info("Index Deleted");
             if (System.IO.Directory.Exists(iniFile.IndexPath))
                 System.IO.Directory.Delete(iniFile.IndexPath, true);
+        }
+
+        private LuceneVersion version
+        {
+            get
+            {
+                return LuceneVersion.LUCENE_48;
+            }
+        }
+
+        private Analyzer analyzer
+        {
+            get
+            {
+                return new StandardAnalyzer(version, CharArraySet.EMPTY_SET);
+            }
         }
 
         /// <summary>
@@ -60,12 +79,12 @@ namespace CodeFetcher
             while (attempts < maxAttempts)
             {
                 var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+                var config = new IndexWriterConfig(version, analyzer);
                 if (CheckIndex())
                 {
                     try
                     {
-                        indexWriter = new IndexWriter(directory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
+                        indexWriter = new IndexWriter(directory, config);
                         attempts = maxAttempts;
                     }
                     catch (LockObtainFailedException le)
@@ -78,7 +97,7 @@ namespace CodeFetcher
                 }
                 else
                 {
-                    indexWriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+                    indexWriter = new IndexWriter(directory, config);
                     attempts = 5;
                 }
             }
@@ -87,8 +106,8 @@ namespace CodeFetcher
 
         public void Close()
         {
-            indexWriter.Optimize();
-            indexWriter.Dispose();
+            if (indexWriter != null)
+                indexWriter.Dispose();
         }
 
         public BackgroundWorker Initialize()
@@ -107,20 +126,18 @@ namespace CodeFetcher
                 if (CheckIndex())
                 {
                     var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                    IndexReader indexReader = IndexReader.Open(directory, true);
+                    IndexReader indexReader = DirectoryReader.Open(directory);
 
                     // Check to see if we are in relative or absolute path mode
-                    for (int i = 0; i < indexReader.NumDocs(); i++)
+                    for (int i = 0; i < indexReader.NumDocs; i++)
                     {
-                        if (!indexReader.IsDeleted(i))
+                        Document doc = indexReader.Document(i);
+                        if (doc.Fields.Count > 0)
                         {
-                            Document doc = indexReader.Document(i);
                             string path = doc.Get("path");
                             long ticks = long.Parse(doc.Get("ticks"));
                             if (dateStamps.ContainsKey(path))
-                            {
                                 dateStamps[path] = Math.Max(dateStamps[path], ticks);
-                            }
                             else
                                 dateStamps.Add(path, ticks);
                         }
@@ -182,16 +199,13 @@ namespace CodeFetcher
             return worker;
         }
 
-
-
         public bool CheckIndex()
         {
             try
             {
                 if (!System.IO.Directory.Exists(iniFile.IndexPath)) return false;
                 var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                searcher = new IndexSearcher(directory, true);
-                searcher.Dispose();
+                searcher = new IndexSearcher(DirectoryReader.Open(directory));
                 return true;
             }
             catch (IOException e)
@@ -212,7 +226,7 @@ namespace CodeFetcher
                 try
                 {
                     var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                    searcher = new IndexSearcher(directory, true);
+                    searcher = new IndexSearcher(DirectoryReader.Open(directory));
                 }
                 catch (IOException ex)
                 {
@@ -223,8 +237,7 @@ namespace CodeFetcher
                 Query query;
                 try
                 {
-                    var parser = new QueryParser(Lucene.Net.Util.Version.LUCENE_30, "content", new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30));
-                    query = parser.Parse(queryText);
+                    query = new TermQuery(new Term("content", queryText));
                 }
                 catch (Exception ex)
                 {
@@ -273,7 +286,6 @@ namespace CodeFetcher
                     }
                     searchWorker.ReportProgress(0, item);
                 }
-                searcher.Dispose();
             };
             return searchWorker;
         }
@@ -421,12 +433,12 @@ namespace CodeFetcher
             string date = LastWriteTime.ToString("yyyyMMddHHmmss");
             string ticks = LastWriteTime.Ticks.ToString();
             Document doc = new Document();
-            doc.Add(new Field("modified", date,     Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field("ticks", ticks,       Field.Store.YES, Field.Index.NO));
-            doc.Add(new Field("type", type,         Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field("name", name,         Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field("path", path,         Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field("content", content,   Field.Store.NO,  Field.Index.ANALYZED));
+            doc.Add(new StringField("modified", date, Field.Store.YES));
+            doc.Add(new StringField("ticks", ticks, Field.Store.YES));
+            doc.Add(new StringField("type", type, Field.Store.YES));
+            doc.Add(new StringField("name", name, Field.Store.YES));
+            doc.Add(new StringField("path", path, Field.Store.YES));
+            doc.Add(new TextField("content", content, Field.Store.NO));
 
             if (exists)
             {

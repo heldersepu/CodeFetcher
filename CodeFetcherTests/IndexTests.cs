@@ -9,7 +9,7 @@ namespace CodeFetcher.Tests
     public class IndexTests
     {
         Index index;
-        const int MAX_FILES = 20000;
+        const int MAX_FILES = 2000;
         const string TEST_STRING = "void functionx test";
         public IndexTests()
         {
