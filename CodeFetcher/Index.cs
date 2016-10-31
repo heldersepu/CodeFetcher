@@ -51,6 +51,46 @@ namespace CodeFetcher
                 System.IO.Directory.Delete(iniFile.IndexPath, true);
         }
 
+        /// <summary>
+        /// Try to open the Index for writing
+        /// </summary>
+        public int TryOpen(int maxAttempts)
+        {
+            int attempts = 0;
+            while (attempts < maxAttempts)
+            {
+                var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
+                var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
+                if (CheckIndex())
+                {
+                    try
+                    {
+                        indexWriter = new IndexWriter(directory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
+                        attempts = maxAttempts;
+                    }
+                    catch (LockObtainFailedException le)
+                    {
+                        attempts++;
+                        logger.Error(le);
+                        if (System.IO.Directory.Exists(iniFile.IndexPath))
+                            System.IO.Directory.Delete(iniFile.IndexPath, true);
+                    }
+                }
+                else
+                {
+                    indexWriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+                    attempts = 5;
+                }
+            }
+            return attempts;
+        }
+
+        public void Close()
+        {
+            indexWriter.Optimize();
+            indexWriter.Dispose();
+        }
+
         public BackgroundWorker Initialize()
         {
             fileCount = 0;
@@ -88,33 +128,8 @@ namespace CodeFetcher
                     indexReader.Dispose();
                 }
 
-                // Try to open the Index for writing
-                int attempts = 0;
-                while (attempts < 5)
-                {
-                    var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                    var analyzer = new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_30);
-                    if (CheckIndex())
-                    {
-                        try
-                        {
-                            indexWriter = new IndexWriter(directory, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
-                            attempts = 5;
-                        }
-                        catch (LockObtainFailedException le)
-                        {
-                            attempts++;
-                            logger.Error(le);
-                            if (System.IO.Directory.Exists(iniFile.IndexPath))
-                                System.IO.Directory.Delete(iniFile.IndexPath, true);
-                        }
-                    }
-                    else
-                    {
-                        indexWriter = new IndexWriter(directory, analyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
-                        attempts = 5;
-                    }
-                }
+                if (TryOpen(5) == 5)
+                    logger.Error("Unable to open the Index for writing.");
 
                 // Hide the file
                 File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
@@ -162,11 +177,12 @@ namespace CodeFetcher
                     worker.ReportProgress(countTotal, summary);
                 }
 
-                indexWriter.Optimize();
-                indexWriter.Dispose();
+                Close();
             };
             return worker;
         }
+
+
 
         public bool CheckIndex()
         {
@@ -266,7 +282,7 @@ namespace CodeFetcher
         /// Indexes a folder.
         /// </summary>
         /// <param name="directory"></param>
-        private bool addFolder(string searchDir, DirectoryInfo directory)
+        public bool addFolder(string searchDir, DirectoryInfo directory)
         {
             // Don't index the indexes.....
             if (directory.FullName.EndsWith(IniFile.SEARCH_INDEX))
@@ -375,7 +391,7 @@ namespace CodeFetcher
         /// Parses and indexes an IFilter parseable file.
         /// </summary>
         /// <param name="path"></param>
-        private void addDocument(string extension, string path, string relPath, bool exists)
+        public void addDocument(string extension, string path, string relPath, bool exists)
         {
             logger.Trace(" File = " + path);
             string filename = Path.GetFileNameWithoutExtension(path);
@@ -394,17 +410,27 @@ namespace CodeFetcher
                 // Ignore error, add with no content
                 logger.Error(e);
             }
+            addContent(fi.LastWriteTime, extension.Substring(1), filename, relPath, text, exists);
+        }
+
+        /// <summary>
+        /// Adds content to the indexes.
+        /// </summary>
+        public void addContent(DateTime LastWriteTime, string type, string name, string path, string content, bool exists)
+        {
+            string date = LastWriteTime.ToString("yyyyMMddHHmmss");
+            string ticks = LastWriteTime.Ticks.ToString();
             Document doc = new Document();
-            doc.Add(new Field("modified", fi.LastWriteTime.ToString("yyyyMMddHHmmss"), Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field("ticks", fi.LastWriteTime.Ticks.ToString(), Field.Store.YES, Field.Index.NO));
-            doc.Add(new Field("type", extension.Substring(1), Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field("name", filename, Field.Store.YES, Field.Index.ANALYZED));
-            doc.Add(new Field("path", relPath, Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field("content", text, Field.Store.NO, Field.Index.ANALYZED));
+            doc.Add(new Field("modified", date,     Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field("ticks", ticks,       Field.Store.YES, Field.Index.NO));
+            doc.Add(new Field("type", type,         Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field("name", name,         Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field("path", path,         Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field("content", content,   Field.Store.NO,  Field.Index.ANALYZED));
 
             if (exists)
             {
-                indexWriter.UpdateDocument(new Term("path", relPath), doc);
+                indexWriter.UpdateDocument(new Term("path", path), doc);
                 countChanged++;
             }
             else
