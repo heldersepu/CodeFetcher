@@ -14,3 +14,4 @@ bin
 
 # Microsoft Fakes
 FakesAssemblies/
+*.user
