@@ -9,18 +9,15 @@ namespace CodeFetcher.Tests
     public class IndexTests
     {
         Index index;
-        const int MAX_FILES = 100;
-        const string TEST_STRING = "void function test";
+        const int MAX_FILES = 20000;
+        const string TEST_STRING = "void functionx test";
         public IndexTests()
         {
             var ini = new IniFile("", ".");
-            ini.HitsLimit = MAX_FILES;
+            ini.HitsLimit = MAX_FILES + 1;
             index = new Index(ini);
-        }
+            index.Delete();
 
-        [TestMethod()]
-        public void SearchTest()
-        {
             var worker = index.Initialize();
             worker.RunWorkerAsync();
             while (worker.IsBusy)
@@ -31,10 +28,14 @@ namespace CodeFetcher.Tests
             for (int i = 0; i < MAX_FILES; i++)
                 index.addContent(DateTime.Now, "utest", $"{name}_{i}", "{i}", TEST_STRING, false);
             index.Close();
+        }
 
+        [TestMethod()]
+        public void SearchTest()
+        {
             int findings = 0;
             RunWorkerCompletedEventArgs completed = null;
-            var search = index.Search("function", null);
+            var search = index.Search("functionx", null);
             search.ProgressChanged +=
                 delegate (object sender, ProgressChangedEventArgs e)
                 {
