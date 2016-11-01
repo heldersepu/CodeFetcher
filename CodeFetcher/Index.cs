@@ -85,7 +85,7 @@ namespace CodeFetcher
                     try
                     {
                         indexWriter = new IndexWriter(directory, config);
-                        attempts = maxAttempts;
+                        attempts = maxAttempts + 5;
                     }
                     catch (LockObtainFailedException le)
                     {
@@ -98,7 +98,7 @@ namespace CodeFetcher
                 else
                 {
                     indexWriter = new IndexWriter(directory, config);
-                    attempts = 5;
+                    attempts = maxAttempts + 5;
                 }
             }
             return attempts;
