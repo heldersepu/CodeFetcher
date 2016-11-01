@@ -275,15 +275,8 @@ namespace CodeFetcher
             string queryText = "";
             if (tabControl1.SelectedIndex == 0)
             {
-                // Parse the query, "content" is the default field to search
-                if (this.textBoxQuery.Text.Trim() != String.Empty)
-                {
-                    queryText = "(" + textBoxQuery.Text + ")";
-
-                    // Also search the path if the query isn't qualified
-                    if (!queryText.Contains(":"))
-                        queryText += " OR name:" + queryText;
-                }
+                if (!string.IsNullOrEmpty(textBoxQuery.Text))
+                    queryText = textBoxQuery.Text;
             }
             else
             {
