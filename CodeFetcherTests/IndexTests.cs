@@ -9,8 +9,8 @@ namespace CodeFetcher.Tests
     public class IndexTests
     {
         Index index;
-        const int MAX_FILES = 2000;
-        const string TEST_STRING = "void functionx test";
+        const int MAX_FILES = 200;
+        const string TEST_STRING = "void y.FunctionX(){} test";
         public IndexTests()
         {
             var ini = new IniFile("", ".");
@@ -35,7 +35,7 @@ namespace CodeFetcher.Tests
         {
             int findings = 0;
             RunWorkerCompletedEventArgs completed = null;
-            var search = index.Search("functionx", null);
+            var search = index.Search("(FunctionX)", null);
             search.ProgressChanged +=
                 delegate (object sender, ProgressChangedEventArgs e)
                 {

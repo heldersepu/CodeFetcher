@@ -276,7 +276,13 @@ namespace CodeFetcher
             if (tabControl1.SelectedIndex == 0)
             {
                 if (!string.IsNullOrEmpty(textBoxQuery.Text))
-                    queryText = textBoxQuery.Text;
+                {
+                    queryText = "(" + textBoxQuery.Text + ")";
+
+                    // Also search the path if the query isn't qualified
+                    if (!queryText.Contains(":"))
+                        queryText += " OR name:" + queryText;
+                }
             }
             else
             {

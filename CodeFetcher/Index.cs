@@ -14,6 +14,7 @@ using CodeFetcher.Icons;
 using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
 using Lucene.Net.Analysis;
+using Lucene.Net.QueryParsers.ComplexPhrase;
 
 namespace CodeFetcher
 {
@@ -39,20 +40,6 @@ namespace CodeFetcher
 
         Dictionary<string, long> dateStamps;
         Dictionary<string, long> newDateStamps;
-        #endregion Private declarations
-
-        public Index(IniFile iniFile)
-        {
-            this.iniFile = iniFile;
-        }
-
-        public void Delete()
-        {
-            Close();
-            logger.Info("Index Deleted");
-            if (System.IO.Directory.Exists(iniFile.IndexPath))
-                System.IO.Directory.Delete(iniFile.IndexPath, true);
-        }
 
         private LuceneVersion version
         {
@@ -68,6 +55,28 @@ namespace CodeFetcher
             {
                 return new StandardAnalyzer(version, CharArraySet.EMPTY_SET);
             }
+        }
+
+        private ComplexPhraseQueryParser parser
+        {
+            get
+            {
+                return new ComplexPhraseQueryParser(version, "content", analyzer);
+            }
+        }
+        #endregion Private declarations
+
+        public Index(IniFile iniFile)
+        {
+            this.iniFile = iniFile;
+        }
+
+        public void Delete()
+        {
+            Close();
+            logger.Info("Index Deleted");
+            if (System.IO.Directory.Exists(iniFile.IndexPath))
+                System.IO.Directory.Delete(iniFile.IndexPath, true);
         }
 
         /// <summary>
@@ -237,7 +246,7 @@ namespace CodeFetcher
                 Query query;
                 try
                 {
-                    query = new TermQuery(new Term("content", queryText));
+                    query = parser.Parse(queryText);
                 }
                 catch (Exception ex)
                 {
@@ -413,9 +422,6 @@ namespace CodeFetcher
             {
                 if (fi.Length < indexMaxFileSize * 1000000)
                     text = File.ReadAllText(path);
-                if (!string.IsNullOrEmpty(text))
-                    foreach (var item in iniFile.Splitters)
-                        text = text.Replace(item, " ");
             }
             catch (Exception e)
             {
@@ -430,6 +436,9 @@ namespace CodeFetcher
         /// </summary>
         public void addContent(DateTime LastWriteTime, string type, string name, string path, string content, bool exists)
         {
+            if (!string.IsNullOrEmpty(content))
+                foreach (var item in iniFile.Splitters)
+                    content = content.Replace(item, " ");
             string date = LastWriteTime.ToString("yyyyMMddHHmmss");
             string ticks = LastWriteTime.Ticks.ToString();
             Document doc = new Document();
