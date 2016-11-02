@@ -1,4 +1,5 @@
-﻿
+![https://raw.githubusercontent.com/heldersepu/codefetcher/lucene.net/images/CodeFetcher_v1.0.png](https://raw.githubusercontent.com/heldersepu/codefetcher/lucene.net/images/CodeFetcher_v1.0.png)
+ 
 SETTINGS
 To override the default settings use CodeFetcher.ini, it should be place in the same directory as CodeFetcher.exe, setting below:
 
