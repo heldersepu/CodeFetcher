@@ -26,11 +26,29 @@ namespace CodeFetcher
         private string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
         #endregion Private declarations
 
+        private class MessageFilter : IMessageFilter
+        {
+            public frmMain form { get; set; }
+            public bool PreFilterMessage(ref Message msg)
+            {
+                if (msg.Msg == 0x100) //WM_KEYDOWN
+                {
+                    if ((Keys)msg.WParam == Keys.F3)
+                    {
+                        form.findNext();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
         public frmMain()
         {
             InitializeComponent();
             imageListDocuments = new SystemImageList(SystemImageListSize.SmallIcons);
             SystemImageListHelper.SetListViewImageList(listViewResults, imageListDocuments, false);
+            Application.AddMessageFilter(new MessageFilter { form = this });
         }
 
         /// <summary>
@@ -224,6 +242,28 @@ namespace CodeFetcher
             if (foldingManager == null)
                 foldingManager = FoldingManager.Install(sourceCodeEditor.TextArea);
             foldingStrategy.UpdateFoldings(foldingManager, sourceCodeEditor.Document);
+            findNext();
+        }
+
+        private void findNext()
+        {
+            try
+            {
+                if (sourceCodeEditor.LineCount > 1)
+                {
+                    int x = sourceCodeEditor.Text.IndexOf(QueryText, sourceCodeEditor.SelectionStart + 1);
+                    if (x > 0)
+                    {
+                        sourceCodeEditor.SelectionStart = x;
+                        sourceCodeEditor.SelectionLength = QueryText.Length;
+                        sourceCodeEditor.TextArea.Caret.BringCaretToView();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Error(e);
+            }
         }
 
         #region search Events
@@ -268,6 +308,19 @@ namespace CodeFetcher
         {
             listViewResults.Items.Add((ListViewItem)e.UserState);
             listViewResults.Refresh();
+        }
+
+        private string QueryText
+        {
+            get
+            {
+                string text = "";
+                if (tabControl1.SelectedIndex == 0)
+                    text = textBoxQuery.Text;
+                else
+                    text = textBoxContent.Text;
+                return text.Trim();
+            }
         }
 
         private string GetQueryText()
@@ -461,5 +514,6 @@ namespace CodeFetcher
             }
         }
         #endregion buttonRefreshIndex Events
+
     }
 }
