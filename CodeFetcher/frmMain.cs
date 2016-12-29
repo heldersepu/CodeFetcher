@@ -24,6 +24,7 @@ namespace CodeFetcher
         private string appPath { get { return typeof(frmMain).Assembly.Location; } }
         private string appDir { get { return Path.GetDirectoryName(appPath); } }
         private string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
+        private Column lastColClicked = new Column(0);
         #endregion Private declarations
 
         private class MessageFilter : IMessageFilter
@@ -459,18 +460,12 @@ namespace CodeFetcher
             {
                 columnDataType = ListViewItemComparer.ColumnDataType.Generic;
             }
-
-            if (listViewResults.ListViewItemSorter == null)
-            {
-                listViewResults.ListViewItemSorter = new ListViewItemComparer(
-                    listViewResults.Columns.Count, e.Column, ListSortDirection.Ascending, columnDataType);
-                // when you set ListViewItemSorter, sorting happens automatically
-            }
+            if (lastColClicked.Id == e.Column)
+                lastColClicked.ChangeSort();
             else
-            {
-                ((ListViewItemComparer)listViewResults.ListViewItemSorter).SetColumnAndType(e.Column, columnDataType);
-                listViewResults.Sort(); // must explicitly sort in this case
-            }
+                lastColClicked = new Column(e.Column);
+            listViewResults.ListViewItemSorter = new ListViewItemComparer(
+                listViewResults.Columns.Count, e.Column, lastColClicked.Sort, columnDataType);
         }
 
         private void listViewResults_DoubleClick(object sender, EventArgs e)
@@ -516,6 +511,5 @@ namespace CodeFetcher
             }
         }
         #endregion buttonRefreshIndex Events
-
     }
 }

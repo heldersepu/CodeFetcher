@@ -101,4 +101,19 @@ namespace CodeFetcher
             return comparison;
         }
     }
+
+    internal class Column
+    {
+        public int Id;
+        public ListSortDirection Sort;
+        public Column(int id)
+        {
+            Id = id;
+            Sort = ListSortDirection.Ascending;
+        }
+        public void ChangeSort()
+        {
+            Sort = (Sort == ListSortDirection.Descending) ? ListSortDirection.Ascending : ListSortDirection.Descending;
+        }
+    }
 }

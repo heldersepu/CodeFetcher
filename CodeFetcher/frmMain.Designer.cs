@@ -384,12 +384,16 @@ namespace CodeFetcher
             this.columnHeaderFolder});
             this.listViewResults.ContextMenuStrip = this.contextMenuStrip1;
             this.listViewResults.FullRowSelect = true;
+            this.listViewResults.HideSelection = false;
             this.listViewResults.Location = new System.Drawing.Point(-2, -2);
+            this.listViewResults.MultiSelect = false;
             this.listViewResults.Name = "listViewResults";
             this.listViewResults.Size = new System.Drawing.Size(496, 434);
+            this.listViewResults.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listViewResults.TabIndex = 3;
             this.listViewResults.UseCompatibleStateImageBehavior = false;
             this.listViewResults.View = System.Windows.Forms.View.Details;
+            this.listViewResults.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewResults_ColumnClick);
             this.listViewResults.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listViewResults_ItemSelectionChanged);
             this.listViewResults.Click += new System.EventHandler(this.listViewResults_Click);
             this.listViewResults.DoubleClick += new System.EventHandler(this.listViewResults_DoubleClick);
