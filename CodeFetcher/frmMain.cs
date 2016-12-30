@@ -314,7 +314,7 @@ namespace CodeFetcher
         private void SearchProgressChanged(ProgressChangedEventArgs e)
         {
             listViewResults.Items.Add((ListViewItem)e.UserState);
-            listViewResults.Refresh();
+            //listViewResults.Refresh();
         }
 
         private string QueryText
