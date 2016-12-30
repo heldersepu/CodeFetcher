@@ -301,6 +301,10 @@ namespace CodeFetcher
                     listViewResults.Items[0].Selected = true;
                     addFileToEditor(listViewResults.Selected());
                 }
+                else
+                {
+                    sourceCodeEditor.Clear();
+                }
 
                 labelStatus.Text = string.Format("Search took {0}. ", (DateTime.Now - start));
             }
