@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ICSharpCode.AvalonEdit;
+using System;
 using System.Windows.Forms;
 
 namespace CodeFetcher
@@ -29,6 +30,18 @@ namespace CodeFetcher
         public static string Selected(this DateTimePicker obj)
         {
             return obj.Value.ToString("yyyyMMdd");
+        }
+    }
+
+    static class TextEditorExtension
+    {
+        public static int Find(this TextEditor obj, string QueryText)
+        {
+            var ct = StringComparison.CurrentCultureIgnoreCase;
+            int x = obj.Text.IndexOf(QueryText, obj.SelectionStart + 1, ct);
+            if (x <= 0 && obj.SelectionStart > 1)
+                x = obj.Text.IndexOf(QueryText, 1, ct);
+            return x;
         }
     }
 }

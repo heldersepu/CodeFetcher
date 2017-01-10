@@ -252,9 +252,7 @@ namespace CodeFetcher
             {
                 if (sourceCodeEditor.LineCount > 1)
                 {
-                    int x = sourceCodeEditor.Text.IndexOf(QueryText, sourceCodeEditor.SelectionStart + 1);
-                    if (x <= 0 && sourceCodeEditor.SelectionStart > 1)
-                        x = sourceCodeEditor.Text.IndexOf(QueryText, 1);
+                    int x = sourceCodeEditor.Find(QueryText);
                     if (x > 0)
                     {
                         sourceCodeEditor.SelectionStart = x;
