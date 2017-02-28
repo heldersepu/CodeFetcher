@@ -314,11 +314,9 @@ namespace CodeFetcher
                 return false;
 
             // Don't index excluded files
-            foreach (string exclude in iniFile.SearchExclude)
-            {
-                if (directory.FullName.ToUpper().EndsWith(exclude))
-                    return false;
-            }
+            string udir = directory.FullName.ToUpper();
+            if (iniFile.SearchExclude.Any(x => udir.EndsWith(x)))
+                return false;
 
             int filesIndexed = 0;
             logger.Info("   Dir = " + directory.FullName);
