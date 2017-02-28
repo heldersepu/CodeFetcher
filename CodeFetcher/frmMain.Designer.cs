@@ -68,6 +68,7 @@ namespace CodeFetcher
             this.ctrlHost = new System.Windows.Forms.Integration.ElementHost();
             this.sourceCodeEditor = new ICSharpCode.AvalonEdit.TextEditor();
             this.RightClickHoldTimer = new System.Windows.Forms.Timer(this.components);
+            this.textBoxRawContent = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -185,6 +186,8 @@ namespace CodeFetcher
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.textBoxRawContent);
+            this.tabPage2.Controls.Add(this.textBoxContent);
             this.tabPage2.Controls.Add(this.buttonToday);
             this.tabPage2.Controls.Add(this.textBoxType);
             this.tabPage2.Controls.Add(this.dateTimePickerTo);
@@ -192,15 +195,14 @@ namespace CodeFetcher
             this.tabPage2.Controls.Add(this.label4);
             this.tabPage2.Controls.Add(this.buttonSearch1);
             this.tabPage2.Controls.Add(this.label3);
-            this.tabPage2.Controls.Add(this.textBoxContent);
             this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Controls.Add(this.textBoxName);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.label5);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(971, 55);
+            this.tabPage2.Size = new System.Drawing.Size(971, 52);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Advanced";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -286,6 +288,7 @@ namespace CodeFetcher
             this.textBoxContent.Name = "textBoxContent";
             this.textBoxContent.Size = new System.Drawing.Size(441, 22);
             this.textBoxContent.TabIndex = 1;
+            this.textBoxContent.DoubleClick += new System.EventHandler(this.textBoxContent_DoubleClick);
             this.textBoxContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
             // 
             // label2
@@ -438,6 +441,18 @@ namespace CodeFetcher
             // 
             this.RightClickHoldTimer.Tick += new System.EventHandler(this.RightClickHoldTimer_Tick);
             // 
+            // textBoxRawContent
+            // 
+            this.textBoxRawContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxRawContent.Location = new System.Drawing.Point(16, 15);
+            this.textBoxRawContent.Multiline = true;
+            this.textBoxRawContent.Name = "textBoxRawContent";
+            this.textBoxRawContent.Size = new System.Drawing.Size(766, 54);
+            this.textBoxRawContent.TabIndex = 25;
+            this.textBoxRawContent.Visible = false;
+            this.textBoxRawContent.DoubleClick += new System.EventHandler(this.textBoxRawContent_DoubleClick);
+            // 
             // frmMain
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(6, 15);
@@ -505,5 +520,6 @@ namespace CodeFetcher
         private ComboBox textBoxQuery;
         private Timer RightClickHoldTimer;
         private TextEditor sourceCodeEditor;
+        private TextBox textBoxRawContent;
     }
 }

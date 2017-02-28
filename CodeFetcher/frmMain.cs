@@ -342,6 +342,10 @@ namespace CodeFetcher
                         queryText += " OR name:" + queryText;
                 }
             }
+            else if (textBoxRawContent.Visible)
+            {
+                queryText = textBoxRawContent.Text.Trim();
+            }
             else
             {
                 queryText = "";
@@ -513,5 +517,16 @@ namespace CodeFetcher
             }
         }
         #endregion buttonRefreshIndex Events
+
+        private void textBoxContent_DoubleClick(object sender, EventArgs e)
+        {
+            textBoxRawContent.Text = GetQueryText();
+            textBoxRawContent.Visible = true;
+        }
+
+        private void textBoxRawContent_DoubleClick(object sender, EventArgs e)
+        {
+            textBoxRawContent.Visible = false;
+        }
     }
 }

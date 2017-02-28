@@ -88,15 +88,15 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Lucene.Net, Version=4.8.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lucene.Net.4.8.0.695-beta\lib\net451\Lucene.Net.dll</HintPath>
+      <HintPath>..\packages\Lucene.Net.4.8.0.770-beta\lib\net451\Lucene.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Lucene.Net.Analysis.Common, Version=4.8.0.695, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lucene.Net.Analysis.Common.4.8.0.695-beta\lib\net451\Lucene.Net.Analysis.Common.dll</HintPath>
+    <Reference Include="Lucene.Net.Analysis.Common, Version=4.8.0.770, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lucene.Net.Analysis.Common.4.8.0.770-beta\lib\net451\Lucene.Net.Analysis.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Lucene.Net.QueryParser, Version=4.8.0.697, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Lucene.Net.QueryParser.4.8.0.697-beta\lib\net451\Lucene.Net.QueryParser.dll</HintPath>
+    <Reference Include="Lucene.Net.QueryParser, Version=4.8.0.770, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lucene.Net.QueryParser.4.8.0.770-beta\lib\net451\Lucene.Net.QueryParser.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
