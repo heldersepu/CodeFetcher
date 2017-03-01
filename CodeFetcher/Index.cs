@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -111,6 +112,15 @@ namespace CodeFetcher
                 }
             }
             return attempts;
+        }
+
+        public void Cancel()
+        {
+            while(worker != null && worker.IsBusy)
+            {
+                worker.CancelAsync();
+                Thread.Sleep(100);
+            }
         }
 
         public void Close()
