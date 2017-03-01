@@ -74,10 +74,11 @@ namespace CodeFetcher
 
         public void Delete()
         {
-            Close();
-            logger.Info("Index Deleted");
+            logger.Info("Deleting Index");
+            Close(); Cancel();
             if (System.IO.Directory.Exists(iniFile.IndexPath))
                 System.IO.Directory.Delete(iniFile.IndexPath, true);
+            logger.Info("Index Deleted");
         }
 
         /// <summary>
@@ -121,12 +122,24 @@ namespace CodeFetcher
                 worker.CancelAsync();
                 Thread.Sleep(100);
             }
+            worker = null;
+            while (searchWorker != null && searchWorker.IsBusy)
+            {
+                searchWorker.CancelAsync();
+                Thread.Sleep(100);
+            }
+            searchWorker = null;
+            searcher = null;
         }
 
         public void Close()
         {
             if (indexWriter != null)
+            {
                 indexWriter.Dispose();
+                IndexWriter.Unlock(indexWriter.Directory);
+                indexWriter = null;
+            }
         }
 
         public BackgroundWorker Initialize()
