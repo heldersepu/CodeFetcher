@@ -129,6 +129,8 @@ namespace CodeFetcher
                 Thread.Sleep(100);
             }
             searchWorker = null;
+            if (searcher != null)
+                searcher.IndexReader.Dispose();
             searcher = null;
         }
 
