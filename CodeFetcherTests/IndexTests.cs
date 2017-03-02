@@ -26,8 +26,15 @@ namespace CodeFetcher.Tests
             index.TryOpen(5);
             string name = Guid.NewGuid().ToString();
             for (int i = 0; i < MAX_FILES; i++)
-                index.addContent(DateTime.Now, "utest", $"{name}_{i}", "{i}", TEST_STRING, false);
+                index.addContent(
+                    LastWriteTime: DateTime.Now,
+                    type: "utest",
+                    name: $"{name}_{i}",
+                    path: i.ToString(),
+                    content: TEST_STRING,
+                    exists: false);
             index.Close();
+            index.Cancel();
         }
 
         [TestMethod()]
@@ -36,19 +43,12 @@ namespace CodeFetcher.Tests
             int findings = 0;
             RunWorkerCompletedEventArgs completed = null;
             var search = index.Search("(FunctionX)", null);
-            search.ProgressChanged +=
-                delegate (object sender, ProgressChangedEventArgs e)
-                {
-                    findings++;
-                };
-            search.RunWorkerCompleted +=
-                delegate (object sender, RunWorkerCompletedEventArgs e)
-                {
-                    completed = e;
-                };
+            search.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e) { findings++; };
+            search.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e) { completed = e; };
             search.RunWorkerAsync();
             while (search.IsBusy)
                 Thread.Sleep(100);
+            index.Cancel();
 
             if (completed.Error != null)
                 Assert.Fail(completed.Error.Message);
@@ -56,6 +56,27 @@ namespace CodeFetcher.Tests
                 Assert.Fail("NOTHING WAS FOUND");
             else
                 Assert.AreEqual(MAX_FILES, findings);
+        }
+
+        [TestMethod()]
+        public void SearchPathTest()
+        {
+            int findings = 0;
+            RunWorkerCompletedEventArgs completed = null;
+            var search = index.Search("content:void AND path:10", null);
+            search.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e) { findings++; };
+            search.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e) { completed = e; };
+            search.RunWorkerAsync();
+            while (search.IsBusy)
+                Thread.Sleep(100);
+            index.Cancel();
+
+            if (completed.Error != null)
+                Assert.Fail(completed.Error.Message);
+            else if (findings < 1)
+                Assert.Fail("NOTHING WAS FOUND");
+            else
+                Assert.AreEqual(1, findings);
         }
     }
 }
