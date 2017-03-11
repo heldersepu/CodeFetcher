@@ -11,6 +11,8 @@ namespace CodeFetcher.Tests
         Index index;
         const int MAX_FILES = 200;
         const string TEST_STRING = "void y.FunctionX(){} test";
+        string IndexStatus = string.Empty;
+
         public IndexTests()
         {
             var ini = new IniFile("", ".");
@@ -19,6 +21,7 @@ namespace CodeFetcher.Tests
             index.Delete();
 
             var worker = index.Initialize();
+            worker.ProgressChanged += delegate (object s, ProgressChangedEventArgs pe) { IndexStatus = pe.UserState.ToString(); };
             worker.RunWorkerAsync();
             while (worker.IsBusy)
                 Thread.Sleep(100);
@@ -35,6 +38,12 @@ namespace CodeFetcher.Tests
                     exists: false);
             index.Close();
             index.Cancel();
+        }
+
+        [TestMethod()]
+        public void IndexStatusTest()
+        {
+            Assert.AreNotEqual(string.Empty, IndexStatus);
         }
 
         [TestMethod()]
