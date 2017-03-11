@@ -38,6 +38,7 @@ namespace CodeFetcher
         int countNew = 0;
         int countChanged = 0;
         int indexMaxFileSize = 20;
+        DateTime ProgressReport;
 
         Dictionary<string, long> dateStamps;
         Dictionary<string, long> newDateStamps;
@@ -153,7 +154,7 @@ namespace CodeFetcher
 
             worker.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
-                var ProgressReport = DateTime.Now;
+                ProgressReport = DateTime.Now;
                 dateStamps = new Dictionary<string, long>();
                 newDateStamps = new Dictionary<string, long>();
 
@@ -224,12 +225,8 @@ namespace CodeFetcher
                         }
                     }
 
-                    if ((DateTime.Now - ProgressReport).TotalMilliseconds > 500)
-                    {
-                        ProgressReport = DateTime.Now;
-                        string summary = $"{countTotal} files. New {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}. {DateTime.Now - start}";
-                        worker.ReportProgress(countTotal, summary);
-                    }
+                    string summary = $"{countTotal} files. New {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}. {DateTime.Now - start}";
+                    worker.ReportProgress(countTotal, summary);
                 }
 
                 Close();
@@ -399,7 +396,11 @@ namespace CodeFetcher
                             if (!dateStamps.ContainsKey(relPath))
                             {
                                 addDocument(extension, path, relPath, false);
-                                worker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
+                                if ((DateTime.Now - ProgressReport).TotalMilliseconds > 500)
+                                {
+                                    ProgressReport = DateTime.Now;
+                                    worker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
+                                }
                             }
                             else if (dateStamps[relPath] < fi.LastWriteTime.Ticks)
                             {

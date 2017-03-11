@@ -116,7 +116,7 @@ namespace CodeFetcher
             {
                 string status = pe.UserState.ToString();
                 if (pe.ProgressPercentage != 0)
-                    status = string.Format("Files indexed {0}. {1}", pe.ProgressPercentage, status);
+                    status = $"Files indexed {pe.ProgressPercentage}. {status}";
                 labelStatus.Text = status;
             };
             worker.RunWorkerAsync();
