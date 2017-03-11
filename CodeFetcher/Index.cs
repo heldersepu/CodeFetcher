@@ -153,6 +153,7 @@ namespace CodeFetcher
 
             worker.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
+                var ProgressReport = DateTime.Now;
                 dateStamps = new Dictionary<string, long>();
                 newDateStamps = new Dictionary<string, long>();
 
@@ -205,8 +206,7 @@ namespace CodeFetcher
 
                 if (cancel)
                 {
-                    string summary = String.Format("Cancelled. Indexed {0} files. Skipped {1} files.", countTotal, countSkipped);
-                    summary += String.Format(" Took {0}", (DateTime.Now - start));
+                    string summary = $"Cancelled. Indexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
                     worker.ReportProgress(countTotal, summary);
                     e.Cancel = true;
                 }
@@ -224,8 +224,12 @@ namespace CodeFetcher
                         }
                     }
 
-                    string summary = String.Format("{0} files. New {1}. Changed {2}, Skipped {3}. Removed {4}. {5}", countTotal, countNew, countChanged, countSkipped, deleted, DateTime.Now - start);
-                    worker.ReportProgress(countTotal, summary);
+                    if ((DateTime.Now - ProgressReport).TotalMilliseconds > 500)
+                    {
+                        ProgressReport = DateTime.Now;
+                        string summary = $"{countTotal} files. New {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}. {DateTime.Now - start}";
+                        worker.ReportProgress(countTotal, summary);
+                    }
                 }
 
                 Close();
