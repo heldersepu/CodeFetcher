@@ -81,7 +81,7 @@ namespace CodeFetcher
         public string[] ExtensionExclude = new string[] {
             ".PDB", ".DLL", ".EXE", ".GIF", ".JPG", ".PNG", ".GZ", ".ZIP",
             ".BMP", ".DOC", ".DOCX", ".XLS", ".XLSX", ".MP3", ".WAV",
-            ".NUPKG", ".DBSCHEMA", ".DBML", ".CAB",
+            ".NUPKG", ".DBSCHEMA", ".DBML", ".CAB", ".VSD", ".ICO",
         };
         public string[] Splitters = new string[] {
             ".", "=", "\"", ":", "<", ">", "(", ")", "[", "]",
