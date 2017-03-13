@@ -31,7 +31,6 @@ namespace CodeFetcher
         IndexSearcher searcher = null;
 
         int fileCount;
-        bool portablePaths = true;
         // statistics
         int countTotal = 0;
         int countSkipped = 0;
@@ -369,33 +368,24 @@ namespace CodeFetcher
                     if (worker.CancellationPending)
                         return true;
 
-                    string path = fi.FullName;
-                    string extension = Path.GetExtension(path);
+                    string fullPath = fi.FullName;
+                    string extension = Path.GetExtension(fullPath);
                     if (string.IsNullOrEmpty(extension) || iniFile.ExtensionExclude.Contains(extension.ToUpper()))
                     {
-                        this.countSkipped++;
+                        countSkipped++;
                     }
                     else
                     {
                         fileCount++;
                         try
                         {
-                            string relPath = path;
-                            // Remove the full path
-                            if (portablePaths)
-                            {
-                                relPath = path.Replace(searchDir, "");
-                                // Remove the starting slash
-                                if (relPath.StartsWith(@"\"))
-                                    relPath = relPath.Substring(1);
-                            }
-
+                            string relPath = fullPath.Replace(searchDir, "").Trim().Trim('\\');
                             newDateStamps.Add(relPath, fi.LastWriteTime.Ticks);
 
                             // Check to see of doc has changed
                             if (!dateStamps.ContainsKey(relPath))
                             {
-                                addDocument(extension, path, relPath, false);
+                                addDocument(extension, fullPath, relPath, false);
                                 if ((DateTime.Now - ProgressReport).TotalMilliseconds > 500)
                                 {
                                     ProgressReport = DateTime.Now;
@@ -405,16 +395,15 @@ namespace CodeFetcher
                             else if (dateStamps[relPath] < fi.LastWriteTime.Ticks)
                             {
                                 // Delete the existing document
-                                addDocument(extension, path, relPath, true);
+                                addDocument(extension, fullPath, relPath, true);
                             }
-
-                            this.countTotal++;
+                            countTotal++;
                         }
                         catch (Exception e)
                         {
                             // parsing and indexing wasn't successful, skipping that file
                             logger.Error(e);
-                            this.countSkipped++;
+                            countSkipped++;
                             worker.ReportProgress(fileCount, "Skipped:" + Path.GetFileName(fi.FullName));
                         }
                     }
@@ -439,24 +428,33 @@ namespace CodeFetcher
         /// <summary>
         /// Parses and indexes an IFilter parseable file.
         /// </summary>
-        /// <param name="path"></param>
-        public void addDocument(string extension, string path, string relPath, bool exists)
+        /// <param name="extension"></param>
+        /// <param name="fullPath"></param>
+        /// <param name="relPath"></param>
+        /// <param name="exists"></param>
+        public void addDocument(string extension, string fullPath, string relPath, bool exists)
         {
-            logger.Trace(" File = " + path);
-            string filename = Path.GetFileNameWithoutExtension(path);
-            FileInfo fi = new FileInfo(path);
+            logger.Trace(" File = " + fullPath);
+            string filename = Path.GetFileNameWithoutExtension(fullPath);
+            FileInfo fi = new FileInfo(fullPath);
             string text = "";
             try
             {
                 if (fi.Length < indexMaxFileSize * 1000000)
-                    text = File.ReadAllText(path);
+                    text = File.ReadAllText(fullPath);
             }
             catch (Exception e)
             {
                 // Ignore error, add with no content
                 logger.Error(e);
             }
-            addContent(fi.LastWriteTime, extension.Substring(1), filename, relPath, text, exists);
+            addContent(
+                LastWriteTime: fi.LastWriteTime,
+                type: extension.Substring(1),
+                name: filename,
+                path: relPath,
+                content: text,
+                exists: exists);
         }
 
         /// <summary>
@@ -472,9 +470,9 @@ namespace CodeFetcher
             Document doc = new Document();
             doc.Add(new StringField("modified", date, Field.Store.YES));
             doc.Add(new StringField("ticks", ticks, Field.Store.YES));
-            doc.Add(new StringField("type", type, Field.Store.YES));
-            doc.Add(new StringField("name", name, Field.Store.YES));
-            doc.Add(new StringField("path", path, Field.Store.YES));
+            doc.Add(new TextField("type", type, Field.Store.YES));
+            doc.Add(new TextField("name", name, Field.Store.YES));
+            doc.Add(new TextField("path", path, Field.Store.YES));
             doc.Add(new TextField("content", content, Field.Store.NO));
 
             if (exists)
