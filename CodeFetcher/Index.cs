@@ -206,7 +206,7 @@ namespace CodeFetcher
 
                 if (cancel)
                 {
-                    string summary = $"Cancelled. Indexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
+                    string summary = $"Cancelled. \nIndexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
                     worker.ReportProgress(countTotal, summary);
                     e.Cancel = true;
                 }
@@ -224,7 +224,7 @@ namespace CodeFetcher
                         }
                     }
 
-                    string summary = $"{countTotal} files. New {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}. {DateTime.Now - start}";
+                    string summary = $" {DateTime.Now - start} \nNew {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}.";
                     worker.ReportProgress(countTotal, summary);
                 }
 
@@ -386,7 +386,7 @@ namespace CodeFetcher
                             if (!dateStamps.ContainsKey(relPath))
                             {
                                 addDocument(extension, fullPath, relPath, false);
-                                if ((DateTime.Now - ProgressReport).TotalMilliseconds > 500)
+                                if ((DateTime.Now - ProgressReport).TotalMilliseconds > 400)
                                 {
                                     ProgressReport = DateTime.Now;
                                     worker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));

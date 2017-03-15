@@ -44,6 +44,8 @@ namespace CodeFetcher
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.buttonSearch = new System.Windows.Forms.Button();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.textBoxRawContent = new System.Windows.Forms.TextBox();
+            this.textBoxContent = new System.Windows.Forms.TextBox();
             this.buttonToday = new System.Windows.Forms.Button();
             this.textBoxType = new System.Windows.Forms.TextBox();
             this.dateTimePickerTo = new System.Windows.Forms.DateTimePicker();
@@ -51,7 +53,6 @@ namespace CodeFetcher
             this.label4 = new System.Windows.Forms.Label();
             this.buttonSearch1 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBoxContent = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -68,7 +69,6 @@ namespace CodeFetcher
             this.ctrlHost = new System.Windows.Forms.Integration.ElementHost();
             this.sourceCodeEditor = new ICSharpCode.AvalonEdit.TextEditor();
             this.RightClickHoldTimer = new System.Windows.Forms.Timer(this.components);
-            this.textBoxRawContent = new System.Windows.Forms.TextBox();
             this.contextMenuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -85,9 +85,9 @@ namespace CodeFetcher
             this.labelStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelStatus.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelStatus.Location = new System.Drawing.Point(128, 537);
+            this.labelStatus.Location = new System.Drawing.Point(128, 532);
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.Size = new System.Drawing.Size(868, 19);
+            this.labelStatus.Size = new System.Drawing.Size(864, 38);
             this.labelStatus.TabIndex = 0;
             // 
             // contextMenuStrip1
@@ -199,13 +199,36 @@ namespace CodeFetcher
             this.tabPage2.Controls.Add(this.textBoxName);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.label5);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(971, 52);
+            this.tabPage2.Size = new System.Drawing.Size(971, 55);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Advanced";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // textBoxRawContent
+            // 
+            this.textBoxRawContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxRawContent.Location = new System.Drawing.Point(16, 15);
+            this.textBoxRawContent.Multiline = true;
+            this.textBoxRawContent.Name = "textBoxRawContent";
+            this.textBoxRawContent.Size = new System.Drawing.Size(766, 54);
+            this.textBoxRawContent.TabIndex = 25;
+            this.textBoxRawContent.Visible = false;
+            this.textBoxRawContent.DoubleClick += new System.EventHandler(this.textBoxRawContent_DoubleClick);
+            // 
+            // textBoxContent
+            // 
+            this.textBoxContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxContent.Location = new System.Drawing.Point(80, 15);
+            this.textBoxContent.Name = "textBoxContent";
+            this.textBoxContent.Size = new System.Drawing.Size(441, 22);
+            this.textBoxContent.TabIndex = 1;
+            this.textBoxContent.DoubleClick += new System.EventHandler(this.textBoxContent_DoubleClick);
+            this.textBoxContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
             // 
             // buttonToday
             // 
@@ -279,17 +302,6 @@ namespace CodeFetcher
             this.label3.Size = new System.Drawing.Size(57, 16);
             this.label3.TabIndex = 0;
             this.label3.Text = "Content:";
-            // 
-            // textBoxContent
-            // 
-            this.textBoxContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxContent.Location = new System.Drawing.Point(80, 15);
-            this.textBoxContent.Name = "textBoxContent";
-            this.textBoxContent.Size = new System.Drawing.Size(441, 22);
-            this.textBoxContent.TabIndex = 1;
-            this.textBoxContent.DoubleClick += new System.EventHandler(this.textBoxContent_DoubleClick);
-            this.textBoxContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
             // 
             // label2
             // 
@@ -440,18 +452,6 @@ namespace CodeFetcher
             // RightClickHoldTimer
             // 
             this.RightClickHoldTimer.Tick += new System.EventHandler(this.RightClickHoldTimer_Tick);
-            // 
-            // textBoxRawContent
-            // 
-            this.textBoxRawContent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxRawContent.Location = new System.Drawing.Point(16, 15);
-            this.textBoxRawContent.Multiline = true;
-            this.textBoxRawContent.Name = "textBoxRawContent";
-            this.textBoxRawContent.Size = new System.Drawing.Size(766, 54);
-            this.textBoxRawContent.TabIndex = 25;
-            this.textBoxRawContent.Visible = false;
-            this.textBoxRawContent.DoubleClick += new System.EventHandler(this.textBoxRawContent_DoubleClick);
             // 
             // frmMain
             // 
