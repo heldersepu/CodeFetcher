@@ -147,6 +147,7 @@ namespace CodeFetcher
         public BackgroundWorker Initialize()
         {
             fileCount = 0;
+            var start = DateTime.Now;
             worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
@@ -191,7 +192,6 @@ namespace CodeFetcher
                 countNew = 0;
                 countChanged = 0;
                 bool cancel = false;
-                DateTime start = DateTime.Now;
 
                 foreach (string searchDir in iniFile.SearchDirs)
                 {
