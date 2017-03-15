@@ -145,9 +145,10 @@ namespace CodeFetcher
             }
         }
 
+        private ISet<string> fieldsToLoad = new HashSet<string> { "path", "ticks" };
         private void LoadDateStamps(int docID)
         {
-            Document doc = indexReader.Document(docID);
+            Document doc = indexReader.Document(docID, fieldsToLoad);
             if (doc.Fields.Count > 0)
             {
                 string path = doc.Get("path");
@@ -180,11 +181,7 @@ namespace CodeFetcher
                     logger.Info("Initialize:CheckIndex");
                     var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                     indexReader = DirectoryReader.Open(directory);
-                    // Check to see if we are in relative or absolute path mode
-                    for (int i = 0; i < indexReader.NumDocs; i++)
-                    {
-                        LoadDateStamps(i);
-                    }
+                    for (int i = 0; i < indexReader.NumDocs; i++) LoadDateStamps(i);
                     indexReader.Dispose();
                 }
 
