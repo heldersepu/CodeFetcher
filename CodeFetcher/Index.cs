@@ -28,6 +28,7 @@ namespace CodeFetcher
         #region Private declarations
         BackgroundWorker searchWorker;
         IndexWriter indexWriter;
+        IndexReader indexReader;
         IndexSearcher searcher = null;
 
         int fileCount;
@@ -144,8 +145,23 @@ namespace CodeFetcher
             }
         }
 
+        private void LoadDateStamps(int docID)
+        {
+            Document doc = indexReader.Document(docID);
+            if (doc.Fields.Count > 0)
+            {
+                string path = doc.Get("path");
+                long ticks = long.Parse(doc.Get("ticks"));
+                if (dateStamps.ContainsKey(path))
+                    dateStamps[path] = Math.Max(dateStamps[path], ticks);
+                else
+                    dateStamps.Add(path, ticks);
+            }
+        }
+
         public BackgroundWorker Initialize()
         {
+            logger.Info("Initialize");
             fileCount = 0;
             var start = DateTime.Now;
             worker = new BackgroundWorker();
@@ -161,26 +177,18 @@ namespace CodeFetcher
                 // First load all of the datestamps to check if the file is modified
                 if (CheckIndex())
                 {
+                    logger.Info("Initialize:CheckIndex");
                     var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                    IndexReader indexReader = DirectoryReader.Open(directory);
-
+                    indexReader = DirectoryReader.Open(directory);
                     // Check to see if we are in relative or absolute path mode
                     for (int i = 0; i < indexReader.NumDocs; i++)
                     {
-                        Document doc = indexReader.Document(i);
-                        if (doc.Fields.Count > 0)
-                        {
-                            string path = doc.Get("path");
-                            long ticks = long.Parse(doc.Get("ticks"));
-                            if (dateStamps.ContainsKey(path))
-                                dateStamps[path] = Math.Max(dateStamps[path], ticks);
-                            else
-                                dateStamps.Add(path, ticks);
-                        }
+                        LoadDateStamps(i);
                     }
                     indexReader.Dispose();
                 }
 
+                logger.Info("Initialize:TryOpen");
                 if (TryOpen(5) == 5)
                     logger.Error("Unable to open the Index for writing.");
 
@@ -193,6 +201,7 @@ namespace CodeFetcher
                 countChanged = 0;
                 bool cancel = false;
 
+                logger.Info("Initialize:SearchDirs");
                 foreach (string searchDir in iniFile.SearchDirs)
                 {
                     if (System.IO.Directory.Exists(searchDir))
@@ -212,6 +221,7 @@ namespace CodeFetcher
                 }
                 else
                 {
+                    logger.Info("Initialize:DateStamps");
                     int deleted = 0;
 
                     // Loop through all the files and delete if it doesn't exist
@@ -227,7 +237,7 @@ namespace CodeFetcher
                     string summary = $" {DateTime.Now - start} \nNew {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}.";
                     worker.ReportProgress(countTotal, summary);
                 }
-
+                logger.Info("Initialize:Close");
                 Close();
             };
             return worker;
