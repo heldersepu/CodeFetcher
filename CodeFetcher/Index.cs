@@ -148,16 +148,10 @@ namespace CodeFetcher
         private ISet<string> fieldsToLoad = new HashSet<string> { "path", "ticks" };
         private void LoadDateStamps(int docID)
         {
-            Document doc = indexReader.Document(docID, fieldsToLoad);
-            if (doc.Fields.Count > 0)
-            {
-                string path = doc.Get("path");
-                long ticks = long.Parse(doc.Get("ticks"));
-                if (dateStamps.ContainsKey(path))
-                    dateStamps[path] = Math.Max(dateStamps[path], ticks);
-                else
-                    dateStamps.Add(path, ticks);
-            }
+            var doc = indexReader.Document(docID, fieldsToLoad);
+            try {
+                dateStamps.Add(doc.Get("path"), long.Parse(doc.Get("ticks")));
+            } catch {}
         }
 
         public BackgroundWorker Initialize()
@@ -181,7 +175,9 @@ namespace CodeFetcher
                     logger.Info("Initialize:CheckIndex");
                     var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                     indexReader = DirectoryReader.Open(directory);
-                    for (int i = 0; i < indexReader.NumDocs; i++) LoadDateStamps(i);
+                    var ts = Enumerable.Range(0, indexReader.NumDocs).Select(i => new Thread(() => LoadDateStamps(i))).ToList();
+                    foreach (var t in ts) t.Start();
+                    foreach (var t in ts) t.Join();
                     indexReader.Dispose();
                 }
 
@@ -224,7 +220,7 @@ namespace CodeFetcher
                     // Loop through all the files and delete if it doesn't exist
                     foreach (string file in dateStamps.Keys)
                     {
-                        if (!newDateStamps.ContainsKey(file))
+                        if (file != null && !newDateStamps.ContainsKey(file))
                         {
                             deleted++;
                             indexWriter.DeleteDocuments(new Term("path", file));
