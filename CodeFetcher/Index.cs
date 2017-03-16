@@ -176,8 +176,11 @@ namespace CodeFetcher
                     var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                     indexReader = DirectoryReader.Open(directory);
                     var ts = Enumerable.Range(0, indexReader.NumDocs).Select(i => new Thread(() => LoadDateStamps(i))).ToList();
-                    foreach (var t in ts) t.Start();
-                    foreach (var t in ts) t.Join();
+                    const int max = 10;
+                    for (int i = 0; i < ts.Count; i+=max) {
+                        for (int j = i; j < max; i++) ts[j].Start();
+                        for (int j = i; j < max; i++) ts[j].Join();
+                    }
                     indexReader.Dispose();
                 }
 
