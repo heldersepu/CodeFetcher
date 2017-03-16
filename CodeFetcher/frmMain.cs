@@ -65,7 +65,7 @@ namespace CodeFetcher
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            InitializeIndex();
+            InitializeIndex(false);
             searchTerms = LoadSearchTerms();
             textBoxQuery.AutoCompleteCustomSource = searchTerms;
 
@@ -104,14 +104,14 @@ namespace CodeFetcher
             }
         }
 
-        private void InitializeIndex()
+        private void InitializeIndex(bool forceCheckIndex)
         {
             labelStatus.Text = "Checking files for updates...";
             string iniPath = Path.Combine(appDir, appName + ".ini");
             var ini = new IniFile(iniPath, appDir);
 
             index = new Index(ini);
-            var worker = index.Initialize();
+            var worker = index.Initialize(forceCheckIndex);
             worker.ProgressChanged += delegate (object s, ProgressChangedEventArgs pe)
             {
                 string status = pe.UserState.ToString();
@@ -443,7 +443,7 @@ namespace CodeFetcher
                 {
                     labelStatus.Text = "Cleaning Index...";
                     index.Delete();
-                    InitializeIndex();
+                    InitializeIndex(true);
                 }
                 RightClickHoldTimer.Stop();
             }
@@ -495,7 +495,7 @@ namespace CodeFetcher
         #region buttonRefreshIndex Events
         private void buttonRefreshIndex_Click(object sender, EventArgs e)
         {
-            InitializeIndex();
+            InitializeIndex(true);
         }
 
         private void buttonRefreshIndex_MouseDown(object sender, MouseEventArgs e)

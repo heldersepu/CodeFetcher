@@ -66,6 +66,25 @@ namespace CodeFetcher
                 return new ComplexPhraseQueryParser(version, "content", analyzer);
             }
         }
+
+        private bool IndexExists
+        {
+            get
+            {
+                try
+                {
+                    if (!System.IO.Directory.Exists(iniFile.IndexPath)) return false;
+                    var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
+                    searcher = new IndexSearcher(DirectoryReader.Open(directory));
+                    return true;
+                }
+                catch (IOException e)
+                {
+                    logger.Error(e);
+                    return false;
+                }
+            }
+        }
         #endregion Private declarations
 
         public Index(IniFile iniFile)
@@ -92,7 +111,7 @@ namespace CodeFetcher
             {
                 var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
                 var config = new IndexWriterConfig(version, analyzer);
-                if (CheckIndex())
+                if (IndexExists)
                 {
                     try
                     {
@@ -160,7 +179,7 @@ namespace CodeFetcher
             }
         }
 
-        public BackgroundWorker Initialize()
+        public BackgroundWorker Initialize(bool forceCheckIndex = true)
         {
             logger.Info("Initialize");
             fileCount = 0;
@@ -176,84 +195,82 @@ namespace CodeFetcher
                 newDateStamps = new Dictionary<string, long>();
 
                 // First load all of the datestamps to check if the file is modified
-                if (CheckIndex())
+                if (IndexExists)
                 {
-                    logger.Info("Initialize:CheckIndex");
-                    var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                    indexReader = DirectoryReader.Open(directory);
-                    for (int i = 0; i < indexReader.NumDocs; i++) LoadDateStamps(i);
-                    indexReader.Dispose();
-                }
-
-                logger.Info("Initialize:TryOpen");
-                if (TryOpen(5) == 5)
-                    logger.Error("Unable to open the Index for writing.");
-
-                // Hide the file
-                File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
-
-                countTotal = 0;
-                countSkipped = 0;
-                countNew = 0;
-                countChanged = 0;
-                bool cancel = false;
-
-                logger.Info("Initialize:SearchDirs");
-                foreach (string searchDir in iniFile.SearchDirs)
-                {
-                    if (System.IO.Directory.Exists(searchDir))
+                    if (forceCheckIndex)
                     {
-                        DirectoryInfo di = new DirectoryInfo(searchDir);
-                        cancel = addFolder(searchDir, di);
-                        if (cancel)
-                            break;
+                        logger.Info("Initialize:CheckIndex");
+                        var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
+                        indexReader = DirectoryReader.Open(directory);
+                        for (int i = 0; i < indexReader.NumDocs; i++) LoadDateStamps(i);
+                        indexReader.Dispose();
                     }
-                }
-
-                if (cancel)
-                {
-                    string summary = $"Cancelled. \nIndexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
-                    worker.ReportProgress(countTotal, summary);
-                    e.Cancel = true;
                 }
                 else
                 {
-                    logger.Info("Initialize:DateStamps");
-                    int deleted = 0;
+                    forceCheckIndex = true;
+                }
 
-                    // Loop through all the files and delete if it doesn't exist
-                    foreach (string file in dateStamps.Keys)
+                if (forceCheckIndex)
+                {
+                    logger.Info("Initialize:TryOpen");
+                    if (TryOpen(5) == 5)
+                        logger.Error("Unable to open the Index for writing.");
+
+                    // Hide the file
+                    File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
+
+                    countTotal = 0;
+                    countSkipped = 0;
+                    countNew = 0;
+                    countChanged = 0;
+                    bool cancel = false;
+
+                    logger.Info("Initialize:SearchDirs");
+                    foreach (string searchDir in iniFile.SearchDirs)
                     {
-                        if (!newDateStamps.ContainsKey(file))
+                        if (System.IO.Directory.Exists(searchDir))
                         {
-                            deleted++;
-                            indexWriter.DeleteDocuments(new Term("path", file));
+                            DirectoryInfo di = new DirectoryInfo(searchDir);
+                            cancel = addFolder(searchDir, di);
+                            if (cancel)
+                                break;
                         }
                     }
 
-                    string summary = $" {DateTime.Now - start} \nNew {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}.";
-                    worker.ReportProgress(countTotal, summary);
+                    if (cancel)
+                    {
+                        string summary = $"Cancelled. \nIndexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
+                        worker.ReportProgress(countTotal, summary);
+                        e.Cancel = true;
+                    }
+                    else
+                    {
+                        logger.Info("Initialize:DateStamps");
+                        int deleted = 0;
+
+                        // Loop through all the files and delete if it doesn't exist
+                        foreach (string file in dateStamps.Keys)
+                        {
+                            if (!newDateStamps.ContainsKey(file))
+                            {
+                                deleted++;
+                                indexWriter.DeleteDocuments(new Term("path", file));
+                            }
+                        }
+
+                        string summary = $" {DateTime.Now - start} \nNew {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}.";
+                        worker.ReportProgress(countTotal, summary);
+                    }
+                }
+                else
+                {
+                    worker.ReportProgress(0, "");
                 }
                 logger.Info("Initialize:Close");
                 Close();
             };
             return worker;
-        }
-
-        public bool CheckIndex()
-        {
-            try
-            {
-                if (!System.IO.Directory.Exists(iniFile.IndexPath)) return false;
-                var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                searcher = new IndexSearcher(DirectoryReader.Open(directory));
-                return true;
-            }
-            catch (IOException e)
-            {
-                logger.Error(e);
-                return false;
-            }
         }
 
         public BackgroundWorker Search(string queryText, SystemImageList imageList)
