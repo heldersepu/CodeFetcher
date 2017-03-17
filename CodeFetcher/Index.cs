@@ -71,18 +71,20 @@ namespace CodeFetcher
         {
             get
             {
+                bool retVal = false;
                 try
                 {
-                    if (!System.IO.Directory.Exists(iniFile.IndexPath)) return false;
-                    var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                    searcher = new IndexSearcher(DirectoryReader.Open(directory));
-                    return true;
+                    if (System.IO.Directory.Exists(iniFile.IndexPath)) {
+                        var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
+                        searcher = new IndexSearcher(DirectoryReader.Open(directory));
+                        retVal = true;
+                    }
                 }
                 catch (IOException e)
                 {
                     logger.Error(e);
-                    return false;
                 }
+                return retVal;
             }
         }
         #endregion Private declarations
