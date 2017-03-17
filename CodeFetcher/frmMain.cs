@@ -21,9 +21,17 @@ namespace CodeFetcher
         int timeMouseDown;
         string labelStatus_Text;
         const int MAX_COMBO_ITEMS = 20;
-        private string appPath { get { return typeof(frmMain).Assembly.Location; } }
-        private string appDir { get { return Path.GetDirectoryName(appPath); } }
-        private string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
+        private static string appPath { get { return typeof(frmMain).Assembly.Location; } }
+        private static string appDir { get { return Path.GetDirectoryName(appPath); } }
+        private static string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
+        private static IniFile iniFile
+        {
+            get
+            {
+                string iniPath = Path.Combine(appDir, appName + ".ini");
+                return new IniFile(iniPath, appDir);
+            }
+        }
         private Column lastColClicked = new Column(0);
         #endregion Private declarations
 
@@ -56,11 +64,19 @@ namespace CodeFetcher
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            Application.EnableVisualStyles();
-            Application.DoEvents();
-            Application.Run(new frmMain());
+            if (args.Length > 0 && args[0] == "INDEX")
+            {
+                var x = new Index(iniFile);
+                x.IndexRefresh(true);
+            }
+            else
+            {
+                Application.EnableVisualStyles();
+                Application.DoEvents();
+                Application.Run(new frmMain());
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -107,10 +123,7 @@ namespace CodeFetcher
         private void InitializeIndex(bool forceCheckIndex)
         {
             labelStatus.Text = "Checking files for updates...";
-            string iniPath = Path.Combine(appDir, appName + ".ini");
-            var ini = new IniFile(iniPath, appDir);
-
-            index = new Index(ini);
+            index = new Index(iniFile);
             var worker = index.Initialize(forceCheckIndex);
             worker.ProgressChanged += delegate (object s, ProgressChangedEventArgs pe)
             {

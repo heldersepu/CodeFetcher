@@ -11,18 +11,18 @@ using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using Lucene.Net.Analysis.Standard;
-using CodeFetcher.Icons;
 using Lucene.Net.Analysis.Util;
 using Lucene.Net.Util;
 using Lucene.Net.Analysis;
 using Lucene.Net.QueryParsers.ComplexPhrase;
+using CodeFetcher.Icons;
 
 namespace CodeFetcher
 {
     public class Index
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        public BackgroundWorker worker;
+        public BackgroundWorker worker = null;
         public IniFile iniFile;
 
         #region Private declarations
@@ -179,96 +179,101 @@ namespace CodeFetcher
             }
         }
 
+        public void IndexRefresh(bool forceCheckIndex, DoWorkEventArgs e = null)
+        {
+            fileCount = 0;
+            var start = DateTime.Now;
+            ProgressReport = DateTime.Now;
+            dateStamps = new Dictionary<string, long>();
+            newDateStamps = new Dictionary<string, long>();
+
+            // First load all of the datestamps to check if the file is modified
+            if (IndexExists)
+            {
+                if (forceCheckIndex)
+                {
+                    logger.Info("Initialize:CheckIndex");
+                    var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
+                    indexReader = DirectoryReader.Open(directory);
+                    for (int i = 0; i < indexReader.NumDocs; i++) LoadDateStamps(i);
+                    indexReader.Dispose();
+                }
+            }
+            else
+            {
+                forceCheckIndex = true;
+            }
+
+            if (forceCheckIndex)
+            {
+                logger.Info("Initialize:TryOpen");
+                if (TryOpen(5) == 5)
+                    logger.Error("Unable to open the Index for writing.");
+
+                // Hide the file
+                File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
+
+                countTotal = 0;
+                countSkipped = 0;
+                countNew = 0;
+                countChanged = 0;
+                bool cancel = false;
+
+                logger.Info("Initialize:SearchDirs");
+                foreach (string searchDir in iniFile.SearchDirs)
+                {
+                    if (System.IO.Directory.Exists(searchDir))
+                    {
+                        DirectoryInfo di = new DirectoryInfo(searchDir);
+                        cancel = addFolder(searchDir, di);
+                        if (cancel)
+                            break;
+                    }
+                }
+
+                if (cancel)
+                {
+                    string summary = $"Cancelled. \nIndexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
+                    worker?.ReportProgress(countTotal, summary);
+                    if (e != null) e.Cancel = true;
+                }
+                else
+                {
+                    logger.Info("Initialize:DateStamps");
+                    int deleted = 0;
+
+                    // Loop through all the files and delete if it doesn't exist
+                    foreach (string file in dateStamps.Keys)
+                    {
+                        if (!newDateStamps.ContainsKey(file))
+                        {
+                            deleted++;
+                            indexWriter.DeleteDocuments(new Term("path", file));
+                        }
+                    }
+
+                    string summary = $" {DateTime.Now - start} \nNew {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}.";
+                    worker?.ReportProgress(countTotal, summary);
+                }
+            }
+            else
+            {
+                worker?.ReportProgress(0, "");
+            }
+            logger.Info("Initialize:Close");
+            Close();
+        }
+
         public BackgroundWorker Initialize(bool forceCheckIndex = true)
         {
             logger.Info("Initialize");
-            fileCount = 0;
-            var start = DateTime.Now;
             worker = new BackgroundWorker();
             worker.WorkerReportsProgress = true;
             worker.WorkerSupportsCancellation = true;
 
             worker.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
-                ProgressReport = DateTime.Now;
-                dateStamps = new Dictionary<string, long>();
-                newDateStamps = new Dictionary<string, long>();
-
-                // First load all of the datestamps to check if the file is modified
-                if (IndexExists)
-                {
-                    if (forceCheckIndex)
-                    {
-                        logger.Info("Initialize:CheckIndex");
-                        var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                        indexReader = DirectoryReader.Open(directory);
-                        for (int i = 0; i < indexReader.NumDocs; i++) LoadDateStamps(i);
-                        indexReader.Dispose();
-                    }
-                }
-                else
-                {
-                    forceCheckIndex = true;
-                }
-
-                if (forceCheckIndex)
-                {
-                    logger.Info("Initialize:TryOpen");
-                    if (TryOpen(5) == 5)
-                        logger.Error("Unable to open the Index for writing.");
-
-                    // Hide the file
-                    File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
-
-                    countTotal = 0;
-                    countSkipped = 0;
-                    countNew = 0;
-                    countChanged = 0;
-                    bool cancel = false;
-
-                    logger.Info("Initialize:SearchDirs");
-                    foreach (string searchDir in iniFile.SearchDirs)
-                    {
-                        if (System.IO.Directory.Exists(searchDir))
-                        {
-                            DirectoryInfo di = new DirectoryInfo(searchDir);
-                            cancel = addFolder(searchDir, di);
-                            if (cancel)
-                                break;
-                        }
-                    }
-
-                    if (cancel)
-                    {
-                        string summary = $"Cancelled. \nIndexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
-                        worker.ReportProgress(countTotal, summary);
-                        e.Cancel = true;
-                    }
-                    else
-                    {
-                        logger.Info("Initialize:DateStamps");
-                        int deleted = 0;
-
-                        // Loop through all the files and delete if it doesn't exist
-                        foreach (string file in dateStamps.Keys)
-                        {
-                            if (!newDateStamps.ContainsKey(file))
-                            {
-                                deleted++;
-                                indexWriter.DeleteDocuments(new Term("path", file));
-                            }
-                        }
-
-                        string summary = $" {DateTime.Now - start} \nNew {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}.";
-                        worker.ReportProgress(countTotal, summary);
-                    }
-                }
-                else
-                {
-                    worker.ReportProgress(0, "");
-                }
-                logger.Info("Initialize:Close");
-                Close();
+                IndexRefresh(forceCheckIndex, e);
             };
             return worker;
         }
@@ -389,7 +394,7 @@ namespace CodeFetcher
                     if (fi.Name.StartsWith("~") || fi.Name.StartsWith("."))
                         continue;
 
-                    if (worker.CancellationPending)
+                    if (worker!=null && worker.CancellationPending)
                         return true;
 
                     string fullPath = fi.FullName;
@@ -413,7 +418,7 @@ namespace CodeFetcher
                                 if ((DateTime.Now - ProgressReport).TotalMilliseconds > 400)
                                 {
                                     ProgressReport = DateTime.Now;
-                                    worker.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
+                                    worker?.ReportProgress(fileCount, Path.GetFileName(fi.FullName));
                                 }
                             }
                             else if (dateStamps[relPath] < fi.LastWriteTime.Ticks)
@@ -428,7 +433,7 @@ namespace CodeFetcher
                             // parsing and indexing wasn't successful, skipping that file
                             logger.Error(e);
                             countSkipped++;
-                            worker.ReportProgress(fileCount, "Skipped:" + Path.GetFileName(fi.FullName));
+                            worker?.ReportProgress(fileCount, "Skipped:" + Path.GetFileName(fi.FullName));
                         }
                     }
                 }
