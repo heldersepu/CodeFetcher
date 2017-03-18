@@ -361,17 +361,10 @@ namespace CodeFetcher
         /// <param name="directory"></param>
         public bool addFolder(string searchDir, DirectoryInfo directory)
         {
-            // Don't index the indexes.....
-            if (directory.FullName.EndsWith(IniFile.SEARCH_INDEX))
-                return false;
 
-            // Don't index hidden directories.....
-            if ((directory.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
-                return false;
-
-            // Don't index excluded files
-            string udir = directory.FullName.ToUpper();
-            if (iniFile.SearchExclude.Any(x => udir.EndsWith(x)))
+            if ((directory.FullName.EndsWith(IniFile.SEARCH_INDEX)) || // Don't index the indexes.....
+               ((directory.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden) || // Don't index hidden directories.....
+               (iniFile.SearchExclude.Any(x => directory.FullName.ToUpper().EndsWith(x)))) // Don't index excluded files
                 return false;
 
             int filesIndexed = 0;
@@ -457,7 +450,7 @@ namespace CodeFetcher
         }
 
         /// <summary>
-        /// Parses and indexes an IFilter parseable file.
+        /// Parses and indexes a file.
         /// </summary>
         /// <param name="extension"></param>
         /// <param name="fullPath"></param>
