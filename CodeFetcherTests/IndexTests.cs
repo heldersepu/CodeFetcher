@@ -29,7 +29,7 @@ namespace CodeFetcher.Tests
             index.TryOpen(5);
             string name = Guid.NewGuid().ToString();
             for (int i = 0; i < MAX_FILES; i++)
-                index.addContent(
+                index.AddContent(
                     LastWriteTime: DateTime.Now,
                     type: "uTest" + i.ToString(),
                     name: $"Test_{name}_{i}",

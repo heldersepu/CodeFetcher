@@ -4,7 +4,7 @@ using ICSharpCode.AvalonEdit;
 
 namespace CodeFetcher
 {
-    partial class frmMain : Form
+    partial class FrmMain : Form
     {
         /// <summary>
         /// Required designer variable.
@@ -32,7 +32,7 @@ namespace CodeFetcher
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.labelStatus = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.openFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -104,14 +104,14 @@ namespace CodeFetcher
             this.openFileToolStripMenuItem.Name = "openFileToolStripMenuItem";
             this.openFileToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.openFileToolStripMenuItem.Text = "Open File";
-            this.openFileToolStripMenuItem.Click += new System.EventHandler(this.openFileToolStripMenuItem_Click);
+            this.openFileToolStripMenuItem.Click += new System.EventHandler(this.OpenFileToolStripMenuItem_Click);
             // 
             // openContainingFolderToolStripMenuItem
             // 
             this.openContainingFolderToolStripMenuItem.Name = "openContainingFolderToolStripMenuItem";
             this.openContainingFolderToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.openContainingFolderToolStripMenuItem.Text = "Open Containing Folder";
-            this.openContainingFolderToolStripMenuItem.Click += new System.EventHandler(this.openContainingFolderToolStripMenuItem_Click);
+            this.openContainingFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenContainingFolderToolStripMenuItem_Click);
             // 
             // folderBrowserDialog1
             // 
@@ -128,7 +128,7 @@ namespace CodeFetcher
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(979, 81);
             this.tabControl1.TabIndex = 0;
-            this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabControl1_Selected);
+            this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControl1_Selected);
             // 
             // tabPage1
             // 
@@ -154,7 +154,7 @@ namespace CodeFetcher
             this.textBoxQuery.Name = "textBoxQuery";
             this.textBoxQuery.Size = new System.Drawing.Size(689, 24);
             this.textBoxQuery.TabIndex = 15;
-            this.textBoxQuery.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
+            this.textBoxQuery.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxQuery_KeyDown);
             // 
             // pictureBox2
             // 
@@ -167,9 +167,9 @@ namespace CodeFetcher
             this.pictureBox2.TabIndex = 14;
             this.pictureBox2.TabStop = false;
             this.toolTip1.SetToolTip(this.pictureBox2, resources.GetString("pictureBox2.ToolTip"));
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
-            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseDown);
-            this.pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox2_MouseUp);
+            this.pictureBox2.Click += new System.EventHandler(this.PictureBox2_Click);
+            this.pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PictureBox2_MouseDown);
+            this.pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.PictureBox2_MouseUp);
             // 
             // buttonSearch
             // 
@@ -182,7 +182,7 @@ namespace CodeFetcher
             this.buttonSearch.Size = new System.Drawing.Size(160, 26);
             this.buttonSearch.TabIndex = 1;
             this.buttonSearch.Text = "Search";
-            this.buttonSearch.Click += new System.EventHandler(this.buttonSearch_Click);
+            this.buttonSearch.Click += new System.EventHandler(this.ButtonSearch_Click);
             // 
             // tabPage2
             // 
@@ -217,7 +217,7 @@ namespace CodeFetcher
             this.textBoxRawContent.Size = new System.Drawing.Size(766, 54);
             this.textBoxRawContent.TabIndex = 25;
             this.textBoxRawContent.Visible = false;
-            this.textBoxRawContent.DoubleClick += new System.EventHandler(this.textBoxRawContent_DoubleClick);
+            this.textBoxRawContent.DoubleClick += new System.EventHandler(this.TextBoxRawContent_DoubleClick);
             // 
             // textBoxContent
             // 
@@ -227,8 +227,8 @@ namespace CodeFetcher
             this.textBoxContent.Name = "textBoxContent";
             this.textBoxContent.Size = new System.Drawing.Size(441, 22);
             this.textBoxContent.TabIndex = 1;
-            this.textBoxContent.DoubleClick += new System.EventHandler(this.textBoxContent_DoubleClick);
-            this.textBoxContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
+            this.textBoxContent.DoubleClick += new System.EventHandler(this.TextBoxContent_DoubleClick);
+            this.textBoxContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxQuery_KeyDown);
             // 
             // buttonToday
             // 
@@ -239,7 +239,7 @@ namespace CodeFetcher
             this.buttonToday.TabIndex = 24;
             this.buttonToday.Text = "Today";
             this.buttonToday.UseVisualStyleBackColor = true;
-            this.buttonToday.Click += new System.EventHandler(this.buttonToday_Click);
+            this.buttonToday.Click += new System.EventHandler(this.ButtonToday_Click);
             // 
             // textBoxType
             // 
@@ -249,7 +249,7 @@ namespace CodeFetcher
             this.textBoxType.Size = new System.Drawing.Size(207, 22);
             this.textBoxType.TabIndex = 5;
             this.toolTip1.SetToolTip(this.textBoxType, "html, cs, vb, js, css");
-            this.textBoxType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
+            this.textBoxType.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxQuery_KeyDown);
             // 
             // dateTimePickerTo
             // 
@@ -292,7 +292,7 @@ namespace CodeFetcher
             this.buttonSearch1.Size = new System.Drawing.Size(160, 53);
             this.buttonSearch1.TabIndex = 10;
             this.buttonSearch1.Text = "Search";
-            this.buttonSearch1.Click += new System.EventHandler(this.buttonSearch_Click);
+            this.buttonSearch1.Click += new System.EventHandler(this.ButtonSearch_Click);
             // 
             // label3
             // 
@@ -320,7 +320,7 @@ namespace CodeFetcher
             this.textBoxName.Name = "textBoxName";
             this.textBoxName.Size = new System.Drawing.Size(305, 22);
             this.textBoxName.TabIndex = 3;
-            this.textBoxName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxQuery_KeyDown);
+            this.textBoxName.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBoxQuery_KeyDown);
             // 
             // label1
             // 
@@ -361,9 +361,9 @@ namespace CodeFetcher
             this.buttonRefreshIndex.TabIndex = 4;
             this.buttonRefreshIndex.Text = "Refresh Index";
             this.buttonRefreshIndex.UseVisualStyleBackColor = true;
-            this.buttonRefreshIndex.Click += new System.EventHandler(this.buttonRefreshIndex_Click);
-            this.buttonRefreshIndex.MouseDown += new System.Windows.Forms.MouseEventHandler(this.buttonRefreshIndex_MouseDown);
-            this.buttonRefreshIndex.MouseUp += new System.Windows.Forms.MouseEventHandler(this.buttonRefreshIndex_MouseUp);
+            this.buttonRefreshIndex.Click += new System.EventHandler(this.ButtonRefreshIndex_Click);
+            this.buttonRefreshIndex.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ButtonRefreshIndex_MouseDown);
+            this.buttonRefreshIndex.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ButtonRefreshIndex_MouseUp);
             // 
             // splitContainer
             // 
@@ -384,7 +384,7 @@ namespace CodeFetcher
             this.splitContainer.Size = new System.Drawing.Size(980, 431);
             this.splitContainer.SplitterDistance = 495;
             this.splitContainer.TabIndex = 5;
-            this.splitContainer.DoubleClick += new System.EventHandler(this.splitContainer_DoubleClick);
+            this.splitContainer.DoubleClick += new System.EventHandler(this.SplitContainer_DoubleClick);
             // 
             // listViewResults
             // 
@@ -408,10 +408,10 @@ namespace CodeFetcher
             this.listViewResults.TabIndex = 3;
             this.listViewResults.UseCompatibleStateImageBehavior = false;
             this.listViewResults.View = System.Windows.Forms.View.Details;
-            this.listViewResults.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listViewResults_ColumnClick);
-            this.listViewResults.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.listViewResults_ItemSelectionChanged);
-            this.listViewResults.Click += new System.EventHandler(this.listViewResults_Click);
-            this.listViewResults.DoubleClick += new System.EventHandler(this.listViewResults_DoubleClick);
+            this.listViewResults.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.ListViewResults_ColumnClick);
+            this.listViewResults.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ListViewResults_ItemSelectionChanged);
+            this.listViewResults.Click += new System.EventHandler(this.ListViewResults_Click);
+            this.listViewResults.DoubleClick += new System.EventHandler(this.ListViewResults_DoubleClick);
             // 
             // columnHeaderIcon
             // 

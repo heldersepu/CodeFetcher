@@ -44,4 +44,20 @@ namespace CodeFetcher
             return x;
         }
     }
+
+    static class DateTimeExtension
+    {
+        public static string ToShort(this DateTime obj)
+        {
+            return obj.ToShortDateString() + " " + obj.ToShortTimeString();
+        }
+    }
+
+    static class FloatExtension
+    {
+        public static string ToPercent(this float obj)
+        {
+            return (obj * 100).ToString("N0");
+        }
+    }
 }

@@ -133,6 +133,9 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utils\BgWorker.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utils\BraceFoldingStrategy.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>

@@ -22,11 +22,11 @@ namespace CodeFetcher
     public class Index
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
-        public BackgroundWorker worker = null;
+        public BgWorker worker = null;
         public IniFile iniFile;
 
         #region Private declarations
-        BackgroundWorker searchWorker;
+        BgWorker searchWorker;
         IndexWriter indexWriter;
         IndexReader indexReader;
         IndexSearcher searcher = null;
@@ -43,7 +43,7 @@ namespace CodeFetcher
         Dictionary<string, long> dateStamps;
         Dictionary<string, long> newDateStamps;
 
-        private LuceneVersion version
+        private LuceneVersion Version
         {
             get
             {
@@ -51,19 +51,19 @@ namespace CodeFetcher
             }
         }
 
-        private Analyzer analyzer
+        private Analyzer MyAnalyzer
         {
             get
             {
-                return new StandardAnalyzer(version, CharArraySet.EMPTY_SET);
+                return new StandardAnalyzer(Version, CharArraySet.EMPTY_SET);
             }
         }
 
-        private ComplexPhraseQueryParser parser
+        private ComplexPhraseQueryParser Parser
         {
             get
             {
-                return new ComplexPhraseQueryParser(version, "content", analyzer);
+                return new ComplexPhraseQueryParser(Version, "content", MyAnalyzer);
             }
         }
 
@@ -112,7 +112,7 @@ namespace CodeFetcher
             while (attempts < maxAttempts)
             {
                 var directory = new MMapDirectory(new DirectoryInfo(iniFile.IndexPath));
-                var config = new IndexWriterConfig(version, analyzer);
+                var config = new IndexWriterConfig(Version, MyAnalyzer);
                 if (IndexExists)
                 {
                     try
@@ -181,6 +181,58 @@ namespace CodeFetcher
             }
         }
 
+        private void StartIndexCheck(DateTime start, DoWorkEventArgs e)
+        {
+            logger.Info("Initialize:TryOpen");
+            if (TryOpen(5) == 5)
+                logger.Error("Unable to open the Index for writing.");
+
+            // Hide the file
+            File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
+
+            countTotal = 0;
+            countSkipped = 0;
+            countNew = 0;
+            countChanged = 0;
+            bool cancel = false;
+
+            logger.Info("Initialize:SearchDirs");
+            foreach (string searchDir in iniFile.SearchDirs)
+            {
+                if (System.IO.Directory.Exists(searchDir))
+                {
+                    DirectoryInfo di = new DirectoryInfo(searchDir);
+                    cancel = AddFolder(searchDir, di);
+                    if (cancel) break;
+                }
+            }
+
+            if (cancel)
+            {
+                string summary = $"Cancelled. \nIndexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
+                worker?.ReportProgress(countTotal, summary);
+                if (e != null) e.Cancel = true;
+            }
+            else
+            {
+                logger.Info("Initialize:DateStamps");
+                int deleted = 0;
+
+                // Loop through all the files and delete if it doesn't exist
+                foreach (string file in dateStamps.Keys)
+                {
+                    if (!newDateStamps.ContainsKey(file))
+                    {
+                        deleted++;
+                        indexWriter.DeleteDocuments(new Term("path", file));
+                    }
+                }
+
+                string summary = $" {DateTime.Now - start} \nNew {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}.";
+                worker?.ReportProgress(countTotal, summary);
+            }
+        }
+
         public void IndexRefresh(bool forceCheckIndex, DoWorkEventArgs e = null)
         {
             fileCount = 0;
@@ -208,55 +260,7 @@ namespace CodeFetcher
 
             if (forceCheckIndex)
             {
-                logger.Info("Initialize:TryOpen");
-                if (TryOpen(5) == 5)
-                    logger.Error("Unable to open the Index for writing.");
-
-                // Hide the file
-                File.SetAttributes(iniFile.IndexPath, FileAttributes.Hidden);
-
-                countTotal = 0;
-                countSkipped = 0;
-                countNew = 0;
-                countChanged = 0;
-                bool cancel = false;
-
-                logger.Info("Initialize:SearchDirs");
-                foreach (string searchDir in iniFile.SearchDirs)
-                {
-                    if (System.IO.Directory.Exists(searchDir))
-                    {
-                        DirectoryInfo di = new DirectoryInfo(searchDir);
-                        cancel = addFolder(searchDir, di);
-                        if (cancel)
-                            break;
-                    }
-                }
-
-                if (cancel)
-                {
-                    string summary = $"Cancelled. \nIndexed {countTotal} files. Skipped {countSkipped} files. Took {DateTime.Now - start}";
-                    worker?.ReportProgress(countTotal, summary);
-                    if (e != null) e.Cancel = true;
-                }
-                else
-                {
-                    logger.Info("Initialize:DateStamps");
-                    int deleted = 0;
-
-                    // Loop through all the files and delete if it doesn't exist
-                    foreach (string file in dateStamps.Keys)
-                    {
-                        if (!newDateStamps.ContainsKey(file))
-                        {
-                            deleted++;
-                            indexWriter.DeleteDocuments(new Term("path", file));
-                        }
-                    }
-
-                    string summary = $" {DateTime.Now - start} \nNew {countNew}. Changed {countChanged}, Skipped {countSkipped}. Removed {deleted}.";
-                    worker?.ReportProgress(countTotal, summary);
-                }
+                StartIndexCheck(start, e);
             }
             else
             {
@@ -266,13 +270,10 @@ namespace CodeFetcher
             Close();
         }
 
-        public BackgroundWorker Initialize(bool forceCheckIndex = true)
+        public BgWorker Initialize(bool forceCheckIndex = true)
         {
             logger.Info("Initialize");
-            worker = new BackgroundWorker();
-            worker.WorkerReportsProgress = true;
-            worker.WorkerSupportsCancellation = true;
-
+            worker = new BgWorker();
             worker.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
                 IndexRefresh(forceCheckIndex, e);
@@ -280,11 +281,9 @@ namespace CodeFetcher
             return worker;
         }
 
-        public BackgroundWorker Search(string queryText, SystemImageList imageList)
+        public BgWorker Search(string queryText, SystemImageList imageList)
         {
-            searchWorker = new BackgroundWorker();
-            searchWorker.WorkerReportsProgress = true;
-            searchWorker.WorkerSupportsCancellation = true;
+            searchWorker = new BgWorker();
             queryText = queryText.Trim();
             searchWorker.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
@@ -302,7 +301,7 @@ namespace CodeFetcher
                 Query query;
                 try
                 {
-                    query = parser.Parse(queryText);
+                    query = Parser.Parse(queryText);
                 }
                 catch (Exception ex)
                 {
@@ -332,14 +331,9 @@ namespace CodeFetcher
                     }
 
                     var modified = DateTime.ParseExact(doc.Get("modified"), "yyyyMMddHHmmss", null);
-                    var item = new ListViewItem( new string[] {
-                        null,
-                        filename,
-                        (scoreDoc.Score * 100).ToString("N0"),
-                        modified.ToShortDateString() + " " + modified.ToShortTimeString(),
-                        folder
-                    });
-                    item.Tag = path;
+                    var item = new ListViewItem(new string[] {
+                        null, filename, scoreDoc.Score.ToPercent(), modified.ToShort(), folder
+                    }){ Tag = path };
                     try
                     {
                         item.ImageIndex = imageList.IconIndex(filename);
@@ -358,8 +352,10 @@ namespace CodeFetcher
         /// <summary>
         /// Indexes a folder.
         /// </summary>
+        /// <param name="searchDir"></param>
         /// <param name="directory"></param>
-        public bool addFolder(string searchDir, DirectoryInfo directory)
+        /// <returns>True if there was a cancelation</returns>
+        public bool AddFolder(string searchDir, DirectoryInfo directory)
         {
 
             if ((directory.FullName.EndsWith(IniFile.SEARCH_INDEX)) || // Don't index the indexes.....
@@ -409,7 +405,7 @@ namespace CodeFetcher
                             // Check to see of doc has changed
                             if (!dateStamps.ContainsKey(relPath))
                             {
-                                addDocument(extension, fullPath, relPath, false);
+                                AddDocument(extension, fullPath, relPath, false);
                                 if ((DateTime.Now - ProgressReport).TotalMilliseconds > 400)
                                 {
                                     ProgressReport = DateTime.Now;
@@ -419,7 +415,7 @@ namespace CodeFetcher
                             else if (dateStamps[relPath] < fi.LastWriteTime.Ticks)
                             {
                                 // Delete the existing document
-                                addDocument(extension, fullPath, relPath, true);
+                                AddDocument(extension, fullPath, relPath, true);
                             }
                             countTotal++;
                         }
@@ -441,7 +437,7 @@ namespace CodeFetcher
             // add subfolders
             foreach (DirectoryInfo di in directory.GetDirectories())
             {
-                bool cancel = addFolder(searchDir, di);
+                bool cancel = AddFolder(searchDir, di);
                 if (cancel)
                     return true;
             }
@@ -456,7 +452,7 @@ namespace CodeFetcher
         /// <param name="fullPath"></param>
         /// <param name="relPath"></param>
         /// <param name="exists"></param>
-        public void addDocument(string extension, string fullPath, string relPath, bool exists)
+        public void AddDocument(string extension, string fullPath, string relPath, bool exists)
         {
             logger.Trace(" File = " + fullPath);
             string filename = Path.GetFileNameWithoutExtension(fullPath);
@@ -472,7 +468,7 @@ namespace CodeFetcher
                 // Ignore error, add with no content
                 logger.Error(e);
             }
-            addContent(
+            AddContent(
                 LastWriteTime: fi.LastWriteTime,
                 type: extension.Substring(1),
                 name: filename,
@@ -484,20 +480,21 @@ namespace CodeFetcher
         /// <summary>
         /// Adds content to the indexes.
         /// </summary>
-        public void addContent(DateTime LastWriteTime, string type, string name, string path, string content, bool exists)
+        public void AddContent(DateTime LastWriteTime, string type, string name, string path, string content, bool exists)
         {
             if (!string.IsNullOrEmpty(content))
                 foreach (var item in iniFile.Splitters)
                     content = content.Replace(item, " ");
             string date = LastWriteTime.ToString("yyyyMMddHHmmss");
             string ticks = LastWriteTime.Ticks.ToString();
-            Document doc = new Document();
-            doc.Add(new StringField("modified", date, Field.Store.YES));
-            doc.Add(new StringField("ticks", ticks, Field.Store.YES));
-            doc.Add(new TextField("type", type, Field.Store.YES));
-            doc.Add(new TextField("name", name, Field.Store.YES));
-            doc.Add(new TextField("path", path, Field.Store.YES));
-            doc.Add(new TextField("content", content, Field.Store.NO));
+            Document doc = new Document {
+                new StringField("modified", date, Field.Store.YES),
+                new StringField("ticks", ticks, Field.Store.YES),
+                new TextField("type", type, Field.Store.YES),
+                new TextField("name", name, Field.Store.YES),
+                new TextField("path", path, Field.Store.YES),
+                new TextField("content", content, Field.Store.NO)
+            };
 
             if (exists)
             {

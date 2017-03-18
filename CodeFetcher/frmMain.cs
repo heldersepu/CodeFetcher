@@ -6,10 +6,11 @@ using System.ComponentModel;
 using CodeFetcher.Icons;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Folding;
+using System.Linq;
 
 namespace CodeFetcher
 {
-    public partial class frmMain : Form
+    public partial class FrmMain : Form
     {
         #region Private declarations
         private static Logger logger = LogManager.GetCurrentClassLogger();
@@ -21,15 +22,15 @@ namespace CodeFetcher
         int timeMouseDown;
         string labelStatus_Text;
         const int MAX_COMBO_ITEMS = 20;
-        private static string appPath { get { return typeof(frmMain).Assembly.Location; } }
-        private static string appDir { get { return Path.GetDirectoryName(appPath); } }
-        private static string appName { get { return Path.GetFileNameWithoutExtension(appPath); } }
-        private static IniFile iniFile
+        private static string AppPath { get { return typeof(FrmMain).Assembly.Location; } }
+        private static string AppDir { get { return Path.GetDirectoryName(AppPath); } }
+        private static string AppName { get { return Path.GetFileNameWithoutExtension(AppPath); } }
+        private static IniFile MyIniFile
         {
             get
             {
-                string iniPath = Path.Combine(appDir, appName + ".ini");
-                return new IniFile(iniPath, appDir);
+                string iniPath = Path.Combine(AppDir, AppName + ".ini");
+                return new IniFile(iniPath, AppDir);
             }
         }
         private Column lastColClicked = new Column(0);
@@ -37,14 +38,14 @@ namespace CodeFetcher
 
         private class MessageFilter : IMessageFilter
         {
-            public frmMain form { get; set; }
+            public FrmMain MyForm { get; set; }
             public bool PreFilterMessage(ref Message msg)
             {
                 if (msg.Msg == 0x100) //WM_KEYDOWN
                 {
                     if ((Keys)msg.WParam == Keys.F3)
                     {
-                        form.findNext();
+                        MyForm.FindNext();
                         return true;
                     }
                 }
@@ -52,12 +53,12 @@ namespace CodeFetcher
             }
         }
 
-        public frmMain()
+        public FrmMain()
         {
             InitializeComponent();
             imageListDocuments = new SystemImageList(SystemImageListSize.SmallIcons);
             SystemImageListHelper.SetListViewImageList(listViewResults, imageListDocuments, false);
-            Application.AddMessageFilter(new MessageFilter { form = this });
+            Application.AddMessageFilter(new MessageFilter { MyForm = this });
         }
 
         /// <summary>
@@ -68,14 +69,14 @@ namespace CodeFetcher
         {
             if (args.Length > 0 && args[0] == "INDEX")
             {
-                var x = new Index(iniFile);
+                var x = new Index(MyIniFile);
                 x.IndexRefresh(true);
             }
             else
             {
                 Application.EnableVisualStyles();
                 Application.DoEvents();
-                Application.Run(new frmMain());
+                Application.Run(new FrmMain());
             }
         }
 
@@ -106,8 +107,7 @@ namespace CodeFetcher
                 index.worker.CancelAsync();
                 labelStatus.Text = "Waiting for index to cancel";
 
-                Timer t = new Timer();
-                t.Interval = 100;
+                Timer t = new Timer() { Interval = 100 };
                 t.Tick += delegate (object sender1, EventArgs e1)
                 {
                     if (!(index.worker != null && index.worker.IsBusy))
@@ -123,7 +123,7 @@ namespace CodeFetcher
         private void InitializeIndex(bool forceCheckIndex)
         {
             labelStatus.Text = "Checking files for updates...";
-            index = new Index(iniFile);
+            index = new Index(MyIniFile);
             var worker = index.Initialize(forceCheckIndex);
             worker.ProgressChanged += delegate (object s, ProgressChangedEventArgs pe)
             {
@@ -135,7 +135,7 @@ namespace CodeFetcher
             worker.RunWorkerAsync();
         }
 
-        private void openFileToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listViewResults.SelectedItems.Count > 0)
             {
@@ -144,7 +144,7 @@ namespace CodeFetcher
             }
         }
 
-        private void openContainingFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenContainingFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (listViewResults.SelectedItems.Count > 0)
             {
@@ -212,12 +212,12 @@ namespace CodeFetcher
             }
         }
 
-        private void buttonToday_Click(object sender, EventArgs e)
+        private void ButtonToday_Click(object sender, EventArgs e)
         {
             dateTimePickerFrom.Value = DateTime.Today;
         }
 
-        private void tabControl1_Selected(object sender, TabControlEventArgs e)
+        private void TabControl1_Selected(object sender, TabControlEventArgs e)
         {
             if (tabControl1.SelectedIndex == 0)
             {
@@ -233,7 +233,7 @@ namespace CodeFetcher
             }
         }
 
-        private void splitContainer_DoubleClick(object sender, EventArgs e)
+        private void SplitContainer_DoubleClick(object sender, EventArgs e)
         {
             if (splitContainer.Orientation == Orientation.Horizontal)
             {
@@ -247,7 +247,7 @@ namespace CodeFetcher
             }
         }
 
-        private void addFileToEditor(string fileName)
+        private void AddFileToEditor(string fileName)
         {
             if (!File.Exists(fileName)) return;
             sourceCodeEditor.IsReadOnly = true;
@@ -256,10 +256,10 @@ namespace CodeFetcher
             if (foldingManager == null)
                 foldingManager = FoldingManager.Install(sourceCodeEditor.TextArea);
             foldingStrategy.UpdateFoldings(foldingManager, sourceCodeEditor.Document);
-            findNext();
+            FindNext();
         }
 
-        private void findNext()
+        private void FindNext()
         {
             try
             {
@@ -281,12 +281,12 @@ namespace CodeFetcher
         }
 
         #region search Events
-        private void buttonSearch_Click(object sender, EventArgs e)
+        private void ButtonSearch_Click(object sender, EventArgs e)
         {
             Search();
         }
 
-        private void textBoxQuery_KeyDown(object sender, KeyEventArgs e)
+        private void TextBoxQuery_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 Search();
@@ -310,7 +310,7 @@ namespace CodeFetcher
                 {
                     listViewResults.Select();
                     listViewResults.Items[0].Selected = true;
-                    addFileToEditor(listViewResults.Selected());
+                    AddFileToEditor(listViewResults.Selected());
                 }
                 else
                 {
@@ -368,24 +368,14 @@ namespace CodeFetcher
                 if (textBoxName.Text.Trim() != "")
                     queryText += " name:" + textBoxName.Text + " AND";
 
-                if (textBoxType.Text != "")
+                if (textBoxType.Text.Trim() != "")
                 {
-                    string types = "";
-                    foreach (string type in textBoxType.Text.Split(','))
-                    {
-                        types += " type:" + type + " OR";
-                    }
-
-                    if (types != "")
-                    {
-                        // Remove last OR
-                        types = types.Substring(0, types.Length - 2);
-                        queryText += " (" + types + ") AND";
-                    }
+                    var types = String.Join(" OR", textBoxType.Text.Split(',').Select(x => " type:" + x.Trim()));
+                    queryText += " (" + types.Trim() + ") AND";
                 }
                 queryText += " modified:[" + dateTimePickerFrom.Selected() + " TO " + dateTimePickerTo.Selected() + "]";
             }
-            return queryText;
+            return queryText.Trim();
         }
 
         private void Search()
@@ -411,7 +401,7 @@ namespace CodeFetcher
         #endregion search Events
 
         #region pictureBox Events
-        private void pictureBox2_MouseDown(object sender, MouseEventArgs e)
+        private void PictureBox2_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -421,7 +411,7 @@ namespace CodeFetcher
             }
         }
 
-        private void pictureBox2_MouseUp(object sender, MouseEventArgs e)
+        private void PictureBox2_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -430,7 +420,7 @@ namespace CodeFetcher
             }
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void PictureBox2_Click(object sender, EventArgs e)
         {
             if (((MouseEventArgs)e).Button == MouseButtons.Left)
                 System.Diagnostics.Process.Start("https://lucene.apache.org/core/2_9_4/queryparsersyntax.html");
@@ -464,7 +454,7 @@ namespace CodeFetcher
         #endregion pictureBox Events
 
         #region listViewResults Events
-        private void listViewResults_ColumnClick(object sender, ColumnClickEventArgs e)
+        private void ListViewResults_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             var columnDataType = ListViewItemComparer.ColumnDataType.Generic;
             if (e.Column == colHeaderModified.Index)
@@ -487,31 +477,31 @@ namespace CodeFetcher
                 listViewResults.Columns.Count, e.Column, lastColClicked.Sort, columnDataType);
         }
 
-        private void listViewResults_DoubleClick(object sender, EventArgs e)
+        private void ListViewResults_DoubleClick(object sender, EventArgs e)
         {
             if (listViewResults.SelectedItems.Count == 1)
                 Open.File(index.iniFile.SearchDirs, listViewResults.Selected());
         }
 
-        private void listViewResults_Click(object sender, EventArgs e)
+        private void ListViewResults_Click(object sender, EventArgs e)
         {
             if (listViewResults.SelectedItems.Count == 1)
-                addFileToEditor(listViewResults.Selected());
+                AddFileToEditor(listViewResults.Selected());
         }
 
-        private void listViewResults_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        private void ListViewResults_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            listViewResults_Click(null, null);
+            ListViewResults_Click(null, null);
         }
         #endregion listViewResults Events
 
         #region buttonRefreshIndex Events
-        private void buttonRefreshIndex_Click(object sender, EventArgs e)
+        private void ButtonRefreshIndex_Click(object sender, EventArgs e)
         {
             InitializeIndex(true);
         }
 
-        private void buttonRefreshIndex_MouseDown(object sender, MouseEventArgs e)
+        private void ButtonRefreshIndex_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -521,7 +511,7 @@ namespace CodeFetcher
             }
         }
 
-        private void buttonRefreshIndex_MouseUp(object sender, MouseEventArgs e)
+        private void ButtonRefreshIndex_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
             {
@@ -531,13 +521,13 @@ namespace CodeFetcher
         }
         #endregion buttonRefreshIndex Events
 
-        private void textBoxContent_DoubleClick(object sender, EventArgs e)
+        private void TextBoxContent_DoubleClick(object sender, EventArgs e)
         {
             textBoxRawContent.Text = GetQueryText();
             textBoxRawContent.Visible = true;
         }
 
-        private void textBoxRawContent_DoubleClick(object sender, EventArgs e)
+        private void TextBoxRawContent_DoubleClick(object sender, EventArgs e)
         {
             textBoxRawContent.Visible = false;
         }
