@@ -21,6 +21,8 @@
 :: Launch the Visual Studio Build
 @SET VS="%ProgramFiles%\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe"
 @IF NOT EXIST %VS% SET VS="%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\Common7\IDE\devenv.exe"
+@IF NOT EXIST %VS% SET VS="%ProgramFiles%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+@IF NOT EXIST %VS% SET VS="%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
 @IF NOT EXIST %VS% GOTO ERROR
 CALL %VS% ..\CodeFetcher.sln /build Release
 @ECHO.
