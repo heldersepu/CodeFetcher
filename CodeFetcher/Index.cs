@@ -368,7 +368,7 @@ namespace CodeFetcher
                 return false;
 
             int filesIndexed = 0;
-            logger.Info("   Dir = " + directory.FullName);
+            logger.Trace("   Dir = " + directory.FullName);
             // find all matching files
             foreach (string pattern in iniFile.Patterns)
             {
