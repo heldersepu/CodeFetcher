@@ -7,6 +7,8 @@ using CodeFetcher.Icons;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Folding;
 using System.Linq;
+using Microsoft.Win32.TaskScheduler;
+using System.Reflection;
 
 namespace CodeFetcher
 {
@@ -67,10 +69,24 @@ namespace CodeFetcher
         [STAThread]
         static void Main(string[] args)
         {
-            if (args.Length > 0 && args[0] == "INDEX")
+            if (args.Length > 0)
             {
-                var x = new Index(MyIniFile);
-                x.IndexRefresh(true);
+                switch (args[0])
+                {
+                    case "INDEX":
+                        var x = new Index(MyIniFile);
+                        x.IndexRefresh(true);
+                        break;
+                    case "SCHEDULE":
+                        var a = Assembly.GetExecutingAssembly();
+                        TaskService.Instance.AddTask(
+                            path: a.QName(), 
+                            trigger: QuickTriggerType.Daily, 
+                            exePath: a.Location, 
+                            arguments: "INDEX", 
+                            description: a.FullName);
+                        break;
+                }
             }
             else
             {
@@ -95,6 +111,7 @@ namespace CodeFetcher
             sourceCodeEditor.ShowLineNumbers = true;
             sourceCodeEditor.Options.HighlightCurrentLine = true;
             sourceCodeEditor.FontFamily = new System.Windows.Media.FontFamily("Consolas");
+
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

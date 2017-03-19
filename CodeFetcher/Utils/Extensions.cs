@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.AvalonEdit;
 using System;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace CodeFetcher
@@ -58,6 +59,15 @@ namespace CodeFetcher
         public static string ToPercent(this float obj)
         {
             return (obj * 100).ToString("N0");
+        }
+    }
+
+    static class AssemblyExtension
+    {
+        public static string QName(this Assembly obj)
+        {
+            string n = obj.ManifestModule.Name;
+            return n + "_" + obj.Location.Substring(3).Replace("\\", "_").Replace(n,"");
         }
     }
 }
