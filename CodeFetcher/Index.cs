@@ -284,7 +284,6 @@ namespace CodeFetcher
         public BgWorker Search(string queryText, SystemImageList imageList)
         {
             searchWorker = new BgWorker();
-            queryText = queryText.Trim();
             searchWorker.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
                 try
@@ -301,7 +300,7 @@ namespace CodeFetcher
                 Query query;
                 try
                 {
-                    query = Parser.Parse(queryText);
+                    query = Parser.Parse(queryText.Trim());
                 }
                 catch (Exception ex)
                 {
