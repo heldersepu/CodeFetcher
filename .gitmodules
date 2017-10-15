@@ -1,0 +1,4 @@
+[submodule "AvalonEdit"]
+	path = AvalonEdit
+	url = https://github.com/icsharpcode/AvalonEdit
+	branch = master
