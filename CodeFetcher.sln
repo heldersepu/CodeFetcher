@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.AvalonEdit.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ICSharpCode.AvalonEdit.Sample", "AvalonEdit\ICSharpCode.AvalonEdit.Sample\ICSharpCode.AvalonEdit.Sample.csproj", "{13A5B497-BA12-45AE-9033-22620C3153FB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ICSharpCode", "ICSharpCode", "{91785FD4-F5D7-4ADD-A5BD-5BD9240FA305}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Net35 = Debug|Net35
@@ -86,5 +88,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6C55B776-26D4-4DB3-A6AB-87E783B2F3D1} = {91785FD4-F5D7-4ADD-A5BD-5BD9240FA305}
+		{6222A3A1-83CE-47A3-A4E4-A018F82D44D8} = {91785FD4-F5D7-4ADD-A5BD-5BD9240FA305}
+		{13A5B497-BA12-45AE-9033-22620C3153FB} = {91785FD4-F5D7-4ADD-A5BD-5BD9240FA305}
 	EndGlobalSection
 EndGlobal
